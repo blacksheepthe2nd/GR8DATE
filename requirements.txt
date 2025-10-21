@@ -3,7 +3,4 @@ psycopg2-binary>=2.9.0
 whitenoise>=6.0.0
 django-allauth>=0.54.0
 gunicorn>=20.0.0
-pysqlite3-binary
-
-
-pysqlite3-binary
+dj-database-url>=2.0.0
