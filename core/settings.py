@@ -48,6 +48,13 @@ else:
         }
     }
 
+# DEBUG: Check what database we're using
+print("=== DATABASE DEBUG INFO ===")
+print(f"DATABASE_URL exists: {bool(DATABASE_URL)}")
+print(f"DATABASE ENGINE: {DATABASES['default']['ENGINE']}")
+print(f"DATABASE NAME: {DATABASES['default'].get('NAME', 'Not set')}")
+print("===========================")
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
