@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GR8Date • Conversation with {{ other_user.username }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  <style>
+    /* COPY BASE CSS FROM WORKING MESSAGES LIST PAGE */
+    :root {
+      --bg: #f6f7fb;
+      --card: #fff;
+      --border: #eaeef5;
+      --text: #0f172a;
+      --muted: #64748b;
+      --brand: #ff5478;
+      --brand-900: #e23c61;
+      --shadow: 0 8px 28px rgba(15, 23, 42, 0.08);
+      --radius: 16px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.5 "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Header */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02);
+    }
+    .nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 56px;
+    }
+    .brand {
+      font-weight: 800;
+      letter-spacing: .2px;
+      font-size: 22px;
+      margin-right: auto;
+    }
+    .brand .date {
+      color: var(--brand);
+    }
+    .top-icons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .icon-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .icon-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+    }
+    .icon-btn .material-icons {
+      font-size: 22px;
+    }
+    .rot-90 {
+      transform: rotate(90deg);
+      display: inline-block;
+    }
+
+    /* Mobile Header */
+    @media (max-width: 768px) {
+      .nav {
+        flex-direction: column;
+        padding: 10px 16px 5px 16px;
+      }
+      .brand {
+        margin: 0 auto;
+        text-align: center;
+        order: 1;
+      }
+      .top-icons {
+        order: 2;
+        justify-content: center;
+        width: 100%;
+        margin-top: 10px;
+      }
+      .icon-btn {
+        width: 36px;
+        height: 36px;
+      }
+      .icon-btn .material-icons {
+        font-size: 20px;
+      }
+    }
+
+    /* Main Content */
+    .spacer {
+      height: 56px;
+    }
+    @media (max-width: 768px) {
+      .spacer {
+        height: 100px;
+      }
+    }
+
+    /* Message Thread Styles */
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 140px);
+      box-shadow: var(--shadow);
+    }
+    .top {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card);
+    }
+    .name {
+      font-weight: 800;
+      font-size: 18px;
+    }
+    .msgs {
+      flex: 1;
+      overflow: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: #f8fafc;
+    }
+    .bubble {
+      max-width: 80%;
+      padding: 16px 20px;
+      border-radius: 20px;
+      line-height: 1.5;
+      position: relative;
+      font-size: 16px;
+    }
+    .me {
+      align-self: flex-end;
+      background: var(--brand);
+      color: white;
+    }
+    .them {
+      align-self: flex-start;
+      background: var(--card);
+      border: 1px solid var(--border);
+    }
+    .meta {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
+      opacity: 0.8;
+    }
+    .composer {
+      border-top: 1px solid var(--border);
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      background: var(--card);
+      border-radius: 0 0 16px 16px;
+    }
+    textarea {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      min-height: 60px;
+      resize: vertical;
+      font-size: 16px;
+      font-family: inherit;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .btn-danger {
+      background: var(--brand);
+      color: white;
+      border-color: var(--brand);
+    }
+    .btn-sm {
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+    .top-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    /* Delete Conversation Modal */
+    .delete-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 10001;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .delete-modal-content {
+      background: white;
+      border-radius: 16px;
+      width: 90vw;
+      max-width: 400px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .delete-modal h3 {
+      margin: 0 0 16px 0;
+      font-size: 1.3em;
+      color: #333;
+    }
+    .delete-modal p {
+      margin: 0 0 24px 0;
+      color: #666;
+      line-height: 1.5;
+      font-size: 16px;
+    }
+    .delete-modal-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .modal-btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      min-width: 100px;
+    }
+    .delete-confirm {
+      background: #ff5478;
+      color: white;
+    }
+    .delete-cancel {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* Mobile-specific modal improvements */
+    @media (max-width: 480px) {
+      .delete-modal {
+        padding: 16px;
+        align-items: flex-start;
+        padding-top: 20vh;
+      }
+      
+      .delete-modal-content {
+        width: 95vw;
+        max-width: none;
+        padding: 20px;
+      }
+      
+      .delete-modal h3 {
+        font-size: 1.2em;
+        margin-bottom: 12px;
+      }
+      
+      .delete-modal p {
+        font-size: 15px;
+        margin-bottom: 20px;
+      }
+      
+      .delete-modal-buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .modal-btn {
+        width: 100%;
+        min-width: auto;
+        padding: 14px 20px;
+      }
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      .wrap {
+        padding: 12px;
+      }
+      .card {
+        height: calc(100vh - 120px);
+      }
+      .bubble {
+        max-width: 85%;
+        font-size: 17px;
+        padding: 14px 18px;
+      }
+      .msgs {
+        padding: 16px;
+        gap: 14px;
+      }
+      .composer {
+        padding: 14px;
+      }
+      textarea {
+        font-size: 17px;
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fixed Header - North Star Navigation -->
+  <header class="site-header">
+    <div class="nav">
+      <div class="brand"><span>GR8</span><span class="date">DATE</span></div>
+      <div class="top-icons" aria-label="Header actions">
+        <a class="icon-btn" href="{% url 'dashboard' %}" title="Dashboard">
+          <span class="material-icons rot-90">u_turn_left</span>
+        </a>
+        <a class="icon-btn" href="#" data-open-search title="Search"><span class="material-icons">search</span></a>
+        <a class="icon-btn" href="{% url 'messages_list' %}" title="Messages">
+          <span class="material-icons">mail</span>
+        </a>
+        <a class="icon-btn" href="{% url 'matches_list' %}" title="Matches"><span class="material-icons">groups</span></a>
+        <a class="icon-btn" href="#" title="Hot Dates"><span class="material-icons">local_fire_department</span></a>
+        <a class="icon-btn" href="{% url 'profile_edit' %}" title="My Profile"><span class="material-icons">person</span></a>
+        <a class="icon-btn" href="{% url 'logout' %}" title="Logout"><span class="material-icons">logout</span></a>
+      </div>
+    </div>
+  </header>
+
+  <div class="spacer"></div>
+
+  <main class="wrap">
+    <div class="card">
+      <div class="top">
+        <div class="name">{{ other_user.get_full_name|default:other_user.username }}</div>
+        <div class="top-actions">
+          <button class="btn btn-danger btn-sm" onclick="showDeleteConversationModal({{ thread.id }}, '{{ other_user.username }}')">Delete Conversation</button>
+          <a href="{% url 'messages_list' %}" class="btn">← Back</a>
+        </div>
+      </div>
+
+      <div class="msgs" id="msgs">
+        {% for m in messages %}
+          {% if m.sender_id == request.user.id %}
+            <div class="bubble me" data-message-id="{{ m.id }}">
+              <div>{{ m.text }}</div>
+              <div class="meta">You · {{ m.created_at|date:"M d, Y H:i" }}</div>
+            </div>
+          {% else %}
+            <div class="bubble them">
+              <div>{{ m.text }}</div>
+              <div class="meta">{{ other_user.username }} · {{ m.created_at|date:"M d, Y H:i" }}</div>
+            </div>
+          {% endif %}
+        {% empty %}
+          <div class="bubble them" style="align-self: center; background: transparent; border: none; text-align: center;">
+            <div style="color: var(--muted); font-size: 16px;">No messages yet. Start the conversation!</div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <form method="post" class="composer">
+        {% csrf_token %}
+        <textarea name="text" id="composer" placeholder="Type your message here..." maxlength="2000" required></textarea>
+        <button type="submit" class="btn" style="background: var(--brand); color: white; border: none;">Send</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Delete Conversation Confirmation Modal -->
+  <div id="deleteConversationModal" class="delete-modal">
+    <div class="delete-modal-content">
+      <h3>Delete Conversation</h3>
+      <p id="deleteConversationMessage"></p>
+      <div class="delete-modal-buttons">
+        <button class="modal-btn delete-cancel" id="deleteConversationCancel">Cancel</button>
+        <button class="modal-btn delete-confirm" id="deleteConversationConfirm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Auto-scroll to bottom
+  (function(){
+    const box = document.getElementById("msgs");
+    if(box){
+      box.scrollTop = box.scrollHeight;
+    }
+  })();
+  
+  // Delete conversation modal functions
+  let currentThreadId = null;
+    
+  function showDeleteConversationModal(threadId, username) { 
+    currentThreadId = threadId;
+    const modal = document.getElementById('deleteConversationModal');
+    const message = document.getElementById('deleteConversationMessage');
+      
+    message.innerHTML = `Are you sure you want to delete your entire conversation with <strong>${username}</strong>? This will remove all messages from your view, but they will still be stored for legal purposes.`;
+        
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+        
+  function deleteConversation() {
+    if (!currentThreadId) return;
+    
+    // Create form data with CSRF token
+    const formData = new URLSearchParams();
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    
+    fetch(`/messages/delete-conversation/${currentThreadId}/`, {
+      method: "POST",
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: formData
+    })
+    .then(r => {
+      if (!r.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return r.json();
+    })
+    .then(result => {
+      if (result.ok) {
+        // Redirect back to inbox
+        window.location.href = "{% url 'messages_list' %}";
+      } else {
+        alert(result.error || "Failed to delete conversation");
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      alert("Failed to delete conversation - please try again");
+    });
+  }
+    
+  // Modal event listeners
+  document.addEventListener('DOMContentLoaded', function() {
+    const deleteModal = document.getElementById('deleteConversationModal');
+    const deleteCancel = document.getElementById('deleteConversationCancel');
+    const deleteConfirm = document.getElementById('deleteConversationConfirm');
+    const messageInput = document.getElementById('composer');
+
+    // Confirm delete conversation
+    if (deleteConfirm) {
+      deleteConfirm.addEventListener('click', deleteConversation);
+    }
+        
+    // Cancel delete conversation
+    if (deleteCancel) {
+      deleteCancel.addEventListener('click', function() {
+        deleteModal.style.display = 'none';
+        document.body.style.overflow = '';
+        currentThreadId = null;
+      });
+    }
+      
+    // Close modal when clicking outside
+    if (deleteModal) {
+      deleteModal.addEventListener('click', function(e) {
+        if (e.target === deleteModal) {
+          deleteModal.style.display = 'none';
+          document.body.style.overflow = '';
+          currentThreadId = null;
+        }
+      });
+    }
+        
+    // Close with ESC key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && deleteModal.style.display === 'flex') {
+        deleteModal.style.display = 'none';
+        document.body.style.overflow = '';
+        currentThreadId = null;
+      }
+    });
+   
+    // Auto-focus message input
+    if (messageInput) {   
+      messageInput.focus();
+    }
+  });
+</script>
+
+</body>
+</html>

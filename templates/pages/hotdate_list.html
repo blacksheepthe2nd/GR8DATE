@@ -1,0 +1,493 @@
+{% extends 'base_header.html' %}
+{% load static %}
+
+{% block title %}Hot Dates - GR8DATE{% endblock %}
+
+{% block extra_css %}
+<style>
+    .container{max-width:1100px;margin:0 auto;padding:16px}
+    h1,h2{margin:.25rem 0 1rem}
+    h1.title{font-weight:800;color:var(--brand);letter-spacing:.2px}
+    .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:999px;padding:10px 16px;background:#fff;cursor:pointer;transition:all 0.2s ease}
+    .btn-primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    .btn-ghost{background:#fff}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+    .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .muted{color:var(--muted)}
+    
+    /* List cards - FIXED SPACING */
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    @media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:620px){.grid{grid-template-columns:1fr}}
+    .hot-card{
+        border-radius:16px;
+        border:1px solid var(--border);
+        background:#fff;
+        box-shadow:var(--shadow);
+        padding:20px;
+        position:relative;
+        min-height: 320px;
+        display: flex;
+        flex-direction: column;
+    }
+    .hot-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .aud{margin-left:auto;background:#f2f4f7;border:1px solid var(--border);padding:6px 10px;border-radius:999px;font-size:12px}
+    .title{font-weight:800;font-size:22px;line-height:1.15;margin:8px 0 12px}
+    .meta{color:#374151;font-size:14px;margin:8px 0 14px}
+    .bullets{color:#374151;font-size:14px;margin-bottom:20px;flex-grow:1}
+    .bullets .dot::before{content:"• ";}
+    .btn-row{
+        display:flex;
+        gap:10px;
+        align-items:center;
+        margin-top:auto;
+        padding-top:16px;
+        flex-wrap:wrap;
+    }
+    
+    .empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+    .empty-state .material-icons{font-size:64px;color:#e5e7eb;margin-bottom:16px}
+    
+    /* Message Host Button Styles */
+    .btn-message {
+        background: linear-gradient(135deg, #ff3366, #ff6b9d);
+        border: 1px solid #ff3366;
+        color: white;
+        font-weight: 600;
+    }
+
+    .btn-message:hover {
+        background: linear-gradient(135deg, #ff2366, #ff5b8d);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 51, 102, 0.3);
+    }
+
+    /* Mark as Seen Button Styles */
+    .btn-mark-seen {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        color: #6b7280;
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .btn-mark-seen:hover {
+        background: #e9ecef;
+        border-color: #dee2e6;
+    }
+    
+    /* Cancelled Hot Date Styles */
+    .hot-card.cancelled {
+        opacity: 0.7;
+        background: #f8f9fa;
+        border-color: #e9ecef;
+    }
+
+    .hot-card.cancelled .title {
+        color: #6c757d;
+        text-decoration: line-through;
+    }
+
+    .badge-cancel {
+        background: #ffe4e8;
+        color: #b4232c;
+        border: 1px solid #ffd1dc;
+        border-radius: 999px;
+        padding: 8px 16px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Message Styles */
+    .alert-success{background:#d4edda;border:1px solid #c3e6cb;color:#155724;padding:12px;border-radius:8px;margin-bottom:16px;}
+    .alert-error{background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;padding:12px;border-radius:8px;margin-bottom:16px;}
+    .alert-info{background:#d1ecf1;border:1px solid #bee5eb;color:#0c5460;padding:12px;border-radius:8px;margin-bottom:16px;}
+    
+    /* Seen row styles */
+    .seen-row {
+        margin: 12px 0 8px 0;
+        display: flex;
+        justify-content: flex-end;
+        transition: opacity 0.3s ease;
+    }
+    
+    .mark-seen {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    /* Cancel Hot Date Modal */
+    .cancel-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 10001;
+      align-items: center;
+      justify-content: center;
+    }
+    .cancel-modal-content {
+      background: white;
+      border-radius: 16px;
+      width: 90vw;
+      max-width: 400px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .cancel-modal h3 {
+      margin: 0 0 16px 0;
+      font-size: 1.3em;
+      color: #333;
+    }
+    .cancel-modal p {
+      margin: 0 0 24px 0;
+      color: #666;
+      line-height: 1.5;
+    }
+    .cancel-modal-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .cancel-btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      min-width: 100px;
+    }
+    .cancel-confirm {
+      background: #ff5478;
+      color: white;
+    }
+    .cancel-cancel {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Add CSRF token for AJAX requests -->
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+<main class="container">
+  <!-- Success/Error Messages -->
+  {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+        <div class="alert-{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% else %}info{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <section class="row" style="justify-content:space-between">
+    <h1 class="title">Hot Dates</h1>
+    <a class="btn btn-primary" href="{% url 'hotdate_create' %}"><span class="material-icons">add</span> Create Hot Date</a>
+  </section>
+  
+  <section class="grid">
+    {% if hot_dates %}
+      {% for hot_date in hot_dates %}
+      <article class="hot-card {% if hot_date.is_cancelled %}cancelled{% endif %}">
+        <div class="hot-top">
+          <div>
+            <!-- Host name clearly clickable with underline -->
+            <a href="{% url 'profile_detail' hot_date.host.id %}" style="font-weight:bold; color: #2563eb; text-decoration: underline;">
+              {{ hot_date.host.username }}
+            </a>
+            <div class="muted" style="font-size:12px;margin-top:2px">Host</div>
+          </div>
+          <div class="aud">Audience: {{ hot_date.get_audience_display }}</div>
+        </div>
+        
+        <div class="title">{{ hot_date.title }}</div>
+        <div class="meta">{{ hot_date.date_time|date:"D, M j • H:i" }} • {{ hot_date.duration }}</div>
+        <div class="bullets">
+          <div class="dot">Area: {{ hot_date.area }}</div>
+          <div class="dot">Budget: {{ hot_date.budget }}</div>
+          <div class="dot">Group: {{ hot_date.get_group_size_display }}</div>
+        </div>
+
+        <!-- CANCELLED label positioned above buttons -->
+        {% if hot_date.is_cancelled %}
+        <div style="text-align: center; margin: 10px 0;">
+          <div class="badge-cancel" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;">
+            <span class="material-icons" style="font-size:16px;">cancel</span>
+            <span style="font-weight: 600;">CANCELLED</span>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Mark as Seen button - only show if user hasn't seen this Hot Date yet AND it's not cancelled -->
+        {% if hot_date.id not in viewed_hotdates and not hot_date.is_cancelled %}
+        <div class="seen-row">
+          <button class="btn btn-mark-seen mark-seen" data-hotdate-id="{{ hot_date.id }}">
+            <span class="material-icons" style="font-size:16px;">visibility</span>
+            Mark as Seen
+          </button>
+        </div>
+        {% endif %}
+
+        <div class="btn-row">
+          <!-- Message Host - with red-pink color -->
+          <a class="btn btn-message" href="{% url 'message_thread' hot_date.host.id %}" data-hotdate-id="{{ hot_date.id }}">
+            <span class="material-icons" style="font-size:16px;">message</span>
+            Message Host
+          </a>
+          
+          <!-- Cancel - only show for host's own Hot Dates that are NOT cancelled -->
+          {% if hot_date.host == request.user and not hot_date.is_cancelled %}
+            <button class="btn cancel-hotdate" data-hotdate-id="{{ hot_date.id }}">
+              <span class="material-icons" style="font-size:16px;">cancel</span>
+              Cancel
+            </button>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    {% else %}
+      <!-- No Hot Dates -->
+      <div class="empty-state">
+        <span class="material-icons">local_fire_department</span>
+        <h3>No Hot Dates Yet</h3>
+        <p>Be the first to create a Hot Date and meet new people!</p>
+        <a class="btn btn-primary" href="{% url 'hotdate_create' %}" style="margin-top:16px">
+          <span class="material-icons">add</span> Create Your First Hot Date
+        </a>
+      </div>
+    {% endif %}
+  </section>
+</main>
+
+<!-- Cancel Hot Date Confirmation Modal -->
+<div id="cancelHotDateModal" class="cancel-modal">
+  <div class="cancel-modal-content">
+    <h3>Cancel Hot Date?</h3>
+    <p>Are you sure you want to cancel this Hot Date? This action cannot be undone and will notify interested users.</p>
+    <div class="cancel-modal-buttons">
+      <button class="cancel-btn cancel-cancel" id="cancelHotDateCancel">Keep Hot Date</button>
+      <button class="cancel-btn cancel-confirm" id="cancelHotDateConfirm">Yes, Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Success Message (for AJAX operations) -->
+<div id="ajaxSuccessMessage" class="alert-success" style="display: none; margin: 16px 0;">
+    Operation completed successfully!
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get CSRF token function - FIXED VERSION
+    function getCSRFToken() {
+        // Try multiple ways to get CSRF token
+        let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfToken) return csrfToken.value;
+        
+        csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]');
+        if (csrfToken) return csrfToken.value;
+        
+        csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]');
+        if (csrfToken) return csrfToken.value;
+        
+        // Last resort: try to get from cookies
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        
+        return cookieValue || '';
+    }
+
+    // Show success message
+    function showSuccess(message) {
+        const successEl = document.getElementById('ajaxSuccessMessage');
+        successEl.textContent = message;
+        successEl.style.display = 'block';
+        setTimeout(() => {
+            successEl.style.display = 'none';
+        }, 3000);
+    }
+    
+    // Mark as Seen buttons - FIXED CSRF
+    document.querySelectorAll('.mark-seen').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const hotdateId = this.getAttribute('data-hotdate-id');
+            const button = this;
+            const seenRow = button.closest('.seen-row');
+            
+            const csrfToken = getCSRFToken();
+            console.log('CSRF Token:', csrfToken);
+            
+            fetch(`/hotdates/${hotdateId}/mark-seen/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({})
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Mark as Seen response:', data);
+                if (data.success) {
+                    // Remove the mark as seen row with smooth animation
+                    if (seenRow) {
+                        seenRow.style.opacity = '0';
+                        setTimeout(() => {
+                            seenRow.style.display = 'none';
+                        }, 300);
+                    }
+                    
+                    // Show success message
+                    showSuccess('Marked as seen!');
+                    
+                    // Update badges without page reload
+                    if (typeof updateBadgeCounts === 'function') {
+                        updateBadgeCounts();
+                    }
+                } else {
+                    alert('Failed to mark as seen: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error marking as seen:', error);
+                alert('Error marking as seen. Please try again. Error: ' + error.message);
+            });
+        });
+    });
+    
+    // Message Host buttons - mark as seen in background
+    document.querySelectorAll('a[href*="message_thread"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const hotdateId = this.getAttribute('data-hotdate-id');
+            if (hotdateId) {
+                fetch(`/hotdates/${hotdateId}/mark-seen/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken(),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'include'
+                }).then(() => {
+                    if (typeof updateBadgeCounts === 'function') {
+                        updateBadgeCounts();
+                    }
+                }).catch(err => console.error('Background mark as seen failed:', err));
+            }
+        });
+    });
+    
+    // Cancel Hot Date functionality - FIXED CSRF
+    document.querySelectorAll('.cancel-hotdate').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const hotdateId = this.getAttribute('data-hotdate-id');
+            const modal = document.getElementById('cancelHotDateModal');
+            const confirmBtn = document.getElementById('cancelHotDateConfirm');
+            const cancelBtn = document.getElementById('cancelHotDateCancel');
+            
+            confirmBtn.setAttribute('data-hotdate-id', hotdateId);
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // Confirm cancellation - FIXED CSRF
+            const confirmHandler = function() {
+                const hotdateId = this.getAttribute('data-hotdate-id');
+                const csrfToken = getCSRFToken();
+                console.log('Cancel CSRF Token:', csrfToken);
+                
+                fetch(`/hotdates/${hotdateId}/cancel/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({})
+                })
+                .then(response => {
+                    console.log('Cancel response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Cancel response:', data);
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                    
+                    if (data.success) {
+                        showSuccess(data.message || 'Hot Date cancelled successfully!');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    } else {
+                        alert('Failed to cancel Hot Date: ' + (data.error || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error cancelling Hot Date:', error);
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                    alert('Failed to cancel Hot Date - please try again. Error: ' + error.message);
+                });
+            };
+            
+            // Remove any existing listeners and add new one
+            confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+            const newConfirmBtn = document.getElementById('cancelHotDateConfirm');
+            newConfirmBtn.setAttribute('data-hotdate-id', hotdateId);
+            newConfirmBtn.addEventListener('click', confirmHandler);
+            
+            // Cancel button
+            cancelBtn.onclick = function() {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            };
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            // Close with ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.style.display === 'flex') {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

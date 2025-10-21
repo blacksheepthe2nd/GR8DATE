@@ -1,0 +1,283 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>GR8DATE • Dashboard (4x3, uniform images)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#fff; --border:#eaeef5; --text:#0f172a; --muted:#64748b;
+      --brand:#ff5478; --brand-900:#e23c61; --shadow:0 8px 28px rgba(15,23,42,.08);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 "Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    a{color:inherit;text-decoration:none}
+
+    /* ===== Fixed Header ===== */
+    .site-header{
+      position:fixed; top:0; left:0; right:0; z-index:1000;
+      background:#fff; border-bottom:1px solid var(--border);
+      box-shadow:0 1px 0 rgba(15,23,42,.02);
+    }
+    .nav{max-width:1200px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;min-height:56px;}
+    .brand{font-weight:800; letter-spacing:.2px; font-size:22px; margin-right:auto;}
+    .brand .date{color:var(--brand);}
+    .top-icons{display:flex; gap:10px; align-items:center;}
+    .icon-btn{
+      position:relative;
+      display:inline-flex; align-items:center; justify-content:center;
+      width:40px; height:40px; border-radius:12px; background:#fff;
+      border:1px solid var(--border); box-shadow:var(--shadow);
+      transition:transform .12s ease, box-shadow .12s ease;
+    }
+    .icon-btn:hover{transform:translateY(-1px); box-shadow:0 12px 24px rgba(15,23,42,.12)}
+    .icon-btn .material-icons{font-size:22px}
+    .rot-90{transform: rotate(90deg); display:inline-block}
+
+    /* Disabled look for preview-mode */
+    .icon-btn.is-disabled{opacity:.55; cursor:not-allowed; filter:grayscale(35%);}
+
+    /* ===== Badge ===== */
+    .badge{position:absolute;top:4px;right:6px;min-width:16px;height:16px;
+      background:#ff5478;color:#fff;font-size:10px;font-weight:700;border-radius:999px;
+      display:flex;align-items:center;justify-content:center}
+    .flash{animation:pulse 1.4s ease-in-out infinite}
+    @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.7}}
+
+    /* Mobile toolbar */
+    .mobile-toolbar{display:none; border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:#fff;}
+    .mobile-toolbar .wrap{max-width:1200px;margin:0 auto; padding:8px 12px; display:flex; gap:10px; justify-content:center;}
+    @media (max-width: 760px){
+      .nav{justify-content:center}
+      .brand{margin:0 auto; text-align:center}
+      .top-icons{display:none}
+      .mobile-toolbar{display:block; position:sticky; top:56px; z-index:999;}
+    }
+
+    /* Page shell spacing */
+    .shell{max-width:1200px;margin:0 auto;padding:0 16px}
+    .spacer{height:56px;}
+    .spacer-mobile{height:0}
+    @media (max-width:760px){ .spacer-mobile{height:57px;} }
+
+    /* ===== Grid (3x4) ===== */
+    .grid{
+      --cols:4;
+      display:grid;
+      grid-template-columns: repeat(var(--cols), 1fr);
+      gap:14px; padding-top:18px;
+    }
+    @media (max-width: 1024px){ .grid{ --cols:2; } }
+    @media (max-width: 640px){ .grid{ --cols:1; } }
+    .card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+    .card__imgwrap{height:240px;background:#fafafa;overflow:hidden;position:relative}
+    .card__imgwrap img{width:100%;height:100%;object-fit:cover;display:block}
+    .card__body{padding:10px 12px}
+    .card__title{font-weight:700}
+    .card__meta{display:flex;gap:8px;color:var(--muted);font-size:12px;margin-top:4px}
+    .card__tagline{font-size:13px;margin:8px 0 0;color:#333}
+    .card__actions{display:flex;gap:6px;padding:10px 16px 12px 12px;}
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;background:#f5f6f8;border:1px solid var(--border);border-radius:999px;box-shadow:0 1px 0 rgba(0,0,0,.02);font-size:13px;line-height:1;}
+    .chip .material-icons{font-size:17px}
+    .pager{display:flex;gap:10px;justify-content:center;align-items:center;padding:18px 0}
+    .pager__cur{color:var(--muted);font-size:14px}
+    .toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 14px;border-radius:10px;display:none}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav">
+    <div class="brand"><span>GR8</span><span class="date">DATE</span></div>
+
+    <div class="top-icons" aria-label="Header actions">
+      <!-- DASHBOARD (always allowed) -->
+      <a class="icon-btn" href="{% url 'dashboard' %}" title="Dashboard">
+        <span class="material-icons rot-90">u_turn_left</span>
+      </a>
+
+      {% if preview_mode %}
+        <!-- PREVIEW MODE: disabled icons (except Logout) -->
+        <a class="icon-btn is-disabled" data-disabled="1" href="#" title="Search"><span class="material-icons">search</span></a>
+        <a class="icon-btn is-disabled" data-disabled="1" href="...#" title="Messages"><span class="material-icons">mail</span><span class="badge" id="msg-badge" hidden></span></a>
+        <a class="icon-btn is-disabled" data-disabled="1" href="..." title="Matches"><span class="material-icons">groups</span></a>
+        <a class="icon-btn is-disabled" data-disabled="1" href="#" title="Hot Dates"><span class="material-icons">local_fire_department</span></a>
+        <a class="icon-btn is-disabled" data-disabled="1" href="#" title="My Profile"><span class="material-icons">person</span></a>
+      {% else %}
+        <!-- APPROVED MODE: live links -->
+        <a class="icon-btn" href="{% url 'search' %}" title="Search"><span class="material-icons">search</span></a>
+        <a class="icon-btn" href="{% url 'messages_inbox' %}" title="Messages"><span class="material-icons">mail</span><span class="badge" id="msg-badge" hidden></span></a>
+        <a class="icon-btn" href="{% url 'matches' %}" title="Matches"><span class="material-icons">groups</span></a>
+        <a class="icon-btn" href="{% url 'hotdates_list' %}" title="Hot Dates"><span class="material-icons">local_fire_department</span></a>
+        <a class="icon-btn" href="{% url 'profile_public' request.user.id %}" title="My Profile"><span class="material-icons">person</span></a>
+      {% endif %}
+      <a class="icon-btn" href="{% url 'logout' %}" title="Logout"><span class="material-icons">logout</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="spacer"></div>
+<div class="spacer-mobile"></div>
+
+<main class="shell">
+  <section class="grid">
+    {% for p in profiles %}
+      <article class="card">
+        <a class="card__imgwrap" href="{% url 'profile_public' p.id %}">
+          {% with img=p.primary_image_url|default:'/static/img/placeholder.png' %}
+            {% if img %}
+              <img src="{{ p.card_image_url }}" alt="{{ p.user.username|default:'profile' }}">
+            {% else %}
+              <img src="https://picsum.photos/seed/{{ p.id }}/800/800" alt="placeholder">
+            {% endif %}
+          {% endwith %}
+        </a>
+        <div class="card__body">
+          <a class="card__title" href="{% url 'profile_public' p.id %}">{{ p.user.username }}</a>
+          <div class="card__meta">
+            {% if p.age or p.card_age %}<span>{{ p.age|default:p.card_age }}</span>{% endif %}
+            {% if p.location %}<span>{{ p.location }}</span>{% endif %}
+          </div>
+          {% if p.headline %}<p class="card__tagline">{{ p.headline }}</p>{% endif %}
+        </div>
+
+        <div class="card__actions">
+          {% if preview_mode %}
+            <span class="chip"><span class="material-icons">thumb_up</span> Like</span>
+            <span class="chip"><span class="material-icons">bookmark</span> Favorite</span>
+            <span class="chip"><span class="material-icons">chat</span> Message</span>
+          {% else %}
+            <a class="chip" href="{% url 'matches' %}"><span class="material-icons">thumb_up</span> Like</a>
+            <a class="chip" href="{% url 'matches' %}"><span class="material-icons">bookmark</span> Favorite</a>
+            <a class="chip" href="{% url 'messages_inbox' %}?to={{ p.user.id }}"><span class="material-icons">chat</span> Message</a>
+          {% endif %}
+        </div>
+      </article>
+    {% empty %}
+      <p>No profiles yet.</p>
+    {% endfor %}
+  </section>
+
+  <nav class="pager">
+    {% if profiles.has_previous %}
+      <a class="btn" href="?page={{ profiles.previous_page_number }}">« Prev</a>
+    {% else %}
+      <span class="btn" style="opacity:.5;pointer-events:none">« Prev</span>
+    {% endif %}
+    <span class="pager__cur">Page {{ profiles.number }} of {{ profiles.paginator.num_pages }}</span>
+    {% if profiles.has_next %}
+      <a class="btn" href="?page={{ profiles.next_page_number }}">Next »</a>
+    {% else %}
+      <span class="btn" style="opacity:.5;pointer-events:none">Next »</span>
+    {% endif %}
+  </nav>
+</main>
+
+<div id="toast" class="toast">Finish your profile to use this section.</div>
+
+<!-- === Search overlay JS (kept as-is) === -->
+<script>
+(function(){
+  const overlay = document.getElementById('search-overlay');
+  if(!overlay) return;
+  const openBtns = document.querySelectorAll('.js-open-search');
+  const closeBtns = overlay.querySelectorAll('.js-close');
+
+  function openOverlay(ev){
+    if(ev){ ev.preventDefault(); }
+    overlay.classList.add('is-open');
+    overlay.setAttribute('aria-hidden', 'false');
+    // focus the keyword
+    const q = overlay.querySelector('#q');
+    if(q){ setTimeout(()=> q.focus(), 50); }
+  }
+  function closeOverlay(){
+    overlay.classList.remove('is-open');
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+
+  openBtns.forEach(btn => btn.addEventListener('click', openOverlay));
+  closeBtns.forEach(btn => btn.addEventListener('click', closeOverlay));
+  overlay.addEventListener('click', (e)=>{
+    if(e.target === overlay){ closeOverlay(); }
+  });
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape' && overlay.classList.contains('is-open')) closeOverlay();
+  });
+})();
+</script>
+
+<!-- === Smart message badge updater (approved: number; preview: flash no number) === -->
+<script>
+(function(){
+  const wrap = document.querySelector('.icon-btn[title="Messages"]');
+  const badge = document.getElementById('msg-badge');
+  if(!wrap || !badge) return;
+  let last = 0, first = true;
+  const POLL_MS = 15000;
+
+  async function refresh(){
+    try{
+      const r = await fetch("{% url 'messages_unread_count' %}", {headers: {"X-Requested-With":"fetch"}});
+      if(!r.ok) throw 0;
+      const data = await r.json();
+      const n = Number(data.count||0);
+      const preview = !!data.preview;
+
+      if(n>0){
+        if(preview){
+          // preview users: show dot/flash only (no number), enable read-only link
+          badge.textContent = "";
+          badge.hidden = false;
+          badge.classList.add('flash');
+          if(wrap.classList.contains('is-disabled')){
+            wrap.classList.remove('is-disabled');
+            wrap.setAttribute('href', "{% url 'messages_inbox' %}");
+          }
+        }else{
+          // approved users: show numeric count
+          badge.textContent = n>99 ? "99+" : String(n);
+          badge.hidden = false;
+          if(n>last || (first && n>0)){
+            badge.classList.add('flash');
+            setTimeout(()=>badge.classList.remove('flash'), 4000);
+          }
+        }
+      }else{
+        badge.hidden = true;
+        badge.classList.remove('flash');
+        if(preview){
+          // keep disabled when no admin unread in preview mode
+          wrap.classList.add('is-disabled');
+          wrap.setAttribute('href', "#");
+        }
+      }
+      last = n; first = false;
+    }catch(e){
+      // ignore
+    }finally{
+      setTimeout(refresh, POLL_MS);
+    }
+  }
+  refresh();
+})();
+</script>
+
+</body>
+</html>
+
+
+{% include "pages/_search_modal.html" %}
+
+<a href="#" data-open-search
+   style="position:fixed;right:18px;bottom:18px;background:#111;color:#fff;
+          padding:12px 14px;border-radius:999px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.2)">
+  🔎 Search
+</a>

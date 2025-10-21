@@ -1,0 +1,22 @@
+{% extends 'base_header_preview.html' %}
+{% load static %}
+
+{% block title %}Browse Profiles - GR8DATE Preview{% endblock %}
+
+{% block content %}
+<!-- PREVIEW MODE CONTENT ONLY -->
+<div class="preview-header">
+  <h1>Welcome to GR8DATE! 👋</h1>
+  <p>You're in preview mode. Complete your profile to unlock full access and start connecting.</p>
+</div>
+
+<h1>Preview Profiles</h1>
+
+<div class="profile-grid">
+  {% for profile in suggested_profiles %}
+    <a href="{% url 'preview_profile_detail' profile.user.id %}" class="profile-card preview-card">
+      <!-- Preview profile card content -->
+    </a>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+<!-- DEBUG INFO -->
+<div style="background: #f0f0f0; padding: 10px; margin: 10px; border: 1px solid red;">
+    <h3>DEBUG INFO:</h3>
+    <p>Search Query: "{{ q }}"</p>
+    <p>Total Results: {{ total }}</p>
+    <p>Current Page Results: {{ page_obj.object_list|length }}</p>
+    <p>Has Results: {% if page_obj.object_list %}YES{% else %}NO{% endif %}</p>
+    {% if page_obj.object_list %}
+        <p>Profiles found:</p>
+        <ul>
+        {% for profile in page_obj.object_list %}
+            <li>{{ profile.user.username }} - complete:{{ profile.is_complete }} approved:{{ profile.is_approved }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+<!-- END DEBUG INFO -->

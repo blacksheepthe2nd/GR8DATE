@@ -1,0 +1,291 @@
+{% extends 'base_header.html' %}
+{% load static %}
+
+{% block title %}Create Hot Date - GR8DATE{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Form Styles */
+    .container{max-width:1100px;margin:0 auto;padding:16px}
+    h1,h2{margin:.25rem 0 1rem}
+    h1.title{font-weight:800;color:var(--brand);letter-spacing:.2px}
+    .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:999px;padding:10px 16px;background:#fff;cursor:pointer}
+    .btn-primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    .btn-ghost{background:#fff}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+    .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .muted{color:var(--muted)}
+    
+    /* Create form */
+    .form-card{padding:0;overflow:hidden}
+    .form-head{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 0}
+    .form-wrap{padding:0 16px 16px}
+    .help{color:#111;background:#fffdfc;border:1px dashed #f6d2de;padding:10px 12px;border-radius:12px;margin:0 16px 12px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:760px){.form-grid{grid-template-columns:1fr}}
+    .field{display:flex;flex-direction:column;gap:6px}
+    select,input[type="date"],input[type="time"],input[type="text"]{border:1px solid var(--border);border-radius:10px;padding:12px;background:#fff;font-family:inherit;font-size:16px}
+    select:focus,input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(255,51,102,0.1)}
+    .sticky-footer{position:sticky;bottom:0;background:#fff;padding:12px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end}
+    .btn-wide{padding:14px 22px;border-radius:999px;font-weight:800}
+    .error-message{color:#ef4444;font-size:14px;margin-top:4px;display:none}
+    .field.error select,.field.error input{border-color:#ef4444}
+    .success-message{background:#10b981;color:white;padding:12px;border-radius:10px;margin:16px;text-align:center;display:none}
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+  <section class="card form-card">
+    <div class="form-head">
+      <h1 class="title">Create Hot Date</h1>
+      <a class="btn" href="{% url 'hotdate_list' %}"><span class="material-icons">whatshot</span> View Hot Dates</a>
+    </div>
+    
+    <!-- Success Message -->
+    {% if messages %}
+      {% for message in messages %}
+        <div class="success-message" style="display:block;">
+          <span class="material-icons" style="vertical-align:middle">check_circle</span>
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+    
+    <p class="help"><strong>No free text.</strong> Host identity is taken from your profile. Audience controls who sees it.</p>
+    
+    <div class="form-wrap">
+      <!-- FIXED: Proper Django form with POST method and CSRF token -->
+      <form method="post" id="hotForm">
+        {% csrf_token %}
+        
+        <div class="form-grid">
+          <!-- Activity Field -->
+          <div class="field">
+            <label for="activity">Activity</label>
+            <select name="activity" id="activity" required>
+              <option value="">Select an activity</option>
+              <option value="Coffee">Coffee</option>
+              <option value="Drinks / Wine Bar">Drinks / Wine Bar</option>
+              <option value="Dinner">Dinner</option>
+              <option value="Walk / Park">Walk / Park</option>
+              <option value="Gallery / Museum">Gallery / Museum</option>
+              <option value="Movie">Movie</option>
+              <option value="Live Music / Comedy">Live Music / Comedy</option>
+              <option value="Surprise Me">Surprise Me</option>
+            </select>
+            <div class="error-message" id="activity-error">Please select an activity</div>
+          </div>
+          
+          <!-- Vibe Field -->
+          <div class="field">
+            <label for="vibe">Vibe</label>
+            <select name="vibe" id="vibe" required>
+              <option value="">Select a vibe</option>
+              <option value="Chill">Chill</option>
+              <option value="Classy">Classy</option>
+              <option value="Adventurous">Adventurous</option>
+              <option value="Playful">Playful</option>
+              <option value="Quiet">Quiet</option>
+            </select>
+            <div class="error-message" id="vibe-error">Please select a vibe</div>
+          </div>
+          
+          <!-- Budget Field -->
+          <div class="field">
+            <label for="budget">Budget</label>
+            <select name="budget" id="budget" required>
+              <option value="">Select budget</option>
+              <option value="Free">Free</option>
+              <option value="$">$</option>
+              <option value="$$">$$</option>
+              <option value="$$$">$$$</option>
+              <option value="Each pays their way">Each pays their way</option>
+            </select>
+            <div class="error-message" id="budget-error">Please select a budget</div>
+          </div>
+          
+          <!-- Duration Field -->
+          <div class="field">
+            <label for="duration">Duration</label>
+            <select name="duration" id="duration" required>
+              <option value="">Select duration</option>
+              <option value="45 min">45 min</option>
+              <option value="60 min">60 min</option>
+              <option value="90 min">90 min</option>
+              <option value="2 hours">2 hours</option>
+              <option value="3 hours">3 hours</option>
+            </select>
+            <div class="error-message" id="duration-error">Please select a duration</div>
+          </div>
+          
+          <!-- Date Field -->
+          <div class="field">
+            <label for="date">Date</label>
+            <input type="date" name="date" id="date" required>
+            <div class="error-message" id="date-error">Please select a date</div>
+          </div>
+          
+          <!-- Time Field -->
+          <div class="field">
+            <label for="time">Time</label>
+            <input type="time" name="time" id="time" required>
+            <div class="error-message" id="time-error">Please select a time</div>
+          </div>
+          
+          <!-- Area Field -->
+          <div class="field" style="grid-column:1/-1">
+            <label for="area">Area / Suburb</label>
+            <input type="text" name="area" id="area" placeholder="Type to search (e.g., Willoughby)" required>
+            <div class="muted" style="font-size:13px;margin-top:6px">Type‑ahead search across the AU suburb list; pick from results.</div>
+            <div class="error-message" id="area-error">Please enter an area or suburb</div>
+          </div>
+          
+          <!-- Group Size Field -->
+          <div class="field">
+            <label for="group_size">Group size</label>
+            <select name="group_size" id="group_size" required>
+              <option value="">Select group size</option>
+              <option value="1_on_1">1 on 1</option>
+              <option value="small_group">Small group (3–4)</option>
+              <option value="group">Group (5+)</option>
+            </select>
+            <div class="error-message" id="group_size-error">Please select a group size</div>
+          </div>
+          
+          <!-- Audience Field -->
+          <div class="field">
+            <label for="audience">Audience</label>
+            <select name="audience" id="audience" required>
+              <option value="">Select audience</option>
+              <option value="anyone">Anyone</option>
+              <option value="women_only">Women only</option>
+              <option value="men_only">Men only</option>
+            </select>
+            <div class="error-message" id="audience-error">Please select an audience</div>
+          </div>
+        </div>
+        
+        <div class="sticky-footer">
+          <button type="button" class="btn" onclick="resetForm()">Reset</button>
+          <button class="btn btn-primary btn-wide" type="submit" id="submitButton">
+            <span class="material-icons">whatshot</span> Post Hot Date
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Client-side validation and date/time restrictions
+  document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.getElementById('date');
+    const timeInput = document.getElementById('time');
+    const form = document.getElementById('hotForm');
+    const submitButton = document.getElementById('submitButton');
+    
+    // Set minimum date to today
+    function setMinDate() {
+      const today = new Date();
+      const todayString = today.toISOString().split('T')[0];
+      dateInput.min = todayString;
+    }
+    
+    // Update time minimum based on selected date
+    function updateTimeMin() {
+      if (!dateInput.value) return;
+      
+      const today = new Date();
+      const todayString = today.toISOString().split('T')[0];
+      const selectedDate = new Date(dateInput.value);
+      
+      // If selected date is today, set min time to 60 minutes from now
+      if (dateInput.value === todayString) {
+        const minTime = new Date(today.getTime() + 60 * 60000); // 60 minutes from now
+        const hours = String(minTime.getHours()).padStart(2, '0');
+        const minutes = String(minTime.getMinutes()).padStart(2, '0');
+        timeInput.min = `${hours}:${minutes}`;
+      } else {
+        timeInput.min = ''; // No restriction for future dates
+      }
+    }
+    
+    // Initialize
+    setMinDate();
+    updateTimeMin();
+    
+    // Event listeners
+    dateInput.addEventListener('change', updateTimeMin);
+    
+    // Form validation
+    form.addEventListener('submit', function(event) {
+      let isValid = true;
+      
+      // Reset errors
+      document.querySelectorAll('.error-message').forEach(error => error.style.display = 'none');
+      document.querySelectorAll('.field').forEach(field => field.classList.remove('error'));
+      
+      // Check if date/time is at least 60 minutes in future
+      if (dateInput.value && timeInput.value) {
+        const selectedDateTime = new Date(`${dateInput.value}T${timeInput.value}`);
+        const now = new Date();
+        const timeDiff = (selectedDateTime - now) / (1000 * 60); // Difference in minutes
+        
+        if (timeDiff < 60) {
+          isValid = false;
+          showError('date', 'Please choose a time at least 60 minutes from now.');
+          showError('time', 'Please choose a time at least 60 minutes from now.');
+        }
+      }
+      
+      // Check required fields
+      const requiredFields = ['activity', 'vibe', 'budget', 'duration', 'date', 'time', 'area', 'group_size', 'audience'];
+      requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (!field.value.trim()) {
+          isValid = false;
+          showError(fieldId, `Please fill in ${field.labels[0].textContent}`);
+        }
+      });
+      
+      if (!isValid) {
+        event.preventDefault();
+        // Scroll to first error
+        const firstError = document.querySelector('.error');
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      } else {
+        // Disable submit button to prevent double submission
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<span class="material-icons">schedule</span> Creating Hot Date...';
+      }
+    });
+    
+    function showError(fieldId, message) {
+      const field = document.getElementById(fieldId);
+      const errorElement = document.getElementById(`${fieldId}-error`);
+      if (field && errorElement) {
+        field.closest('.field').classList.add('error');
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+      }
+    }
+  });
+  
+  function resetForm() {
+    document.getElementById('hotForm').reset();
+    document.querySelectorAll('.error-message').forEach(error => error.style.display = 'none');
+    document.querySelectorAll('.field').forEach(field => field.classList.remove('error'));
+    
+    // Re-enable submit button if it was disabled
+    const submitButton = document.getElementById('submitButton');
+    submitButton.disabled = false;
+    submitButton.innerHTML = '<span class="material-icons">whatshot</span> Post Hot Date';
+  }
+</script>
+{% endblock %}

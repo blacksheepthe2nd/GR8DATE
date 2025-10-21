@@ -1,0 +1,101 @@
+{% extends "pages/gr8date_dashboard_fixed_v10_nolines.html" %}
+{% load static %}
+
+{% block content %}
+<!-- DEBUG INFO -->
+<div style="background: #f0f0f0; padding: 10px; margin: 10px; border: 1px solid red;">
+    <h3>DEBUG INFO:</h3>
+    <p>Search Query: "{{ q }}"</p>
+    <p>Total Results: {{ total }}</p>
+    <p>Current Page Results: {{ page_obj.object_list|length }}</p>
+    <p>Has Results: {% if page_obj.object_list %}YES{% else %}NO{% endif %}</p>
+    {% if page_obj.object_list %}
+        <p>Profiles found:</p>
+        <ul>
+        {% for profile in page_obj.object_list %}
+            <li>{{ profile.user.username }} - complete:{{ profile.is_complete }} approved:{{ profile.is_approved }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+<!-- END DEBUG INFO -->
+
+<div style="padding-top:120px; max-width:1200px; margin:0 auto; padding-left:16px; padding-right:16px;">
+  
+  <!-- Search Header -->
+  <div style="text-align:center; margin-bottom:30px;">
+    <h1 style="margin-bottom:10px; color:#333;">Search Results</h1>
+    {% if q %}
+      <p style="color:#666; font-size:1.1em;">Found {{ total }} result{{ total|pluralize }} for "{{ q }}"</p>
+    {% else %}
+      <p style="color:#666; font-size:1.1em;">Browse all profiles</p>
+    {% endif %}
+  </div>
+
+  <!-- Simple Search Form -->
+  <div style="background:white; padding:20px; border-radius:16px; margin-bottom:30px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+    <form method="get" style="display:flex; gap:12px;">
+      <input type="text" name="q" value="{{ q }}" placeholder="Search by name, location, interests..." 
+             style="flex:1; padding:12px; border:1px solid #ddd; border-radius:8px; font-size:16px;">
+      <button type="submit" style="padding:12px 24px; background:#111; color:white; border:none; border-radius:8px; cursor:pointer;">
+        Search
+      </button>
+    </form>
+  </div>
+
+  <!-- Profiles Grid -->
+  {% if page_obj.object_list %}
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
+      {% for profile in page_obj.object_list %}
+      <div style="background:white; border-radius:16px; overflow:hidden; box-shadow:0 4px:12px rgba(0,0,0,0.05);">
+        <!-- Profile Image -->
+        <div style="width:100%; height:200px; background:#f5f5f5; display:flex; align-items:center; justify-content:center; color:#999;">
+          {% if profile.card_image_url %}
+            <img src="{{ profile.card_image_url }}" alt="{{ profile.user.username }}" style="width:100%; height:100%; object-fit:cover;">
+          {% else %}
+            <span>No Image</span>
+          {% endif %}
+        </div>
+        
+        <!-- Profile Info -->
+        <div style="padding:20px;">
+          <h3 style="margin:0 0 8px 0; font-size:1.2em; color:#333;">{{ profile.user.username }}</h3>
+          <p style="margin:0 0 8px 0; color:#666; font-size:0.9em;">{{ profile.location }}</p>
+          {% if profile.age %}
+            <p style="margin:0 0 12px 0; color:#666; font-size:0.9em;">Age: {{ profile.age }}</p>
+          {% endif %}
+          <p style="margin:0 0 15px 0; color:#333; font-size:0.95em; line-height:1.4;">{{ profile.headline }}</p>
+          
+          <a href="{% url 'profile_public' profile.id %}" 
+             style="display:inline-block; padding:8px 16px; background:#ff5478; color:white; border-radius:8px; text-decoration:none; font-size:0.9em;">
+            View Profile
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div style="text-align:center; padding:60px 20px; color:#666;">
+      <p style="font-size:1.1em; margin-bottom:10px;">No profiles found</p>
+      <p>Try different search terms or browse all profiles.</p>
+    </div>
+  {% endif %}
+
+  <!-- Pagination -->
+  {% if page_obj.has_other_pages %}
+  <div style="display:flex; justify-content:center; gap:8px; margin-top:40px;">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}" 
+       style="padding:8px 16px; border:1px solid #ddd; border-radius:8px; text-decoration:none;">Previous</a>
+    {% endif %}
+    
+    <span style="padding:8px 16px; color:#666;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}" 
+       style="padding:8px 16px; border:1px solid #ddd; border-radius:8px; text-decoration:none;">Next</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

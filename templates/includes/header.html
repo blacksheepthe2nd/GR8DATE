@@ -1,0 +1,45 @@
+<header class="site-header">
+  <div class="nav">
+    <div class="brand"><span>GR8</span><span class="date">DATE</span></div>
+
+    <div class="top-icons" aria-label="Header actions">
+      <!-- DASHBOARD (always allowed) -->
+      <a class="icon-btn" href="{% url 'dashboard' %}" title="Dashboard">
+        <span class="material-icons rot-90">u_turn_left</span>
+      </a>
+
+      {% if preview_mode %}
+        <!-- PREVIEW MODE: disabled icons (except Logout) -->
+        <a class="icon-btn is-disabled" data-disabled="1" href="#" title="Search"><span class="material-icons">search</span></a>
+        <a class="icon-btn is-disabled" data-disabled="1" href="#" title="Messages"><span class="material-icons">mail</span><span class="badge" id="msg-badge" style="display: none;"></span></a>
+        <a class="icon-btn is-disabled" data-disabled="1" href="#" title="Matches"><span class="material-icons">groups</span></a>
+        <a class="icon-btn is-disabled" data-disabled="1" href="#" title="Hot Dates"><span class="material-icons">local_fire_department</span><span class="badge flash" id="hotdate-badge-preview" style="display: none;"></span></a>
+        <a class="icon-btn is-disabled" data-disabled="1" href="#" title="My Profile"><span class="material-icons">person</span></a>
+      {% else %}
+        <!-- APPROVED MODE: live links -->
+        <a class="icon-btn js-open-search" href="#" title="Search"><span class="material-icons">search</span></a>
+        <a class="icon-btn" href="{% url 'messages_list' %}" title="Messages"><span class="material-icons">mail</span><span class="badge" id="msg-badge" style="display: none;"></span></a>
+        <a class="icon-btn" href="{% url 'matches_list' %}" title="Matches"><span class="material-icons">groups</span></a>
+        <a class="icon-btn" href="{% url 'hotdate_list' %}" title="Hot Dates"><span class="material-icons">local_fire_department</span><span class="badge flash" id="hotdate-badge" style="display: none;"></span></a>
+        <a class="icon-btn" href="{% url 'profile_edit' %}" title="My Profile"><span class="material-icons">person</span></a>
+      {% endif %}
+      <!-- Logout with confirmation -->
+      <a class="icon-btn" href="#" id="logout-btn" title="Logout"><span class="material-icons">logout</span></a>
+    </div>
+  </div>
+</header>
+
+<!-- Logout Confirmation Modal -->
+<div id="logoutModal" class="logout-modal">
+  <div class="logout-modal-content">
+    <h3>Log Out?</h3>
+    <p>Are you sure you want to log out? You'll need to log in again to access your account.</p>
+    <div class="logout-modal-buttons">
+      <button class="logout-btn logout-cancel" id="logoutCancel">Cancel</button>
+      <a href="{% url 'logout' %}" class="logout-btn logout-confirm" id="logoutConfirm">Log Out</a>
+    </div>
+  </div>
+</div>
+
+<!-- Search Modal -->
+{% include "pages/_search_modal.html" %}

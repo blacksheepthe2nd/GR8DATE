@@ -1,0 +1,1317 @@
+[
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "admin",
+    "model": "logentry"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "auth",
+    "model": "permission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "auth",
+    "model": "group"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "auth",
+    "model": "user"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "contenttypes",
+    "model": "contenttype"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "sessions",
+    "model": "session"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "pages",
+    "model": "blog"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "pages",
+    "model": "profile"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "pages",
+    "model": "profileimage"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "sites",
+    "model": "site"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "account",
+    "model": "emailaddress"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "account",
+    "model": "emailconfirmation"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "socialaccount",
+    "model": "socialaccount"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "socialaccount",
+    "model": "socialapp"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "socialaccount",
+    "model": "socialtoken"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "0upn57v2gr311qiwer5z4q3pr5wn9gsb",
+  "fields": {
+    "session_data": "e30:1v3UI6:aB0I_ooA-ZTwruqaqqUh81RQ2stoVsoDUlc-Xh6nWM8",
+    "expire_date": "2025-10-14T06:56:50.608Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "2e1stcrtpis9tajprs23ilcxd1wphdec",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSG8BZfu-w1kYAapGkhKuzL-uzbpQrf3nHNfLMK21rgNWuKM7MIkO_1uCfKD2g7wDu3Wee5tXebEd4UfdPCpIz2vh_t3UGHUbw3KYSArtcxKeeU0EBrpk7GkSjijD0WA08YgJCIQkLNHSyYJC8WQYu8P4644hA:1v3Qap:OLb1Ptc4gj0PDnOjnbRmbci26HPkBRPU2yN8bqA35ck",
+    "expire_date": "2025-10-14T02:59:55.382Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "43uur3jbra6jn7vyj6463cdymaalni6c",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSG8BZfu-w1kYAapGkhKuzL-uzbpQrf3nHNfLMK21rgNWuKM7MIkO_1uCfKD2g7wDu3Wee5tXebEd4UfdPCpIz2vh_t3UGHUbw3KYSArtcxKeeU0EBrpk7GkSjijD0WA08YgJCIQkLNHSyYJC8WQYu8P4644hA:1v3UJk:4ta2qXM3TINS0Fk6FuupiJcMyUQb9OTbsu838EnXBSQ",
+    "expire_date": "2025-10-14T06:58:32.574Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "804gvl5z91u9zj8hx57feyem6xzgjo1u",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSG8BZfu-w1kYAapGkhKuzL-uzbpQrf3nHNfLMK21rgNWuKM7MIkO_1uCfKD2g7wDu3Wee5tXebEd4UfdPCpIz2vh_t3UGHUbw3KYSArtcxKeeU0EBrpk7GkSjijD0WA08YgJCIQkLNHSyYJC8WQYu8P4644hA:1v3OLl:N4Be11oBUrg_uk7ZpSb27Oa6nODGrH6xRT7bcW_po9M",
+    "expire_date": "2025-10-14T00:36:13.710Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "auekyq9i3wcl8jedu8utdx7hs6g4ss9w",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSG8BZfu-w1kYAapGkhKuzL-uzbpQrf3nHNfLMK21rgNWuKM7MIkO_1uCfKD2g7wDu3Wee5tXebEd4UfdPCpIz2vh_t3UGHUbw3KYSArtcxKeeU0EBrpk7GkSjijD0WA08YgJCIQkLNHSyYJC8WQYu8P4644hA:1v3QMm:MkwqjQSdw2eAQ6TMMfx0VPdaPLLw8WD7M46JwrleM6Y",
+    "expire_date": "2025-10-14T02:45:24.356Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "hsitsxq8zuw8xbq39xx9wekzlp2ft9yb",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pAZaCm4dO8ZyDADtmpKUtqV8e7apAvd_vfef6lI2zrGreUlTqLOCtXpd0vEjzzvQO4036rmOq_LlPSu6IM2fa2Sn5fD_TsYqY3fulAmTgTBG3BYoCuOGTAIDpx6ZC6hF2fFGLTeFskGzRAggc8dCxj1_gD9ezgV:1v4lW4:-79NYAqOUwp8ldCmhAfEmv3Vm3XoTq56I4B5mCoRuEw",
+    "expire_date": "2025-10-17T19:32:32.158Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "nrz4mbb4irjcn3s53rbpx2dotrk7q3xo",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGln2Rv4sJT1nsJz9kABKpDipEHeHSCmgfTPzXqbUbR3K1mQpI5uz8eb0u_WVHjLtgO91us2W5mldxt7uij1os9eZ5Xk53L-DobbhWys5x5mAoxJxx1kRUELILC5qxxErBPGSXAoRUT3UjAAdgiRVH837A_97N_Y:1v2cea:cU1jVsUvZiijaBWcbwE2OV3UkmtbgjV-TP2Hswc_VHc",
+    "expire_date": "2025-10-11T21:40:28.616Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "rqyt7etc3t92de2lcranrh7hmr44e73u",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSG8BZfu-w1kYAapGkhKuzL-uzbpQrf3nHNfLMK21rgNWuKM7MIkO_1uCfKD2g7wDu3Wee5tXebEd4UfdPCpIz2vh_t3UGHUbw3KYSArtcxKeeU0EBrpk7GkSjijD0WA08YgJCIQkLNHSyYJC8WQYu8P4644hA:1v3OMF:XWK5UkrvxBVZCIV7JCj6bh7ofoffQAhrveRnkGnsIRo",
+    "expire_date": "2025-10-14T00:36:43.133Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "s9wfr6yrv11fz44dw70mib982xwdhu4d",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSG8BZfu-w1kYAapGkhKuzL-uzbpQrf3nHNfLMK21rgNWuKM7MIkO_1uCfKD2g7wDu3Wee5tXebEd4UfdPCpIz2vh_t3UGHUbw3KYSArtcxKeeU0EBrpk7GkSjijD0WA08YgJCIQkLNHSyYJC8WQYu8P4644hA:1v3OOf:bKqsGpK3apGdYBysMbai46QUCkqGE3iLkCBGXFCk6nQ",
+    "expire_date": "2025-10-14T00:39:13.667Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "tczhckbvhkssktu2lysa9f1sd71o9yzl",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGln2Rv4sJT1nsJz9kABKpDipEHeHSCmgfTPzXqbUbR3K1mQpI5uz8eb0u_WVHjLtgO91us2W5mldxt7uij1os9eZ5Xk53L-DobbhWys5x5mAoxJxx1kRUELILC5qxxErBPGSXAoRUT3UjAAdgiRVH837A_97N_Y:1v2KLZ:tse_U20BmMNWbJdpMp940xAmAWpxm6wItafYciR2b8I",
+    "expire_date": "2025-10-11T02:07:37.225Z"
+  }
+},
+{
+  "model": "pages.blog",
+  "pk": 1,
+  "fields": {
+    "title": "Why GR8DATE is Totally Free for Everyone",
+    "slug": "why-gr8date-is-totally-free-for-everyone",
+    "summary": "GR8DATE removes paywalls so anyone can connect, browse and message—free. Here’s why cost should never be a barrier to finding meaningful connections.",
+    "content": "In a digital age where almost every swipe, match, or message comes with a price tag, it can feel like online dating has turned into a marketplace rather than a meeting place. People sign up hoping to find companionship, but instead they discover a labyrinth of subscriptions, in-app purchases, and constant upsells. At GR8DATE, we decided to do things differently. We believe dating should be free, inclusive, and accessible to everyone — no matter who you are or where you come from.\r\n\r\n## The Problem With Paywalls\r\nIf you’ve ever tried other dating platforms, you’ll know the story: you download the app or sign up on a website, only to find that the basic features you need — like seeing who liked you, sending a message, or even reading a message you received — are hidden behind a subscription. While some companies argue that charging users ensures “quality matches” or “serious intent,” the reality is that paywalls exclude people. Not everyone can afford monthly fees just to talk to someone new, and that inequality creates an unnecessary barrier to love and connection.\r\n\r\nPaywalls also distort the experience. Instead of focusing on authenticity and compatibility, people are pushed toward mechanics that maximise revenue: limited likes, “boosts,” or “super messages.” Dating becomes a game of who pays more, not who fits better.\r\n\r\n## Why GR8DATE Took a Different Path\r\nFrom the beginning our mission has been to open doors, not close them. We asked: what if dating was truly free? What if everyone had the same chance to create a profile, browse, match, and message without worrying about being charged?\r\n\r\nThat’s why GR8DATE is totally free — not “free until you want to actually use it,” not “free with pop-ups everywhere,” but genuinely free. You won’t be asked for credit card details. You won’t have to upgrade to unlock features. What you see is what you get: a platform built for people, not paywalls.\r\n\r\n## Inclusivity Matters\r\nRelationships come in many forms. Some people are looking for long-term partners, others for companionship, friendship, or something casual. By keeping our platform free, we ensure that every person — young or old, shy or confident, affluent or just starting out — has equal opportunity to connect. Price should never be the filter that decides who gets to be seen.\r\n\r\n## Building Trust Without Transactions\r\nOne of the most important ingredients in any relationship is trust. When apps charge for every little interaction, the relationship between platform and user becomes transactional. That’s not trust; that’s a business deal. GR8DATE doesn’t need to nickel-and-dime you to keep you around. We’re focused on making the experience enjoyable, intuitive, and safe.\r\n\r\n## Safety Still Comes First\r\nFree does not mean careless. We invest in safety tooling, profile checks, reporting features, and moderation so the community remains respectful. Our success isn’t tied to your wallet — it’s tied to your happiness and wellbeing on the platform.\r\n\r\n## Real Stories, Real People\r\nEarly users repeatedly tell us how refreshing it feels to use a platform without constant upsells. “It feels more human,” one user said. “I’m not wondering if the person I’m talking to has paid for extra features or if they’re only half-committed. We’re all on the same level.”\r\n\r\n## What This Means for the Future\r\nFree dating doesn’t mean low-quality dating. It means we’re investing in smarter discovery, thoughtful design, and better community tools to make sure your experience feels genuine. As GR8DATE grows, our focus stays the same: a safe, equal, truly free space to meet others.\r\n\r\n**In short: GR8DATE is totally free because love shouldn’t come with a price tag.** When the playing field is level, connections are more authentic and more meaningful. Whether you’re new to online dating or have tried every app under the sun, we’d love you to experience what dating feels like when cost is no longer a barrier.",
+    "hero_image": "blog/jimi-a-z7ZnZ0WFxSc-unsplash.jpg",
+    "status": "published",
+    "published_at": "2025-09-26T05:40:51Z",
+    "created_at": "2025-09-26T03:23:51.708Z",
+    "updated_at": "2025-09-27T04:40:52.711Z"
+  }
+},
+{
+  "model": "pages.blog",
+  "pk": 2,
+  "fields": {
+    "title": "Modern Dating: Pros and Cons of Going Online",
+    "slug": "modern-dating-pros-and-cons-online",
+    "summary": "Online dating offers reach, speed and flexibility — but also burnout and noise. Here’s a balanced, human take on making it work for you.",
+    "content": "A decade ago, the idea of meeting someone online carried a stigma. Today, it’s the norm. Apps and sites promise to make dating faster and smarter than ever, and for many people they do. But like any powerful tool, online dating magnifies both strengths and weaknesses. Here’s a human look at what works — and what doesn’t — and how to keep your energy and optimism intact.\r\n\r\n## The Pros\r\n**Wider reach.** Online dating breaks geography. If you live in a small town, belong to a niche community, or keep unusual hours, the internet opens new doors.  \r\n**Efficiency.** Filters and prompts surface people who share your interests or goals. That can save months of guesswork.  \r\n**Openness.** Stating what you want — serious, casual, friendship — reduces awkwardness and mismatched expectations.  \r\n**Flexibility.** You date on your own time. Lunch break? Late night? Travelling? Your social life can fit around real life.\r\n\r\n## The Cons\r\n**Choice overload.** An endless feed can make everyone feel replaceable. It’s easy to forget there’s a person behind each profile.  \r\n**Surface bias.** Photos dominate first impressions; great personalities can be skipped because a picture didn’t grab attention.  \r\n**Safety concerns.** Catfishing and scams exist. Platforms need robust safety tools and responsive moderation.  \r\n**Emotional burnout.** The cycle of swiping, chatting, ghosting and repeating can be draining.\r\n\r\n## A Better Way to Use Online Dating\r\nSet intentions, not rules. Know what you want this month, not forever.  \r\nProtect your energy: limit daily swipes, take breaks, and move promising chats to a coffee within a week or two.  \r\nWrite a profile that sounds like you — specific, playful, clear. Specificity is attractive: it gives people something to respond to.\r\n\r\n## How GR8DATE Helps\r\nWe designed GR8DATE to amplify the pros and reduce the cons:\r\n- **No paywalls** lowers frustration and levels the field.  \r\n- **Safety features** and reporting build trust.  \r\n- **Smarter discovery** reduces noise and surfaces people who actually match your vibe.  \r\n- **A community-first ethos** encourages conversation over gamified swiping.\r\n\r\n**Bottom line:** online dating is here to stay. Approach it with intention and self-care, and it can expand your world without overwhelming it.",
+    "hero_image": "blog/logan-weaver-lgnwvr-ibhMyEAd4VE-unsplash.jpg",
+    "status": "published",
+    "published_at": "2025-09-26T05:40:52Z",
+    "created_at": "2025-09-26T03:23:52.380Z",
+    "updated_at": "2025-09-27T04:37:57.137Z"
+  }
+},
+{
+  "model": "pages.blog",
+  "pk": 3,
+  "fields": {
+    "title": "Complete Your Profile to Unlock GR8DATE’s Matching Power",
+    "slug": "complete-your-profile-for-better-matches",
+    "summary": "Profiles with photos and details get more views and better matches. Here’s how to make yours shine before our full matching launches.",
+    "content": "Think of your GR8DATE profile as your introduction at a party. If you wore a mask and never spoke, nobody would know who you are. Online, your profile *is* your first impression, and it matters more than you might think. A complete profile isn’t vanity — it’s clarity.\r\n\r\n## Why Complete Profiles Win\r\nPeople are drawn to transparency. Profiles with multiple photos, filled-out bios and clear preferences get more views and better conversations. A blank profile suggests you’re not serious; a detailed one sparks curiosity.\r\n\r\n## What to Fill Out (and Why)\r\n**Photos.** Add at least three: one clear face photo, one full-body, and one showing a hobby or context (cooking, hiking, music). Together they tell a story.  \r\n**About me.** Two or three short paragraphs with specifics beat one generic line. Mention interests, routines, and a small quirk — specifics are memorable.  \r\n**What you’re seeking.** Be honest about the kind of connection you want. Alignment saves time and avoids mismatched expectations.  \r\n**Lifestyle details.** Hobbies, pets, travel, kids, smoking — these are useful signals for compatibility.  \r\n**Tagline.** A short, playful line that captures your vibe helps others start a conversation.\r\n\r\n## Tips to Stand Out\r\nShow variety in photos; smile at least once; avoid heavy filters; write like you speak; keep it positive; ask a question in your bio (“What’s your go-to beach walk?”) to invite replies.\r\n\r\n## How GR8DATE’s Matching Will Use This\r\nWhen we roll out our full matching, it will use the details you provide — interests, lifestyle, intent — to suggest compatible people. The more you share, the smarter the recommendations. Think of it as giving the algorithm all the puzzle pieces.\r\n\r\n## Mistakes to Avoid\r\nOnly one blurry photo, copy-paste bios, negativity, or leaving critical fields blank. Your profile is the handshake before the hello — make it count.\r\n\r\n**Take ten minutes today to round out your profile.** Future you (and your future matches) will thank you.",
+    "hero_image": "blog/ben-sweet-2LowviVHZ-E-unsplash.jpg",
+    "status": "published",
+    "published_at": "2025-09-26T05:40:52Z",
+    "created_at": "2025-09-26T03:23:52.935Z",
+    "updated_at": "2025-09-27T04:37:47.970Z"
+  }
+},
+{
+  "model": "sites.site",
+  "fields": {
+    "domain": "example.com",
+    "name": "example.com"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add log entry",
+    "content_type": [
+      "admin",
+      "logentry"
+    ],
+    "codename": "add_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change log entry",
+    "content_type": [
+      "admin",
+      "logentry"
+    ],
+    "codename": "change_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete log entry",
+    "content_type": [
+      "admin",
+      "logentry"
+    ],
+    "codename": "delete_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view log entry",
+    "content_type": [
+      "admin",
+      "logentry"
+    ],
+    "codename": "view_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add permission",
+    "content_type": [
+      "auth",
+      "permission"
+    ],
+    "codename": "add_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change permission",
+    "content_type": [
+      "auth",
+      "permission"
+    ],
+    "codename": "change_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete permission",
+    "content_type": [
+      "auth",
+      "permission"
+    ],
+    "codename": "delete_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view permission",
+    "content_type": [
+      "auth",
+      "permission"
+    ],
+    "codename": "view_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add group",
+    "content_type": [
+      "auth",
+      "group"
+    ],
+    "codename": "add_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change group",
+    "content_type": [
+      "auth",
+      "group"
+    ],
+    "codename": "change_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete group",
+    "content_type": [
+      "auth",
+      "group"
+    ],
+    "codename": "delete_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view group",
+    "content_type": [
+      "auth",
+      "group"
+    ],
+    "codename": "view_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add user",
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "codename": "add_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change user",
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "codename": "change_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete user",
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "codename": "delete_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view user",
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "codename": "view_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add content type",
+    "content_type": [
+      "contenttypes",
+      "contenttype"
+    ],
+    "codename": "add_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change content type",
+    "content_type": [
+      "contenttypes",
+      "contenttype"
+    ],
+    "codename": "change_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete content type",
+    "content_type": [
+      "contenttypes",
+      "contenttype"
+    ],
+    "codename": "delete_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view content type",
+    "content_type": [
+      "contenttypes",
+      "contenttype"
+    ],
+    "codename": "view_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add session",
+    "content_type": [
+      "sessions",
+      "session"
+    ],
+    "codename": "add_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change session",
+    "content_type": [
+      "sessions",
+      "session"
+    ],
+    "codename": "change_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete session",
+    "content_type": [
+      "sessions",
+      "session"
+    ],
+    "codename": "delete_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view session",
+    "content_type": [
+      "sessions",
+      "session"
+    ],
+    "codename": "view_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add blog",
+    "content_type": [
+      "pages",
+      "blog"
+    ],
+    "codename": "add_blog"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change blog",
+    "content_type": [
+      "pages",
+      "blog"
+    ],
+    "codename": "change_blog"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete blog",
+    "content_type": [
+      "pages",
+      "blog"
+    ],
+    "codename": "delete_blog"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view blog",
+    "content_type": [
+      "pages",
+      "blog"
+    ],
+    "codename": "view_blog"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add profile",
+    "content_type": [
+      "pages",
+      "profile"
+    ],
+    "codename": "add_profile"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change profile",
+    "content_type": [
+      "pages",
+      "profile"
+    ],
+    "codename": "change_profile"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete profile",
+    "content_type": [
+      "pages",
+      "profile"
+    ],
+    "codename": "delete_profile"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view profile",
+    "content_type": [
+      "pages",
+      "profile"
+    ],
+    "codename": "view_profile"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add profile image",
+    "content_type": [
+      "pages",
+      "profileimage"
+    ],
+    "codename": "add_profileimage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change profile image",
+    "content_type": [
+      "pages",
+      "profileimage"
+    ],
+    "codename": "change_profileimage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete profile image",
+    "content_type": [
+      "pages",
+      "profileimage"
+    ],
+    "codename": "delete_profileimage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view profile image",
+    "content_type": [
+      "pages",
+      "profileimage"
+    ],
+    "codename": "view_profileimage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add site",
+    "content_type": [
+      "sites",
+      "site"
+    ],
+    "codename": "add_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change site",
+    "content_type": [
+      "sites",
+      "site"
+    ],
+    "codename": "change_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete site",
+    "content_type": [
+      "sites",
+      "site"
+    ],
+    "codename": "delete_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view site",
+    "content_type": [
+      "sites",
+      "site"
+    ],
+    "codename": "view_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add email address",
+    "content_type": [
+      "account",
+      "emailaddress"
+    ],
+    "codename": "add_emailaddress"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change email address",
+    "content_type": [
+      "account",
+      "emailaddress"
+    ],
+    "codename": "change_emailaddress"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete email address",
+    "content_type": [
+      "account",
+      "emailaddress"
+    ],
+    "codename": "delete_emailaddress"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view email address",
+    "content_type": [
+      "account",
+      "emailaddress"
+    ],
+    "codename": "view_emailaddress"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add email confirmation",
+    "content_type": [
+      "account",
+      "emailconfirmation"
+    ],
+    "codename": "add_emailconfirmation"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change email confirmation",
+    "content_type": [
+      "account",
+      "emailconfirmation"
+    ],
+    "codename": "change_emailconfirmation"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete email confirmation",
+    "content_type": [
+      "account",
+      "emailconfirmation"
+    ],
+    "codename": "delete_emailconfirmation"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view email confirmation",
+    "content_type": [
+      "account",
+      "emailconfirmation"
+    ],
+    "codename": "view_emailconfirmation"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add social account",
+    "content_type": [
+      "socialaccount",
+      "socialaccount"
+    ],
+    "codename": "add_socialaccount"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change social account",
+    "content_type": [
+      "socialaccount",
+      "socialaccount"
+    ],
+    "codename": "change_socialaccount"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete social account",
+    "content_type": [
+      "socialaccount",
+      "socialaccount"
+    ],
+    "codename": "delete_socialaccount"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view social account",
+    "content_type": [
+      "socialaccount",
+      "socialaccount"
+    ],
+    "codename": "view_socialaccount"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add social application",
+    "content_type": [
+      "socialaccount",
+      "socialapp"
+    ],
+    "codename": "add_socialapp"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change social application",
+    "content_type": [
+      "socialaccount",
+      "socialapp"
+    ],
+    "codename": "change_socialapp"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete social application",
+    "content_type": [
+      "socialaccount",
+      "socialapp"
+    ],
+    "codename": "delete_socialapp"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view social application",
+    "content_type": [
+      "socialaccount",
+      "socialapp"
+    ],
+    "codename": "view_socialapp"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add social application token",
+    "content_type": [
+      "socialaccount",
+      "socialtoken"
+    ],
+    "codename": "add_socialtoken"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change social application token",
+    "content_type": [
+      "socialaccount",
+      "socialtoken"
+    ],
+    "codename": "change_socialtoken"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete social application token",
+    "content_type": [
+      "socialaccount",
+      "socialtoken"
+    ],
+    "codename": "delete_socialtoken"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view social application token",
+    "content_type": [
+      "socialaccount",
+      "socialtoken"
+    ],
+    "codename": "view_socialtoken"
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$600000$5TN6qDDfcF8QvIRzsitAGy$AkBnGlM/UYVQwsrP+mZjZ1lj4wausNz6QKjdtKpkqZg=",
+    "last_login": "2025-10-03T19:32:32.154Z",
+    "is_superuser": true,
+    "username": "carlsng",
+    "first_name": "",
+    "last_name": "",
+    "email": "carltimsng@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-09-26T03:17:36Z",
+    "groups": [],
+    "user_permissions": [
+      [
+        "add_logentry",
+        "admin",
+        "logentry"
+      ],
+      [
+        "change_logentry",
+        "admin",
+        "logentry"
+      ],
+      [
+        "delete_logentry",
+        "admin",
+        "logentry"
+      ],
+      [
+        "view_logentry",
+        "admin",
+        "logentry"
+      ],
+      [
+        "add_group",
+        "auth",
+        "group"
+      ],
+      [
+        "change_group",
+        "auth",
+        "group"
+      ],
+      [
+        "delete_group",
+        "auth",
+        "group"
+      ],
+      [
+        "view_group",
+        "auth",
+        "group"
+      ],
+      [
+        "add_permission",
+        "auth",
+        "permission"
+      ],
+      [
+        "change_permission",
+        "auth",
+        "permission"
+      ],
+      [
+        "delete_permission",
+        "auth",
+        "permission"
+      ],
+      [
+        "view_permission",
+        "auth",
+        "permission"
+      ],
+      [
+        "add_user",
+        "auth",
+        "user"
+      ],
+      [
+        "change_user",
+        "auth",
+        "user"
+      ],
+      [
+        "delete_user",
+        "auth",
+        "user"
+      ],
+      [
+        "view_user",
+        "auth",
+        "user"
+      ],
+      [
+        "add_contenttype",
+        "contenttypes",
+        "contenttype"
+      ],
+      [
+        "change_contenttype",
+        "contenttypes",
+        "contenttype"
+      ],
+      [
+        "delete_contenttype",
+        "contenttypes",
+        "contenttype"
+      ],
+      [
+        "view_contenttype",
+        "contenttypes",
+        "contenttype"
+      ],
+      [
+        "add_blog",
+        "pages",
+        "blog"
+      ],
+      [
+        "change_blog",
+        "pages",
+        "blog"
+      ],
+      [
+        "delete_blog",
+        "pages",
+        "blog"
+      ],
+      [
+        "view_blog",
+        "pages",
+        "blog"
+      ],
+      [
+        "add_profile",
+        "pages",
+        "profile"
+      ],
+      [
+        "change_profile",
+        "pages",
+        "profile"
+      ],
+      [
+        "delete_profile",
+        "pages",
+        "profile"
+      ],
+      [
+        "view_profile",
+        "pages",
+        "profile"
+      ],
+      [
+        "add_profileimage",
+        "pages",
+        "profileimage"
+      ],
+      [
+        "change_profileimage",
+        "pages",
+        "profileimage"
+      ],
+      [
+        "delete_profileimage",
+        "pages",
+        "profileimage"
+      ],
+      [
+        "view_profileimage",
+        "pages",
+        "profileimage"
+      ],
+      [
+        "add_session",
+        "sessions",
+        "session"
+      ],
+      [
+        "change_session",
+        "sessions",
+        "session"
+      ],
+      [
+        "delete_session",
+        "sessions",
+        "session"
+      ],
+      [
+        "view_session",
+        "sessions",
+        "session"
+      ]
+    ]
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$600000$4sRbHt8DM7uERW94pWiSkc$dMRhE9k+3kVWfWKn4PdrNKRs1e+rRI5k2qnp+3KwidY=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "mia",
+    "first_name": "",
+    "last_name": "",
+    "email": "mia@example.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-10-02T20:34:33.332Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$600000$IYDHHTv72lAQINxXjk65gz$jRsHUhRY5It17jbXM/VUuFqYdVWFXrxNu3hh9sv/6TA=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "zoe",
+    "first_name": "",
+    "last_name": "",
+    "email": "zoe@example.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-10-02T20:34:33.449Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "pages.profile",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "carlsng"
+    ],
+    "is_complete": true,
+    "is_approved": true,
+    "created_at": "2025-09-29T02:26:24.868Z",
+    "updated_at": "2025-10-03T19:26:59.466Z",
+    "date_of_birth": null,
+    "headline": "Site Admin",
+    "location": "Sydney",
+    "about": "I keep the lights on.",
+    "my_gender": "prefer_not",
+    "looking_for": "any",
+    "children": "Prefer not to say",
+    "my_interests": "",
+    "must_have_tags": "",
+    "preferred_age_min": 25,
+    "preferred_age_max": 45,
+    "preferred_distance": "any",
+    "preferred_intent": "any"
+  }
+},
+{
+  "model": "pages.profile",
+  "pk": 2,
+  "fields": {
+    "user": [
+      "mia"
+    ],
+    "is_complete": true,
+    "is_approved": false,
+    "created_at": "2025-10-02T20:34:33.563Z",
+    "updated_at": "2025-10-02T20:34:33.563Z",
+    "date_of_birth": null,
+    "headline": "Hi, I'm Mia",
+    "location": "Sydney",
+    "about": "Sample profile for moderation testing.",
+    "my_gender": "unspecified",
+    "looking_for": "unspecified",
+    "children": "prefer_not",
+    "my_interests": "",
+    "must_have_tags": "",
+    "preferred_age_min": 18,
+    "preferred_age_max": 60,
+    "preferred_distance": "any",
+    "preferred_intent": "any"
+  }
+},
+{
+  "model": "pages.profile",
+  "pk": 3,
+  "fields": {
+    "user": [
+      "zoe"
+    ],
+    "is_complete": true,
+    "is_approved": true,
+    "created_at": "2025-10-02T20:34:33.564Z",
+    "updated_at": "2025-10-02T20:34:33.564Z",
+    "date_of_birth": null,
+    "headline": "Hi, I'm Zoe",
+    "location": "Sydney",
+    "about": "Sample profile for moderation testing.",
+    "my_gender": "unspecified",
+    "looking_for": "unspecified",
+    "children": "prefer_not",
+    "my_interests": "",
+    "must_have_tags": "",
+    "preferred_age_min": 18,
+    "preferred_age_max": 60,
+    "preferred_distance": "any",
+    "preferred_intent": "any"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2025-09-27T04:37:37.752Z",
+    "user": [
+      "carlsng"
+    ],
+    "content_type": [
+      "pages",
+      "blog"
+    ],
+    "object_id": "3",
+    "object_repr": "Complete Your Profile to Unlock GR8DATE’s Matching Power",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\", \"Hero image\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2025-09-27T04:37:47.971Z",
+    "user": [
+      "carlsng"
+    ],
+    "content_type": [
+      "pages",
+      "blog"
+    ],
+    "object_id": "3",
+    "object_repr": "Complete Your Profile to Unlock GR8DATE’s Matching Power",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Hero image\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2025-09-27T04:37:57.139Z",
+    "user": [
+      "carlsng"
+    ],
+    "content_type": [
+      "pages",
+      "blog"
+    ],
+    "object_id": "2",
+    "object_repr": "Modern Dating: Pros and Cons of Going Online",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\", \"Hero image\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2025-09-27T04:40:52.714Z",
+    "user": [
+      "carlsng"
+    ],
+    "content_type": [
+      "pages",
+      "blog"
+    ],
+    "object_id": "1",
+    "object_repr": "Why GR8DATE is Totally Free for Everyone",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\", \"Hero image\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2025-09-30T00:06:38.711Z",
+    "user": [
+      "carlsng"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "1",
+    "object_repr": "carlsng",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"User permissions\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 6,
+  "fields": {
+    "action_time": "2025-10-02T20:01:33.306Z",
+    "user": [
+      "carlsng"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "1",
+    "object_repr": "carlsng",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+}
+]

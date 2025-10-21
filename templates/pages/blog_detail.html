@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>{{ post.title }} – GR8Date Blog</title>
+  <link rel="stylesheet" href="/static/css/site.css">
+  <style>
+    .detail-wrap{max-width:860px;margin:0 auto;padding:1.25rem}
+    .detail-hero{width:100%;max-height:420px;object-fit:cover;border-radius:12px}
+    .detail-title{font-size:2rem;margin:.75rem 0 .25rem}
+    .blog-date{color:#667085;margin-bottom:1rem}
+    .detail-body{line-height:1.7;color:#222}
+    .detail-body img{max-width:100%;height:auto;border-radius:8px}
+    .blog-date::before,.blog-date::after,.blog-date *::before,.blog-date *::after{content:none!important;display:none!important}
+  </style>
+</head>
+<body>
+  <header class="gd-header">
+    <div class="gd-wrap">
+      <a class="gd-brand" href="/"><img alt="GR8Date Logo" class="logo-img" src="/static/images/gr8date-logo-desktop.svg"/></a>
+      <nav class="gd-nav"><a class="gd-login" href="/login/">Login</a><a class="gd-cta" href="/join/">Join Free Now</a></nav>
+    </div>
+  </header>
+
+  <main class="detail-wrap">
+    <article>
+      {% if post.hero_image %}<img class="detail-hero" src="{{ post.hero_image.url }}" alt="{{ post.title }}" onerror="this.onerror=null;this.src='/static/images/images/image1.jpg';"/>{% endif %}
+      <h1 class="detail-title">{{ post.title }}</h1>
+      <div class="blog-date">{{ post.published_at|date:"d M Y" }}</div>
+      <div class="detail-body">
+        {% if post.content %}
+          {{ post.content|safe }}
+        {% elif post.body %}
+          {{ post.body|safe }}
+        {% elif post.text %}
+          {{ post.text|safe }}
+        {% elif post.excerpt %}
+          {{ post.excerpt|linebreaks }}
+        {% else %}
+          <p>No content available.</p>
+        {% endif %}
+      </div>
+    </article>
+  </main>
+</body>
+</html>

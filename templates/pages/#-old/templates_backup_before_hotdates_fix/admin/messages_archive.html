@@ -1,0 +1,62 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Superuser Message Archive</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 24px; }
+    .security-warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 12px; border-radius: 8px; margin-bottom: 16px; }
+    .table { border: 1px solid #eee; border-radius: 12px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { text-align: left; font-weight: 600; background: #fafafa; padding: 10px; border-bottom: 1px solid #eee; }
+    tbody td { padding: 10px; border-bottom: 1px solid #f2f2f2; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; }
+    .badge.red { background: #ffe5e5; color: #b00020; }
+    .badge.gray { background: #f1f1f1; color: #555; }
+  </style>
+</head>
+<body>
+  <div class="security-warning">
+    🔒 <strong>Superuser Archive Mode</strong> - Showing all messages including deleted content
+  </div>
+
+  <div class="table">
+    <table>
+      <thead>
+        <tr>
+          <th>Thread ID</th>
+          <th>Participants</th>
+          <th>Total Messages</th>
+          <th>Deleted Messages</th>
+          <th>Last Activity</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for thread in threads %}
+        <tr>
+          <td>#{{ thread.id }}</td>
+          <td>{{ thread.user_a.username }} & {{ thread.user_b.username }}</td>
+          <td>{{ thread.total_messages }}</td>
+          <td>
+            {% if thread.deleted_messages > 0 %}
+            <span class="badge red">{{ thread.deleted_messages }} deleted</span>
+            {% else %}
+            <span class="badge gray">0 deleted</span>
+            {% endif %}
+          </td>
+          <td>{{ thread.last_message.created_at|default:"No messages" }}</td>
+          <td>
+            <a href="{% url 'admin_thread_archive' thread.id %}">View Full Archive</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">No threads found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

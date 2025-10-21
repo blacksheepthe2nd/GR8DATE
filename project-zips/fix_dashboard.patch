@@ -1,0 +1,11 @@
+--- a/pages/views.py
++++ b/pages/views.py
+@@ -22,7 +22,7 @@ def dashboard(request):
+         profile = Profile.objects.create(user=request.user)
+     
+     # Only show approved profiles in search/dashboard
+-    approved_profiles = Profile.objects.filter(is_approved=True).exclude(user=request.user)
++    approved_profiles = Profile.objects.all().exclude(user=request.user)
+     
+     # Safe counts to avoid errors
+     likes_received_count = Like.objects.filter(liked_user=request.user).count()

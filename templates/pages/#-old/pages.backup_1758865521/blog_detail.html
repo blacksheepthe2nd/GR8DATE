@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{ object.title }} – GR8DATE Blog</title>
+  <meta name="description" content="{{ object.summary|default:object.title }}">
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="{% url 'blog' %}">← Back to Blog</a>
+    <h1>{{ object.title }}</h1>
+    {% if object.hero_image %}
+      <img class="post-hero" src="{{ object.hero_image.url }}" alt="{{ object.title }}">
+    {% endif %}
+    <article>
+      {{ object.content|linebreaks }}
+    </article>
+    {% if object.published_at %}
+      <p class="meta">Published: {{ object.published_at|date:"d M Y, H:i" }}</p>
+    {% endif %}
+  </div>
+</body>
+</html>

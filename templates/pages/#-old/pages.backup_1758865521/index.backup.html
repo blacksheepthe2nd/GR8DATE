@@ -1,0 +1,232 @@
+{0ad static {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>GR8Date – Free Dating Website</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  <style>
+    body { margin:0; padding:0; font-family: Arial, sans-serif; background:#fff; color:#333; }
+    :root{
+      --brand-primary-red:#ff3366; --brand-primary-red-dark:#e6005c;
+      --btn-primary:var(--brand-primary-red); --btn-primary-hover:var(--brand-primary-red-dark);
+      --text-dark:#333; --text-light:#555; --background-white:#fff;
+      --background-light-grey:#E0F7FA; --background-mid-grey:#FFF3E0;
+      --border-light:#ddd; --shadow-light:rgba(0,0,0,0.1);
+    }
+    a { color: #0b57d0; }
+    .site-header{background:#fff;border-bottom:1px solid var(--border-light);padding:1rem 0}
+    .nav-container{max-width:1100px;margin:0 auto;padding:0 1rem;display:flex;align-items:center}
+    .logo-img{height:40px;width:auto;display:block}
+    .site-nav{margin-left:auto;display:flex;align-items:center}
+    .site-nav a{margin-left:1rem;padding:.5rem 1rem;border-radius:4px;text-decoration:none;font-weight:700;white-space:nowrap}
+    .site-nav a.btn-primary{background:#ff3388;color:#fff}
+    .site-nav a.btn-primary:hover{background:var(--btn-primary-hover)}
+
+    .hero{padding:4rem 2rem;text-align:center}
+    .container{max-width:1100px;margin:0 auto;width:100%}
+    .hero-content-flex{display:flex;flex-direction:column;align-items:center;gap:2rem}
+    .hero-text-column{flex:1;text-align:center}
+    .hero-image-column{flex:1;display:flex;justify-content:center;align-items:center}
+    .hero-image{max-width:90%;height:auto;border-radius:10px}
+    .hero h2{font-size:2.5rem;margin-bottom:1rem;color:#333;overflow-wrap:break-word}
+    .hero-subrow{text-align:center}
+    .hero-subheading{font-size:1rem;color:#555;margin-bottom:2rem}
+    .btn-cta{background:var(--btn-primary);color:#fff;padding:.75rem 1.5rem;border:0;border-radius:5px;font-size:1.1rem;text-decoration:none;display:inline-block}
+    .btn-cta:hover{background:var(--btn-primary-hover)}
+
+    section.content-section{padding:3rem 2rem}
+    .content-container{max-width:1100px;margin:0 auto}
+    .bg-background-light{background-color:var(--background-light-grey)}
+    .bg-background-mid{background-color:var(--background-mid-grey)}
+    .section-title{font-size:2rem;margin-bottom:2rem;text-align:center;color:var(--text-dark)}
+
+    .content-section.bg-background-light .grid{display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem}
+    .feature-item{background:#fff;padding:1.5rem;border-radius:8px;box-shadow:0 2px 6px var(--shadow-light);text-align:center;flex:1 1 calc(25% - 1.5rem);min-width:200px;box-sizing:border-box}
+    .feature-item .icon-container{width:60px;height:60px;border-radius:50%;margin:0 auto 1rem;display:flex;justify-content:center;align-items:center;overflow:hidden}
+    .feature-item .icon-container img{max-width:100%;max-height:100%;display:block;object-fit:contain}
+
+    .cta-button-container{width:100%;display:flex;justify-content:center;margin-top:3rem}
+    .cta-button{display:inline-block;background-color:var(--btn-primary);color:#fff;font-weight:700;padding:.75rem 2rem;border-radius:9999px;font-size:1.125rem;text-decoration:none}
+    .cta-button:hover{background-color:var(--btn-primary-hover)}
+
+    .image-gallery-section{padding:3rem 0}
+    .image-grid-no-gap{display:grid;grid-template-columns:1fr}
+    .image-grid-no-gap img{width:100%;height:400px;display:block;object-fit:cover}
+
+    .what-special-section{background-color:var(--background-light-grey);padding:3rem 2rem;text-align:center}
+    .what-special-section .section-title{font-size:2rem;margin-bottom:1.5rem;color:var(--text-dark)}
+    .what-special-section .main-text{font-size:1.1rem;line-height:1.6;color:var(--text-light);max-width:900px;margin:0 auto 2.5rem}
+
+    .perfect-match-cta-section{background:#fff;padding:3rem 2rem;text-align:center}
+    .perfect-match-cta-section .title-text{font-size:2rem;font-weight:bold;color:var(--text-dark);margin-bottom:.5rem}
+    .perfect-match-cta-section .sub-title-text{font-size:1.2rem;color:var(--text-light);margin-bottom:2rem}
+    .perfect-match-cta-section .image-row{display:flex;flex-direction:column;gap:0;justify-content:center;align-items:center;margin-top:2rem;margin-bottom:2.5rem}
+    .perfect-match-cta-section .image-container{width:100%;max-width:450px;height:250px;overflow:hidden;box-sizing:border-box}
+    .perfect-match-cta-section .image-container img{width:100%;height:100%;object-fit:cover;display:block}
+
+    .full-width-image-section{padding:3rem 0}
+    .responsive-center-image{display:block;width:100%;height:auto}
+
+    .final-cta-section{background-color:var(--background-mid-grey)}
+    .final-cta-container{display:flex;flex-direction:column;gap:2rem}
+    .final-cta-left{text-align:center}
+    .final-cta-left h2{font-size:1.8rem;margin-bottom:1rem}
+    .final-cta-left p{font-size:1.1rem;line-height:1.6;color:var(--text-light);margin-bottom:2rem}
+
+    footer.site-footer{background:#f2f2f2;padding:2rem 1rem;text-align:center;font-size:.9rem;color:#555}
+    .footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem 1rem;margin-bottom:1rem}
+    .footer-links a{color:#333;text-decoration:none;font-weight:600}
+    .footer-links a:hover{text-decoration:underline}
+    .social-icons{display:flex;justify-content:center;gap:1rem;margin-top:1rem}
+    .social-icons a{color:#555;text-decoration:none}
+    .social-icons a:hover{color:var(--brand-primary-red)}
+
+    /* DESKTOP */
+    @media (min-width:768px){
+      .hero-content-flex{flex-direction:row;align-items:center}
+      .hero-text-column{text-align:left;padding-right:50px}
+      .hero-subrow{text-align:left}
+      .hero-image-column{justify-content:flex-end;padding-left:50px}
+      .hero-image{max-width:100%}
+      .image-grid-no-gap{grid-template-columns:repeat(3,1fr);gap:0}
+      .final-cta-container{flex-direction:row}
+      .final-cta-left,.final-cta-right{flex:1;padding:2rem}
+      .final-cta-left{text-align:left}
+    }
+
+    /* MOBILE */
+    @media (max-width:600px){
+      /* Mobile header fix so Join Free stays on-screen */
+      .nav-container{flex-wrap:wrap;gap:.5rem;}
+      .logo-img{height:28px;}
+      .site-nav{
+        width:100%;
+        margin-left:0;
+        display:flex;
+        justify-content:flex-end;
+        flex-wrap:wrap;
+        gap:.5rem;
+      }
+      .site-nav a{padding:.4rem .8rem;margin-left:.5rem;font-size:.9rem}
+
+      .hero h2{font-size:2rem}
+      .image-grid-no-gap img{height:auto}
+    }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav-container">
+    <a href="#home">
+      <img alt="GR8Date Logo" class="logo-img" src="images/gr8date-logo-desktop.svg"/>
+    </a>
+    <nav class="site-nav">
+      <a href="/login/">Login</a>
+      <a class="btn-primary" href="/join/">Join Free Now</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="home">
+  <div class="container hero-content-flex">
+    <div class="hero-text-column">
+      <h2>Australia's Only <br/>FREE Dating Website.</h2>
+      <div class="hero-subrow">
+        <p class="hero-subheading">Enjoy unrestricted access<br/>No Hidden Costs or Payments.</p>
+        <a class="btn-cta" href="/join/">Join Free Now</a>
+      </div>
+    </div>
+    <div class="hero-image-column">
+      <img alt="Dating App on Phone" class="hero-image" src="images/herogirl.jpg"/>
+    </div>
+  </div>
+</section>
+
+<section class="content-section bg-background-light">
+  <div class="content-container">
+    <h2 class="section-title">Ready to find your GR8Date?</h2>
+    <p class="intro-text">At GR8Date, we're dedicated to helping you connect with people who truly align with your values, interests, and goals. With our advanced matching algorithms, secure platform, and personalized approach, we make it easier than ever to meet someone who could be 'the one.' Join GR8Date today for free and start your journey toward meaningful, lasting connections.</p>
+    <div class="grid">
+      <div class="feature-item">
+        <div class="icon-container"><img alt="Free Icon" src="images/4-1free-icon.png"/></div>
+        <h3>The only dating platform that is totally free.</h3>
+      </div>
+      <div class="feature-item">
+        <div class="icon-container"><img alt="No Surprises Icon" src="images/4-2nosuprises_icon.svg"/></div>
+        <h3>Avoid wasting time. No surprises or disappointments.</h3>
+      </div>
+      <div class="feature-item">
+        <div class="icon-container"><img alt="Female Icon" src="images/4-3female_icon.svg"/></div>
+        <h3>Engage with people that match your expectations.</h3>
+      </div>
+      <div class="feature-item">
+        <div class="icon-container"><img alt="Arrow Icon" src="images/4-4arrow_icon.svg"/></div>
+        <h3>Browse profiles that clearly define expectations.</h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="image-gallery-section">
+  <div class="image-grid-no-gap">
+    <img alt="man and woman smiling" src="images/image1.jpg"/>
+    <img alt="man and woman walking" src="images/image2.jpg"/>
+    <img alt="man and woman holding hands" src="images/image3.jpg"/>
+  </div>
+</section>
+
+<section class="what-special-section content-section">
+  <div class="content-container">
+    <h2 class="section-title">WHAT'S SO SPECIAL ABOUT GR8DATE?</h2>
+    <p class="main-text">GR8Date allows you to date how you choose we set out to build a platform that covers the full spectrum of dating in today's world so you can tailor your profile and date in a way that suits you. What could be better than that? Well, we are 100% free. No hidden fees, no cards required. You can access all features such as HOT DATES and message people all within the safety of the platform.</p>
+  </div>
+</section>
+
+<section class="content-section perfect-match-cta-section">
+  <div class="content-container">
+    <p class="title-text">Your GR8Date is Waiting</p>
+    <p class="sub-title-text">Join now and meet them for free</p>
+    <div class="image-row">
+      <div class="image-container"><img alt="First couple image" src="images/image4.jpg"/></div>
+      <div class="image-container"><img alt="Second couple image" src="images/image5.jpg"/></div>
+    </div>
+    <div class="cta-button-container">
+      <a class="btn-cta" href="/join/">Join Free Now</a>
+    </div>
+  </div>
+</section>
+
+<section class="full-width-image-section">
+  <img alt="man and woman showing the ok sign with their hands" class="responsive-center-image" src="images/image6.jpg"/>
+</section>
+
+<section class="content-section final-cta-section">
+  <div class="container final-cta-container">
+    <div class="final-cta-left">
+      <h2>Join GR8Date Now</h2>
+      <p>Your journey to finding a meaningful connection starts here. With thousands of verified members and a commitment to a safe, genuine community, you're one step away from meeting someone special. Sign up for free and discover your GR8Date today!</p>
+      <a class="cta-button" href="/join/">Join Free Now</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <p>© 2025 GR8Date – All rights reserved.</p>
+  <div class="footer-links">
+    <a href="/privacy/">Privacy</a>
+    <a href="/terms/">Terms</a>
+    <a href="/about/">About Us</a>
+    <a href="#blog">Blog</a>
+    <a href="/faq/">FAQ</a>
+    <a href="/contact/">Contact</a>
+  </div>
+  <div class="social-icons">
+    <a href="https://www.facebook.com/profile.php?id=61577945422359" title="Facebook"><span class="material-icons">facebook</span></a>
+    <a href="https://www.instagram.com/gr8date_official/" title="Instagram"><span class="material-icons">camera_alt</span></a>
+    <a href="/blog/" title="X (Twitter)"><span class="material-icons">alternate_email</span></a>
+  </div>
+</footer>
+</body>
+</html>

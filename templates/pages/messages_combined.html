@@ -1,0 +1,241 @@
+{% extends 'base_header.html' %}
+{% load static %}
+
+{% block title %}Messages - GR8DATE{% endblock %}
+
+{% block extra_css %}
+/* Messages specific styles */
+.messages-container { max-width: 100%; }
+.thread-list { list-style: none; padding: 0; margin: 0; }
+.thread-item { 
+    border-bottom: 1px solid var(--border); 
+    padding: 16px 0;
+    transition: background-color 0.2s;
+}
+.thread-item:hover { background-color: #f8fafc; }
+.thread-item.unread { background-color: #f0f9ff; }
+.thread-link { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    text-decoration: none; 
+    color: inherit;
+}
+.thread-content { flex: 1; min-width: 0; }
+.thread-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+.thread-username {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text);
+}
+.thread-time {
+    font-size: 12px;
+    color: var(--muted);
+}
+.thread-preview {
+    font-size: 14px;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.unread-badge {
+    background: var(--brand);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: 8px;
+}
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+}
+.empty-state .material-icons {
+    font-size: 64px;
+    color: #e5e7eb;
+    margin-bottom: 16px;
+}
+
+/* Access requests */
+.access-requests {
+    background: #fef3f2;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+.access-requests h3 {
+    margin: 0 0 12px 0;
+    color: #dc2626;
+    font-size: 16px;
+}
+.access-request-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #fecaca;
+}
+.access-request-item:last-child {
+    border-bottom: none;
+}
+.access-request-actions {
+    display: flex;
+    gap: 8px;
+}
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.btn-primary {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+}
+.btn-success {
+    background: #10b981;
+    border-color: #10b981;
+    color: #fff;
+}
+.btn-danger {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: #fff;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .thread-link { gap: 10px; }
+    .thread-username { font-size: 15px; }
+    .access-request-item { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .access-request-actions { width: 100%; justify-content: space-between; }
+}
+{% endblock %}
+
+{% block content %}
+<h1 style="margin:0 0 20px 0;font-weight:800;color:var(--brand)">Messages</h1>
+
+{% if pending_requests_received %}
+<div class="access-requests">
+    <h3>🔒 Private Photo Access Requests</h3>
+    {% for request in pending_requests_received %}
+    <div class="access-request-item">
+        <div>
+            <strong>{{ request.requester.username }}</strong> requested access to your private photos
+            <div style="font-size:12px;color:#666;margin-top:4px">
+                Requested {{ request.created_at|timesince }} ago
+            </div>
+        </div>
+        <div class="access-request-actions">
+            <a href="{% url 'approve_private_access' request.id %}" class="btn btn-success">
+                <span class="material-icons" style="font-size:16px">check</span>
+                Approve
+            </a>
+            <a href="{% url 'deny_private_access' request.id %}" class="btn btn-danger">
+                <span class="material-icons" style="font-size:16px">close</span>
+                Deny
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if threads %}
+<ul class="thread-list">
+    {% for thread_data in threads %}
+    <li class="thread-item {% if thread_data.unread_count > 0 %}unread{% endif %}">
+        <a href="{% url 'message_thread' thread_data.other_user.id %}" class="thread-link">
+            <div class="thread-content">
+                <div class="thread-header">
+                    <span class="thread-username">
+                        {{ thread_data.other_user.username }}
+                        {% if thread_data.unread_count > 0 %}
+                            <span class="unread-badge">{{ thread_data.unread_count }}</span>
+                        {% endif %}
+                    </span>
+                    <span class="thread-time">{{ thread_data.updated_at|timesince }} ago</span>
+                </div>
+                <div class="thread-preview">
+                    {% if thread_data.last_message %}
+                        {{ thread_data.last_message.text|truncatewords:20 }}
+                    {% else %}
+                        Start a conversation...
+                    {% endif %}
+                </div>
+            </div>
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<div class="empty-state">
+    <span class="material-icons">mail</span>
+    <h3>No messages yet</h3>
+    <p>Your conversations will appear here when you start messaging people.</p>
+    <a href="{% url 'dashboard' %}" class="btn btn-primary" style="margin-top:16px">
+        <span class="material-icons">explore</span> Discover People
+    </a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-refresh unread count badge in header
+    function updateUnreadCount() {
+        fetch("{% url 'messages_unread_count' %}", {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            const badge = document.getElementById('message-badge');
+            if (badge) {
+                if (data.count > 0) {
+                    badge.textContent = data.count > 99 ? '99+' : data.count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        })
+        .catch(error => console.error('Error updating unread count:', error));
+    }
+
+    // Update on page load and every 30 seconds
+    updateUnreadCount();
+    setInterval(updateUnreadCount, 30000);
+    
+    // Mark threads as read when viewed
+    document.querySelectorAll('.thread-link').forEach(link => {
+        link.addEventListener('click', function() {
+            const threadItem = this.closest('.thread-item');
+            if (threadItem.classList.contains('unread')) {
+                // The server will mark as read when the thread page loads
+                threadItem.classList.remove('unread');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

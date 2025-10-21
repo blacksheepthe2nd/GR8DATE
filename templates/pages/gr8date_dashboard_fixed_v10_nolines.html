@@ -1,0 +1,232 @@
+{% extends 'base_header.html' %}
+{% load static %}
+
+{% block title %}Dashboard - GR8DATE{% endblock %}
+
+{% block extra_css %}
+/* Dashboard specific styles */
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+@media (max-width: 1200px) {
+  .profile-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+  .profile-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .profile-grid { grid-template-columns: 1fr; }
+}
+
+.profile-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.profile-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+.profile-image {
+  width: 100%;
+  height: 250px;
+  background: #f0f0f0;
+  overflow: hidden;
+  position: relative;
+}
+.profile-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.profile-info { padding: 12px; }
+.profile-name {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+.profile-age {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.profile-headline {
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  color: #374151;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.profile-location {
+  color: var(--muted);
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+.empty-state .material-icons {
+  font-size: 64px;
+  color: #e5e7eb;
+  margin-bottom: 16px;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 40px 0 20px;
+  padding: 20px;
+}
+.pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.pagination-btn:hover {
+  background: var(--brand);
+  color: white;
+  border-color: var(--brand);
+}
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.pagination-info {
+  color: var(--muted);
+  font-size: 14px;
+}
+{% endblock %}
+
+{% block content %}
+<h1 style="margin:0 0 20px 0;font-weight:800;color:var(--brand)">
+  {% if search_performed and search_query %}
+    Search Results for "{{ search_query }}"
+  {% else %}
+    Discover People
+  {% endif %}
+</h1>
+
+{% if suggested_profiles %}
+  <div class="profile-grid">
+    {% for profile in suggested_profiles %}
+      <a href="{% url 'profile_detail' profile.user.id %}" class="profile-card" style="text-decoration:none;color:inherit">
+        <div class="profile-image">
+          {% with first_image=profile.images.all|first %}
+            {% if first_image %}
+              <img src="{{ first_image.image.url }}" alt="{{ profile.user.username }}" loading="lazy">
+            {% else %}
+              <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)">
+                <span class="material-icons" style="font-size:48px;color:white">person</span>
+              </div>
+            {% endif %}
+          {% endwith %}
+        </div>
+
+        <div class="profile-info">
+          <div class="profile-name">{{ profile.user.username }}</div>
+
+          {% if profile.age %}
+            <div class="profile-age">{{ profile.age }} years old</div>
+          {% endif %}
+
+          {% if profile.headline %}
+            <div class="profile-headline">{{ profile.headline }}</div>
+          {% endif %}
+
+          {% if profile.location %}
+            <div class="profile-location">
+              <span class="material-icons" style="font-size:12px">location_on</span>
+              {{ profile.location }}
+            </div>
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    {% if suggested_profiles.has_previous %}
+      <a href="?page={{ suggested_profiles.previous_page_number }}" class="pagination-btn">
+        <span class="material-icons">arrow_back</span>
+        Previous
+      </a>
+    {% else %}
+      <span class="pagination-btn" disabled>
+        <span class="material-icons">arrow_back</span>
+        Previous
+      </span>
+    {% endif %}
+
+    <span class="pagination-info">
+      Page {{ suggested_profiles.number }} of {{ suggested_profiles.paginator.num_pages }}
+    </span>
+
+    {% if suggested_profiles.has_next %}
+      <a href="?page={{ suggested_profiles.next_page_number }}" class="pagination-btn">
+        Next
+        <span class="material-icons">arrow_forward</span>
+      </a>
+    {% else %}
+      <span class="pagination-btn" disabled>
+        Next
+        <span class="material-icons">arrow_forward</span>
+      </span>
+    {% endif %}
+  </div>
+{% else %}
+  <div class="empty-state">
+    <span class="material-icons">explore</span>
+    
+    {% if search_performed and search_query %}
+      <h3>No profiles found</h3>
+      <p>No results found for "{{ search_query }}". Try a different search term.</p>
+      <a href="{% url 'dashboard' %}" class="pagination-btn" style="margin-top:16px">
+        <span class="material-icons">home</span> Back to Dashboard
+      </a>
+    {% else %}
+      <h3>No profiles to discover</h3>
+      <p>Check back later for new profiles in your area.</p>
+      <a href="{% url 'profile_edit' %}" class="pagination-btn" style="margin-top:16px">
+        <span class="material-icons">edit</span> Update Your Preferences
+      </a>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// No extra JavaScript needed since entire card is clickable
+</script>
+{% endblock %}
+

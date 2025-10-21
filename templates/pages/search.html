@@ -1,0 +1,193 @@
+{% extends "pages/gr8date_dashboard_fixed_v10_nolines.html" %}
+{% load static %}
+
+{% block content %}
+<div style="padding-top:120px; max-width:1200px; margin:0 auto; padding-left:16px; padding-right:16px;">
+  
+  <!-- Search Header -->
+  <div style="text-align:center; margin-bottom:30px;">
+    <h1 style="margin-bottom:10px; color:#333;">
+      {% if query %}
+        🔍 Search Results
+      {% else %}
+        🔍 Search Profiles
+      {% endif %}
+    </h1>
+    
+    <!-- Search Criteria Display -->
+    {% if query %}
+    <div style="background: #f8fafc; border-radius: 12px; padding: 16px; margin: 20px auto; max-width: 600px; border-left: 4px solid #ff5478;">
+      <div style="font-weight: 600; margin-bottom: 8px; color: #333; display: flex; align-items: center; gap: 8px;">
+        <span class="material-icons" style="font-size: 18px;">search</span>
+        {% if results %}
+          Found {{ results|length }} result{{ results|length|pluralize }} for "{{ query }}"
+        {% else %}
+          Searching for "{{ query }}"
+        {% endif %}
+      </div>
+      <div style="font-size: 14px; color: #666;">
+        Searched profiles by name, location, age, and interests
+      </div>
+    </div>
+    {% else %}
+      <p style="color:#666; font-size:1.1em;">Enter a name, location, age, or interest to find profiles</p>
+    {% endif %}
+  </div>
+
+<!-- Simple Search Form -->
+  <div style="background:white; padding:20px; border-radius:16px; margin-bottom:30px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+    <form method="get" action="{% url 'search' %}" style="display:flex; gap:12px;">
+      <input type="text" name="q" value="{{ query }}" placeholder="Search by name, location, age, age range, or interests..."
+             style="flex:1; padding:12px; border:1px solid #ddd; border-radius:8px; font-size:16px;">
+      <button type="submit" style="padding:12px 24px; background:#111; color:white; border:none; border-radius:8px; cursor:pointer;">
+        Search
+      </button>
+    </form>
+
+    <!-- Quick Search Tips -->
+    <div style="margin-top: 16px; padding: 12px; background: #f0f9ff; border-radius: 8px;">
+      <div style="font-size: 14px; color: #666; display: flex; align-items: center; gap: 8px;">
+        <span class="material-icons" style="font-size: 16px;">lightbulb</span>
+        <div>
+          <strong>Search tips:</strong> Try
+          <strong>"mia"</strong> (name),
+          <strong>"sydney"</strong> (location),
+          <strong>"25"</strong> (age),
+          <strong>"25-35"</strong> (age range), or
+          <strong>"hiking"</strong> (interest)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profiles Grid -->
+  {% if results %}
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
+      {% for profile in results %}
+      <div style="background:white; border-radius:16px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+        <!-- Profile Image -->
+        <div style="width:100%; height:200px; background:#f5f5f5; display:flex; align-items:center; justify-content:center; color:#999;">
+          {% if profile.card_image_url %}
+            <img src="{{ profile.card_image_url }}" alt="{{ profile.user.username }}" style="width:100%; height:100%; object-fit:cover;">
+          {% else %}
+            <span class="material-icons" style="font-size: 48px; color: #ccc;">person</span>
+          {% endif %}
+        </div>
+        
+        <!-- Profile Info -->
+        <div style="padding:20px;">
+          <h3 style="margin:0 0 8px 0; font-size:1.2em; color:#333;">{{ profile.user.username }}</h3>
+          {% if profile.location %}
+            <p style="margin:0 0 8px 0; color:#666; font-size:0.9em; display: flex; align-items: center; gap: 4px;">
+              <span class="material-icons" style="font-size: 14px;">location_on</span>
+              {{ profile.location }}
+            </p>
+          {% endif %}
+          {% if profile.age %}
+            <p style="margin:0 0 12px 0; color:#666; font-size:0.9em;">
+              <strong>Age:</strong> {{ profile.age }}
+            </p>
+          {% endif %}
+          {% if profile.headline %}
+            <p style="margin:0 0 15px 0; color:#333; font-size:0.95em; line-height:1.4;">{{ profile.headline }}</p>
+          {% endif %}
+          
+          <a href="{% url 'profile_detail' profile.user.id %}" 
+             style="display:inline-block; padding:8px 16px; background:#ff5478; color:white; border-radius:8px; text-decoration:none; font-size:0.9em; font-weight:600;">
+            View Profile
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    
+  {% elif query %}
+    <!-- No Results State -->
+    <div style="text-align:center; padding:60px 20px; color:#666;">
+      <div style="font-size: 64px; margin-bottom: 16px;">🔍</div>
+      
+      <h3 style="margin:0 0 12px 0; color:#333; font-weight:600;">No profiles found for "{{ query }}"</h3>
+      <p style="margin-bottom: 24px; font-size: 1.1em;">
+        We couldn't find any profiles matching your search.
+      </p>
+      
+      <!-- Helpful Suggestions -->
+      <div style="background: #f0f9ff; border-radius: 12px; padding: 20px; margin: 0 auto 24px; max-width: 500px; text-align: left;">
+        <div style="font-weight: 600; margin-bottom: 12px; color: #333; display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons" style="font-size: 18px;">tips_and_updates</span>
+          Try these search tips:
+        </div>
+        <ul style="margin: 0; padding-left: 20px; color: #666;">
+          <li>Check spelling</li>
+          <li>Try broader terms (e.g., "syd" instead of "sydney")</li>
+          <li>Search by different criteria (name, location, age, interests)</li>
+          <li>Browse all profiles to discover new people</li>
+        </ul>
+      </div>
+      
+      <!-- Search Scope Clarification -->
+      <div style="background: #fff3cd; border-radius: 8px; padding: 16px; margin: 0 auto 24px; max-width: 500px; border: 1px solid #ffeaa7;">
+        <div style="font-weight: 600; margin-bottom: 8px; color: #856404; display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons" style="font-size: 16px;">info</span>
+          Note about search
+        </div>
+        <p style="margin: 0; font-size: 14px; color: #856404;">
+          This search looks at <strong>user profiles only</strong>. 
+          For events, check <a href="{% url 'hotdate_list' %}" style="color: #ff5478; font-weight: 600;">Hot Dates</a>.
+        </p>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <a href="{% url 'dashboard' %}" 
+           style="display: inline-flex; align-items: center; gap: 6px; padding: 12px 24px; background: #ff5478; color: white; border-radius: 10px; text-decoration: none; font-weight: 600;">
+          <span class="material-icons" style="font-size: 16px;">explore</span>
+          Browse All Profiles
+        </a>
+        
+        <button onclick="document.querySelector('.js-open-search').click()" 
+                style="display: inline-flex; align-items: center; gap: 6px; padding: 12px 24px; background: #f8f9fa; color: #333; border: 1px solid #ddd; border-radius: 10px; cursor: pointer; font-weight: 600;">
+          <span class="material-icons" style="font-size: 16px;">search</span>
+          New Search
+        </button>
+      </div>
+    </div>
+    
+  {% else %}
+    <!-- Initial State - No search performed -->
+    <div style="text-align:center; padding:60px 20px; color:#666;">
+      <div style="font-size: 64px; margin-bottom: 16px;">🔍</div>
+      <h3 style="margin:0 0 12px 0; color:#333; font-weight:600;">Search Profiles</h3>
+      <p style="margin-bottom: 24px;">
+        Find people by name, location, age, or interests.<br>
+        Use the search box above to get started.
+      </p>
+    </div>
+  {% endif %}
+
+  <!-- Pagination -->
+  {% if results.has_other_pages %}
+  <div style="display:flex; justify-content:center; gap:8px; margin-top:40px;">
+    {% if results.has_previous %}
+    <a href="?page={{ results.previous_page_number }}{% if query %}&q={{ query }}{% endif %}" 
+       style="padding:8px 16px; border:1px solid #ddd; border-radius:8px; text-decoration:none; display: flex; align-items: center; gap: 4px;">
+      <span class="material-icons" style="font-size: 16px;">chevron_left</span>
+      Previous
+    </a>
+    {% endif %}
+    
+    <span style="padding:8px 16px; color:#666; display: flex; align-items: center;">
+      Page {{ results.number }} of {{ results.paginator.num_pages }}
+    </span>
+    
+    {% if results.has_next %}
+    <a href="?page={{ results.next_page_number }}{% if query %}&q={{ query }}{% endif %}" 
+       style="padding:8px 16px; border:1px solid #ddd; border-radius:8px; text-decoration:none; display: flex; align-items: center; gap: 4px;">
+      Next
+      <span class="material-icons" style="font-size: 16px;">chevron_right</span>
+    </a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

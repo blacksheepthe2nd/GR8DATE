@@ -1,0 +1,552 @@
+{% extends "base_header.html" %}
+
+{% block title %}GR8DATE • Edit Profile{% endblock %}
+
+{% block content %}
+</div>
+<style>
+:root{--brand:#ff2b6a;--brand-900:#e11e5a;--ink:#0f172a;--muted:#64748b;--bg:#f6f7fb;--card:#fff;--border:#eaeef5;--shadow:0 10px 26px rgba(15,23,42,.08)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:16px}
+.container{max-width:1120px;margin:24px auto;padding:0 16px 80px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:760px){.grid-2{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:6px}
+.field input,.field select,.field textarea{border:1px solid var(--border);border-radius:10px;padding:12px;background:#fff}
+.read-only{background:#fbfbfd}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:9999px;padding:.7rem 1.1rem;border:2px solid transparent;font-weight:700;cursor:pointer}
+.btn-primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+.btn-primary:hover{background:var(--brand-900);border-color:var(--brand-900)}
+.btn-muted{background:#f2f4f7;border:1px solid var(--border);color:#111}
+
+/* PROPER BUTTON TABS */
+.mobile-tabs{display:flex;background:#f8f9fa;padding:8px;border-radius:12px;margin-bottom:20px;border:1px solid var(--border)}
+.tab-button{flex:1;padding:12px 16px;border:none;background:transparent;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.tab-button.active{background:white;box-shadow:0 2px 8px rgba(0,0,0,.1);border:1px solid var(--border);color:var(--brand)}
+.tab-button:not(.active):hover{background:rgba(255,255,255,0.7)}
+.settings-section{display:none}
+.settings-section.active{display:block}
+
+/* Badges & Status */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:600;margin-left:8px}
+.badge-instant{background:#dcfce7;color:#166534}
+.badge-pending{background:#fef3c7;color:#92400e}
+
+/* UPDATED PHOTO STYLES */
+.photo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.photo-item{position:relative;width:100%;aspect-ratio:1/1;border-radius:10px;overflow:hidden;border:2px dashed #ccc;display:flex;align-items:center;justify-content:center;background:#f0f0f0;cursor:pointer}
+.photo-item img{width:100%;height:100%;object-fit:cover}
+.btn-delete{position:absolute;top:5px;right:5px;width:20px;height:20px;background:#ff4444;color:white;border:none;border-radius:50%;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center}
+.add-photo-btn{background:#e8f4ff;border:2px dashed #667eea;color:#667eea;font-weight:bold;font-size:1.5rem}
+.private-photo{filter:blur(5px)}
+.photo-count{font-size:12px;color:#64748b;margin-top:6px}
+
+/* Tag options styles */
+.tag-options{display:flex;flex-wrap:wrap;gap:8px;border:1px solid var(--border);border-radius:10px;padding:12px;background:var(--bg-muted);min-height:60px}
+.tag-option{display:flex;align-items:center;padding:6px 12px;background:white;border:2px solid #e9ecef;border-radius:20px;cursor:pointer;transition:all 0.3s}
+.tag-option:hover{border-color:#667eea;background:#f0f4ff}
+.tag-option input[type="checkbox"]{margin-right:6px}
+.tag-option input[type="checkbox"]:checked + span{font-weight:bold;color:#667eea}
+
+.badge-note{font-size:12px;color:#64748b;margin-top:6px}
+
+/* Save Actions */
+.save-actions{display:flex;flex-direction:column;gap:12px;margin-top:20px;padding:16px;background:#f8f9fa;border-radius:12px;border:1px solid #eaeef5}
+.save-main{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center}
+</style>
+
+<main class="container">
+  <!-- PROPER BUTTON TABS -->
+  <div class="mobile-tabs">
+    <button class="tab-button active" data-tab="preferences">
+      <span class="material-icons" style="font-size:18px">flash_on</span>
+      Preferences
+    </button>
+    <button class="tab-button" data-tab="profile-content">
+      <span class="material-icons" style="font-size:18px">edit</span>
+      Profile & Photos
+    </button>
+  </div>
+
+  <!-- REAL FORM -->
+  <form id="profileForm" method="post" novalidate>
+    {% csrf_token %}
+
+    <!-- Clean header -->
+    <div class="card" style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <h1 style="margin:0;font-size:22px">Edit My Profile</h1>
+    </div>
+
+    <!-- INSTANT UPDATE SECTION -->
+    <div class="settings-section instant-update active" id="preferences-tab">
+      <section class="card">
+        <div class="section-header" style="display:flex;align-items:center;margin-bottom:8px">
+          <h3 style="margin:0">⚡ Quick Preferences</h3>
+          <span class="badge badge-instant">
+            <span class="material-icons" style="font-size:14px">flash_on</span>
+            Updates Immediately
+          </span>
+        </div>
+        
+        <div class="grid-2">
+          <!-- Lifestyle Preferences -->
+          <div class="field"><label>Smoking</label><select name="smoking"><option value="prefer_not" {% if me.smoking == 'prefer_not' %}selected{% endif %}>Prefer not to say</option><option value="no" {% if me.smoking == 'no' %}selected{% endif %}>No</option><option value="occasionally" {% if me.smoking == 'occasionally' %}selected{% endif %}>Occasionally</option><option value="yes" {% if me.smoking == 'yes' %}selected{% endif %}>Yes</option></select></div>
+          <div class="field"><label>Drinking</label><select name="drinking"><option value="prefer_not" {% if me.drinking == 'prefer_not' %}selected{% endif %}>Prefer not to say</option><option value="no" {% if me.drinking == 'no' %}selected{% endif %}>No</option><option value="socially" {% if me.drinking == 'socially' %}selected{% endif %}>Socially</option><option value="often" {% if me.drinking == 'often' %}selected{% endif %}>Often</option></select></div>
+          <div class="field"><label>Exercise</label><select name="exercise"><option value="prefer_not" {% if me.exercise == 'prefer_not' %}selected{% endif %}>Prefer not to say</option><option value="never" {% if me.exercise == 'never' %}selected{% endif %}>Never</option><option value="sometimes" {% if me.exercise == 'sometimes' %}selected{% endif %}>Sometimes</option><option value="regularly" {% if me.exercise == 'regularly' %}selected{% endif %}>Regularly</option></select></div>
+          <div class="field"><label>Pets</label><select name="pets"><option value="prefer_not" {% if me.pets == 'prefer_not' %}selected{% endif %}>Prefer not to say</option><option value="no_pets" {% if me.pets == 'no_pets' %}selected{% endif %}>No pets</option><option value="cat" {% if me.pets == 'cat' %}selected{% endif %}>Cat</option><option value="dog" {% if me.pets == 'dog' %}selected{% endif %}>Dog</option><option value="other" {% if me.pets == 'other' %}selected{% endif %}>Other</option></select></div>
+          <div class="field"><label>Diet</label><select name="diet"><option value="prefer_not" {% if me.diet == 'prefer_not' %}selected{% endif %}>Prefer not to say</option><option value="anything" {% if me.diet == 'anything' %}selected{% endif %}>Anything</option><option value="vegetarian" {% if me.diet == 'vegetarian' %}selected{% endif %}>Vegetarian</option><option value="vegan" {% if me.diet == 'vegan' %}selected{% endif %}>Vegan</option><option value="halal" {% if me.diet == 'halal' %}selected{% endif %}>Halal</option><option value="kosher" {% if me.diet == 'kosher' %}selected{% endif %}>Kosher</option><option value="pescatarian" {% if me.diet == 'pescatarian' %}selected{% endif %}>Pescatarian</option></select></div>
+          <div class="field"><label>Children</label><select name="children"><option value="prefer_not" {% if me.children == 'prefer_not' %}selected{% endif %}>Prefer not to say</option><option value="yes" {% if me.children == 'yes' %}selected{% endif %}>Yes</option><option value="none" {% if me.children == 'none' %}selected{% endif %}>None</option></select></div>
+
+          <!-- Looking For Preferences -->
+          <div class="field">
+            <label>I'm looking for</label>
+            <input class="read-only" value="{{ me.get_looking_for_display }}" readonly>
+            <small class="helper">Cannot be changed after creation</small>
+          </div>
+
+          <!-- Age Range Preference -->
+          <div class="field">
+            <label>Preferred age range</label>
+            <div style="display:flex;gap:8px;align-items:center">
+              <select id="prefAgeMin" name="preferred_age_min">
+                {% for age in ages %}
+                <option value="{{ age }}" {% if me.preferred_age_min == age %}selected{% endif %}>{{ age }}</option>
+                {% endfor %}
+              </select>
+              <span>to</span>
+              <select id="prefAgeMax" name="preferred_age_max">
+                {% for age in ages %}
+                <option value="{{ age }}" {% if me.preferred_age_max == age %}selected{% endif %}>{{ age }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <small class="badge-note">Tip: choose a range wide enough for good matches.</small>
+          </div>
+
+          <!-- Distance Preference -->
+          <div class="field">
+            <label>Distance</label>
+            <select id="prefDistance" name="preferred_distance">
+              <option value="any" {% if me.preferred_distance == 'any' %}selected{% endif %}>Any</option>
+              <option value="5" {% if me.preferred_distance == '5' %}selected{% endif %}>5 km</option>
+              <option value="10" {% if me.preferred_distance == '10' %}selected{% endif %}>10 km</option>
+              <option value="25" {% if me.preferred_distance == '25' %}selected{% endif %}>25 km</option>
+              <option value="50" {% if me.preferred_distance == '50' %}selected{% endif %}>50 km</option>
+              <option value="100" {% if me.preferred_distance == '100' %}selected{% endif %}>100 km</option>
+              <option value="country" {% if me.preferred_distance == 'country' %}selected{% endif %}>Countrywide</option>
+            </select>
+          </div>
+
+          <!-- Intent Preference -->
+          <div class="field">
+            <label>Intent</label>
+            <select id="prefIntent" name="preferred_intent">
+              <option value="any" {% if me.preferred_intent == 'any' %}selected{% endif %}>Any</option>
+              <option value="friends" {% if me.preferred_intent == 'friends' %}selected{% endif %}>New friends</option>
+              <option value="casual" {% if me.preferred_intent == 'casual' %}selected{% endif %}>Casual dating</option>
+              <option value="longterm" {% if me.preferred_intent == 'longterm' %}selected{% endif %}>Long-term</option>
+              <option value="marriage" {% if me.preferred_intent == 'marriage' %}selected{% endif %}>Marriage</option>
+            </select>
+          </div>
+
+          <!-- My Interests Tags - PRE-DEFINED CHECKBOXES -->
+          <div class="field" style="grid-column:1/-1">
+            <label>My interests (tags)</label>
+            <div class="tag-options">
+              <label class="tag-option">
+                <input type="checkbox" name="my_interests[]" value="hiking" {% if 'hiking' in me.my_interests %}checked{% endif %}>
+                <span>Hiking</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="my_interests[]" value="beach" {% if 'beach' in me.my_interests %}checked{% endif %}>
+                <span>Beach</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="my_interests[]" value="dogs" {% if 'dogs' in me.my_interests %}checked{% endif %}>
+                <span>Dogs</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="my_interests[]" value="books" {% if 'books' in me.my_interests %}checked{% endif %}>
+                <span>Books</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="my_interests[]" value="music" {% if 'music' in me.my_interests %}checked{% endif %}>
+                <span>Music</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="my_interests[]" value="travel" {% if 'travel' in me.my_interests %}checked{% endif %}>
+                <span>Travel</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="my_interests[]" value="movies" {% if 'movies' in me.my_interests %}checked{% endif %}>
+                <span>Movies</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="my_interests[]" value="gaming" {% if 'gaming' in me.my_interests %}checked{% endif %}>
+                <span>Gaming</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="my_interests[]" value="cooking" {% if 'cooking' in me.my_interests %}checked{% endif %}>
+                <span>Cooking</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="my_interests[]" value="fitness" {% if 'fitness' in me.my_interests %}checked{% endif %}>
+                <span>Fitness</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="my_interests[]" value="art" {% if 'art' in me.my_interests %}checked{% endif %}>
+                <span>Art</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="my_interests[]" value="technology" {% if 'technology' in me.my_interests %}checked{% endif %}>
+                <span>Technology</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="my_interests[]" value="contact_to_know_more" {% if 'contact_to_know_more' in me.my_interests %}checked{% endif %}>
+                <span>Contact me to know more</span>
+              </label>
+            </div>
+            <small class="badge-note">Shown on your profile and used to match you with others.</small>
+          </div>
+
+          <!-- Must-Have Tags - PRE-DEFINED CHECKBOXES -->
+          <div class="field" style="grid-column:1/-1">
+            <label>Must-have tags</label>
+            <div class="tag-options">
+              <label class="tag-option">
+                <input type="checkbox" name="must_have_tags[]" value="hiking" {% if 'hiking' in me.must_have_tags %}checked{% endif %}>
+                <span>Hiking</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="must_have_tags[]" value="beach" {% if 'beach' in me.must_have_tags %}checked{% endif %}>
+                <span>Beach</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="must_have_tags[]" value="dogs" {% if 'dogs' in me.must_have_tags %}checked{% endif %}>
+                <span>Dogs</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="must_have_tags[]" value="books" {% if 'books' in me.must_have_tags %}checked{% endif %}>
+                <span>Books</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="must_have_tags[]" value="honest" {% if 'honest' in me.must_have_tags %}checked{% endif %}>
+                <span>Honest</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="must_have_tags[]" value="kind" {% if 'kind' in me.must_have_tags %}checked{% endif %}>
+                <span>Kind</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="must_have_tags[]" value="ambitious" {% if 'ambitious' in me.must_have_tags %}checked{% endif %}>
+                <span>Ambitious</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="must_have_tags[]" value="humorous" {% if 'humorous' in me.must_have_tags %}checked{% endif %}>
+                <span>Humorous</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="must_have_tags[]" value="adventurous" {% if 'adventurous' in me.must_have_tags %}checked{% endif %}>
+                <span>Adventurous</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="must_have_tags[]" value="loyal" {% if 'loyal' in me.must_have_tags %}checked{% endif %}>
+                <span>Loyal</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="must_have_tags[]" value="compassionate" {% if 'compassionate' in me.must_have_tags %}checked{% endif %}>
+                <span>Compassionate</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="must_have_tags[]" value="confident" {% if 'confident' in me.must_have_tags %}checked{% endif %}>
+                <span>Confident</span>
+              </label>
+              <label class="tag-option">
+                <input type="checkbox" name="must_have_tags[]" value="contact_to_know_more" {% if 'contact_to_know_more' in me.must_have_tags %}checked{% endif %}>
+                <span>Contact me to know more</span>
+              </label>
+            </div>
+            <small class="badge-note">These tags will be used as filters in search & matching.</small>
+          </div>
+        </div>
+
+        <!-- Save button for Preferences -->
+        <div class="save-actions">
+          <div class="save-main">
+            <button type="submit" class="btn btn-primary">
+              <span class="material-icons">publish</span>
+              Save & Publish
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ADMIN APPROVAL SECTION -->
+    <div class="settings-section needs-approval" id="profile-content-tab">
+      <section class="card">
+        <div class="section-header" style="display:flex;align-items:center;margin-bottom:8px">
+          <h3 style="margin:0">⏱ Profile & Photos</h3>
+          <span class="badge badge-pending">
+            <span class="material-icons" style="font-size:14px">schedule</span>
+            Requires Review
+          </span>
+        </div>
+
+        <!-- Profile Photo Section - FIXED: Uses profile.images -->
+        <div class="field">
+          <label>Profile photo</label>
+          <div style="display:flex;align-items:center;gap:20px;margin-bottom:10px;">
+            {% with primary_image=me.images.first %}
+            <div class="photo-item" style="border:2px solid #667eea; width:120px; height:120px;">
+              {% if primary_image and primary_image.image %}
+              <img src="{{ primary_image.image.url }}" alt="Current profile photo">
+              {% else %}
+              <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#667eea;">No Photo</div>
+              {% endif %}
+            </div>
+            {% endwith %}
+            <button type="button" class="btn btn-muted">
+              <span class="material-icons">upload</span> Change Photo
+            </button>
+          </div>
+          <small class="badge-note">This will replace your current profile photo after review</small>
+        </div>
+
+        <!-- Additional Photos Section - FIXED: Uses public images -->
+        <div class="field">
+          <label>Additional photos (up to 4)</label>
+          <div class="photo-grid">
+            {% for image in me.images.all %}
+              {% if not image.is_private %}
+              <div class="photo-item">
+                <img src="{{ image.image.url }}" alt="Additional photo">
+                <button type="button" class="btn-delete" onclick="deleteAdditionalPhoto({{ image.id }})">×</button>
+              </div>
+              {% endif %}
+            {% endfor %}
+            
+            {% with public_images=me.images.all %}
+              {% with public_count=0 %}
+                {% for img in public_images %}
+                  {% if not img.is_private %}
+                    {% with public_count=public_count|add:1 %}{% endwith %}
+                  {% endif %}
+                {% endfor %}
+                {% if public_count < 4 %}
+                <div class="photo-item add-photo-btn" onclick="addAdditionalPhoto()">
+                  <span>+</span>
+                </div>
+                {% endif %}
+              {% endwith %}
+            {% endwith %}
+          </div>
+          <div class="photo-count">
+            {% with public_images=me.images.all %}
+              {% with public_count=0 %}
+                {% for img in public_images %}
+                  {% if not img.is_private %}
+                    {% with public_count=public_count|add:1 %}{% endwith %}
+                  {% endif %}
+                {% endfor %}
+                {{ public_count }}/4 additional photos
+              {% endwith %}
+            {% endwith %}
+          </div>
+        </div>
+
+        <!-- Private Photos Section - FIXED: No blur for owner -->
+        <div class="field">
+          <label>Private photos (up to 4, blurred to others)</label>
+          <div class="photo-grid">
+            {% for image in me.images.all %}
+             {% if image.is_private %}
+             <div class="photo-item">
+               <img src="{{ image.image.url }}" alt="Private photo">
+               <!-- REMOVED: class="private-photo" -->
+               <button type="button" class="btn-delete" onclick="deletePrivatePhoto({{ image.id }})">×</button>
+            </div>
+             {% endif %}
+            {% endfor %}
+    
+    {% with private_images=me.images.all %}
+      {% with private_count=0 %}
+        {% for img in private_images %}
+          {% if img.is_private %}
+            {% with private_count=private_count|add:1 %}{% endwith %}
+          {% endif %}
+        {% endfor %}
+        {% if private_count < 4 %}
+        <div class="photo-item add-photo-btn" onclick="addPrivatePhoto()">
+          <span>+</span>
+        </div>
+        {% endif %}
+      {% endwith %}
+    {% endwith %}
+  </div>
+  <div class="photo-count">
+    {% with private_images=me.images.all %}
+      {% with private_count=0 %}
+        {% for img in private_images %}
+          {% if img.is_private %}
+            {% with private_count=private_count|add:1 %}{% endwith %}
+          {% endif %}
+        {% endfor %}
+        {{ private_count }}/4 private photos
+      {% endwith %}
+    {% endwith %}
+  </div>
+</div>        
+
+        <!-- Text Content Fields with current values - FIXED: Uses actual data -->
+        <div class="grid-2" style="margin-top:20px">
+          <div class="field">
+            <label>Headline</label>
+            <input name="headline" placeholder="Short tagline" value="{{ me.headline|default:'' }}">
+            <small class="badge-note">Will be reviewed before going live</small>
+          </div>
+
+          <div class="field">
+            <label>Location</label>
+            <input name="location" placeholder="City / Suburb" value="{{ me.location|default:'' }}">
+            <small class="badge-note">Will be reviewed before going live</small>
+          </div>
+
+          <div class="field" style="grid-column:1/-1">
+            <label>About me</label>
+            <textarea name="about" rows="6" placeholder="Tell people about you...">{{ me.about|default:'' }}</textarea>
+            <small class="badge-note">Will be reviewed before going live</small>
+          </div>
+        </div>
+
+        <!-- Save button for Profile & Photos -->
+        <div class="save-actions">
+          <div class="save-main">
+            <button type="submit" class="btn btn-primary">
+              <span class="material-icons">send</span>
+              Submit for Review
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </form>
+</main>
+
+<script>
+// Tab switching
+document.querySelectorAll('.tab-button').forEach(button => {
+  button.addEventListener('click', () => {
+    // Update active tab button
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+    
+    // Show corresponding section
+    const tabName = button.getAttribute('data-tab');
+    document.querySelectorAll('.settings-section').forEach(section => {
+      section.classList.remove('active');
+    });
+    document.getElementById(tabName + '-tab').classList.add('active');
+  });
+});
+
+// Photo management functions
+function deleteAdditionalPhoto(imageId) {
+  if (confirm('Are you sure you want to delete this photo?')) {
+    // AJAX call to delete image
+    fetch(`/delete-image/${imageId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+      },
+    }).then(response => {
+      if (response.ok) {
+        location.reload(); // Refresh to show changes
+      }
+    });
+  }
+}
+
+function deletePrivatePhoto(imageId) {
+  if (confirm('Are you sure you want to delete this private photo?')) {
+    // AJAX call to delete private image
+    fetch(`/delete-image/${imageId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+      },
+    }).then(response => {
+      if (response.ok) {
+        location.reload(); // Refresh to show changes
+      }
+    });
+  }
+}
+
+function addAdditionalPhoto() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = function(e) {
+    if (e.target.files[0]) {
+      uploadPhoto(e.target.files[0], false); // false = not private
+    }
+  };
+  input.click();
+}
+
+function addPrivatePhoto() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = function(e) {
+    if (e.target.files[0]) {
+      uploadPhoto(e.target.files[0], true); // true = private
+    }
+  };
+  input.click();
+}
+
+function uploadPhoto(file, isPrivate) {
+  const formData = new FormData();
+  formData.append('image', file);
+  formData.append('is_private', isPrivate);
+  
+  fetch('/upload-profile-image/', {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+    },
+    body: formData,
+  }).then(response => {
+    if (response.ok) {
+      location.reload(); // Refresh to show new image
+    } else {
+      alert('Error uploading image');
+    }
+  });
+}
+
+// Age range dropdown population
+document.addEventListener('DOMContentLoaded', function() {
+  const minSelect = document.getElementById('prefAgeMin');
+  const maxSelect = document.getElementById('prefAgeMax');
+  
+  // Populate age options from 18 to 80 if not already populated
+  if (minSelect && minSelect.options.length === 0) {
+    for (let age = 18; age <= 80; age++) {
+      const option = document.createElement('option');
+      option.value = age;
+      option.textContent = age;
+      minSelect.appendChild(option.cloneNode(true));
+      maxSelect.appendChild(option);
+    }
+  }
+  
+  // Set default values if not already set
+  if (minSelect && !minSelect.value) minSelect.value = 18;
+  if (maxSelect && !maxSelect.value) maxSelect.value = 80;
+});
+</script>
+{% endblock %}

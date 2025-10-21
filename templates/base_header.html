@@ -1,0 +1,444 @@
+<!-- templates/base_header.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>{% block title %}GR8DATE{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <style>
+    :root{
+      --bg:#f7f7fb; --card:#fff; --border:#ececf3; --text:#1f2328; --muted:#6b7280;
+      --brand:#ff3366; --brand-600:#ff2366; --radius:18px; --shadow:0 12px 26px rgba(15,23,42,.06)
+    }
+    *{box-sizing:border-box} html,body{margin:0;padding:0}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    a{color:inherit;text-decoration:none}
+
+    /* Header Styles */
+    .site-header{
+      position:fixed; top:0; left:0; right:0; z-index:1000;
+      background:#fff; border-bottom:1px solid var(--border);
+      box-shadow:0 1px 0 rgba(15,23,42,.02);
+    }
+    .nav{max-width:1200px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;min-height:56px}
+    
+    /* Desktop header layout */
+    .brand{font-weight:800; letter-spacing:.2px; font-size:22px; margin-right:auto}
+    .brand .date{color:var(--brand)}
+    .top-icons{display:flex; gap:10px; align-items:center}
+    
+    /* Mobile header layout */
+    @media (max-width: 768px) {
+      .nav{flex-direction:column;gap:8px;padding:8px 12px;min-height:auto}
+      .brand{margin-right:0;order:1;text-align:center;width:100%}
+      .top-icons{order:2;justify-content:center;flex-wrap:wrap;gap:8px;width:100%}
+    }
+    
+    .icon-btn{
+      position:relative;
+      display:inline-flex; align-items:center; justify-content:center;
+      width:40px; height:40px; border-radius:12px; background:#fff;
+      border:1px solid var(--border); box-shadow:var(--shadow);
+      transition:transform .12s ease, box-shadow .12s ease;
+    }
+    .icon-btn:hover{transform:translateY(-1px); box-shadow:0 12px 24px rgba(15,23,42,.12)}
+    .icon-btn .material-icons{font-size:22px}
+    .rot-90{transform: rotate(90deg); display:inline-block}
+
+    /* Badge Styles */
+    .badge{position:absolute;top:4px;right:6px;min-width:16px;height:16px;
+      background:#ff5478;color:#fff;font-size:10px;font-weight:700;border-radius:999px;
+      display:flex;align-items:center;justify-content:center}
+    .flash{animation:pulse 1.4s ease-in-out infinite}
+    @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.7}}
+
+    .spacer{height:56px;}
+    
+    /* Mobile spacer adjustment */
+    @media (max-width: 768px) {
+      .spacer{height:96px} /* Increased for stacked header */
+    }
+
+    /* Content Styles */
+    .container{max-width:1100px;margin:0 auto;padding:16px}
+    
+    /* Modal Styles */
+    .logout-modal, .search-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 10001;
+      align-items: center;
+      justify-content: center;
+    }
+    .logout-modal-content, .search-modal {
+      background: white;
+      border-radius: 16px;
+      width: 90vw;
+      max-width: 400px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .search-modal {
+      max-width: 500px;
+      text-align: left;
+    }
+    .search-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .search-header h3 {
+      margin: 0;
+      font-size: 1.3em;
+      color: #333;
+    }
+    .close-search {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+    }
+    .search-field {
+      margin-bottom: 16px;
+    }
+    .search-field label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+    .search-field input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+    .search-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+    }
+    .search-btn, .logout-btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      min-width: 100px;
+    }
+    .search-primary, .logout-confirm {
+      background: #ff5478;
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .search-secondary, .logout-cancel {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+    }
+    
+    {% block extra_css %}{% endblock %}
+  </style>
+</head>
+<body>
+
+<!-- Consistent Header -->
+<header class="site-header">
+  <div class="nav">
+    <div class="brand"><span>GR8</span><span class="date">DATE</span></div>
+
+    <div class="top-icons" aria-label="Header actions">
+      <a class="icon-btn" href="{% url 'dashboard' %}" title="Dashboard">
+        <span class="material-icons rot-90">u_turn_left</span>
+      </a>
+      <a class="icon-btn js-open-search" href="#" title="Search"><span class="material-icons">search</span></a>
+      <a class="icon-btn" href="{% url 'messages_list' %}" title="Messages">
+        <span class="material-icons">mail</span>
+        <span class="badge" id="message-badge" style="display: none;"></span>
+      </a>
+      <a class="icon-btn" href="{% url 'matches_list' %}" title="Matches"><span class="material-icons">groups</span></a>
+      <a class="icon-btn" href="{% url 'hotdate_list' %}" title="Hot Dates">
+        <span class="material-icons">local_fire_department</span>
+        <span class="badge flash" id="hotdate-badge" style="display: none;"></span>
+      </a>
+      <a class="icon-btn" href="{% url 'profile_edit' %}" title="My Profile"><span class="material-icons">person</span></a>
+      <a class="icon-btn" href="#" id="logout-btn" title="Logout"><span class="material-icons">logout</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="spacer"></div>
+
+<main class="container">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- SIMPLIFIED Search Modal -->
+<div id="search-overlay" class="search-overlay">
+  <div class="search-modal">
+    <div class="search-header">
+      <h3>Search Profiles</h3>
+      <button class="close-search">&times;</button>
+    </div>
+    
+    <!-- Simple Search Instructions -->
+    <div style="margin-bottom: 20px; padding: 12px; background: #f0f9ff; border-radius: 8px; border-left: 4px solid var(--brand);">
+      <div style="font-size: 14px; color: var(--text); font-weight: 600; margin-bottom: 4px;">
+        🔍 Search User Profiles
+      </div>
+      <div style="font-size: 12px; color: var(--muted);">
+        Search by name, location, age, age range, or interests. Examples: "mia", "sydney", "25", "25-35", "hiking"
+      </div>
+    </div>
+    
+    <form id="search-form">
+      <div class="search-field">
+        <label for="search-query">Search Profiles</label>
+        <input type="text" id="search-query" placeholder="Enter name, location, age, age range, or interests..." required>
+      </div>
+      
+      <div class="search-actions">
+        <button type="button" class="search-btn search-secondary" id="search-cancel">Cancel</button>
+        <button type="submit" class="search-btn search-primary">Search</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Logout Confirmation Modal -->
+<div id="logoutModal" class="logout-modal">
+  <div class="logout-modal-content">
+    <h3>Log Out?</h3>
+    <p>Are you sure you want to log out? You'll need to log in again to access your account.</p>
+    <div class="logout-modal-buttons">
+      <button class="logout-btn logout-cancel" id="logoutCancel">Cancel</button>
+      <a href="{% url 'logout' %}" class="logout-btn logout-confirm" id="logoutConfirm">Log Out</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// SIMPLIFIED Search Modal Functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const searchOverlay = document.getElementById('search-overlay');
+  const openSearchButtons = document.querySelectorAll('.js-open-search');
+  const closeSearchButton = document.querySelector('.close-search');
+  const searchCancelButton = document.getElementById('search-cancel');
+  const searchForm = document.getElementById('search-form');
+
+  // Reset search form when opening modal
+  function resetSearchForm() {
+    document.getElementById('search-query').value = '';
+  }
+
+  // Open search modal
+  openSearchButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      resetSearchForm(); // Clear previous searches
+      searchOverlay.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  // Close search modal
+  function closeSearchModal() {
+    searchOverlay.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  if (closeSearchButton) {
+    closeSearchButton.addEventListener('click', closeSearchModal);
+  }
+
+  if (searchCancelButton) {
+    searchCancelButton.addEventListener('click', closeSearchModal);
+  }
+
+  // Close modal when clicking outside
+  searchOverlay.addEventListener('click', function(e) {
+    if (e.target === searchOverlay) {
+      closeSearchModal();
+    }
+  });
+
+  // Close with ESC key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && searchOverlay.style.display === 'flex') {
+      closeSearchModal();
+    }
+  });
+
+  // Handle SIMPLE search form submission
+  if (searchForm) {
+    searchForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Get search value
+      const query = document.getElementById('search-query').value.trim();
+      
+      if (!query) {
+        alert('Please enter something to search for');
+        return;
+      }
+      
+      // Simple redirect to search results with query
+      const searchUrl = `/search/?q=${encodeURIComponent(query)}`;
+      window.location.href = searchUrl;
+      
+      closeSearchModal();
+    });
+  }
+});
+
+// Universal Logout Confirmation
+document.addEventListener('DOMContentLoaded', function() {
+  const logoutBtn = document.getElementById('logout-btn');
+  const logoutModal = document.getElementById('logoutModal');
+  const logoutCancel = document.getElementById('logoutCancel');
+
+  if (logoutBtn && logoutModal) {
+    // Open modal when logout button is clicked
+    logoutBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      logoutModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
+
+    // Close modal when cancel button is clicked
+    logoutCancel.addEventListener('click', function() {
+      logoutModal.style.display = 'none';
+      document.body.style.overflow = '';
+    });
+
+    // Close modal when clicking outside
+    logoutModal.addEventListener('click', function(e) {
+      if (e.target === logoutModal) {
+        logoutModal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Close with ESC key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && logoutModal.style.display === 'flex') {
+        logoutModal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
+  }
+});
+
+// Real-time Badge Polling System
+function updateAllBadges() {
+    updateMessagesBadge();
+    updateHotDatesBadge();
+}
+
+// Messages badge update
+function updateMessagesBadge() {
+    fetch("{% url 'messages_unread_count' %}", {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        credentials: 'include'
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+    })
+    .then(data => {
+        const badge = document.getElementById('message-badge');
+        if (badge) {
+            if (data.count > 0) {
+                badge.textContent = data.count > 99 ? '99+' : data.count;
+                badge.style.display = 'flex';
+                badge.classList.add('flash');
+            } else {
+                badge.style.display = 'none';
+                badge.classList.remove('flash');
+            }
+        }
+    })
+    .catch(error => console.error('Error updating Messages badge:', error));
+}
+
+// Hot Dates badge update
+function updateHotDatesBadge() {
+    fetch("{% url 'hotdates_new_count' %}", {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        credentials: 'include'
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+    })
+    .then(data => {
+        const badge = document.getElementById('hotdate-badge');
+        if (badge) {
+            if (data.count > 0) {
+                badge.textContent = data.count > 99 ? '99+' : data.count;
+                badge.style.display = 'flex';
+                badge.classList.add('flash');
+            } else {
+                badge.style.display = 'none';
+                badge.classList.remove('flash');
+            }
+        }
+    })
+    .catch(error => console.error('Error updating Hot Dates badge:', error));
+}
+
+// Initialize badge polling system
+function initializeBadgePolling() {
+    console.log('Initializing badge polling system...');
+    
+    // Update badges immediately on page load
+    updateAllBadges();
+    
+    // Set up polling every 3 seconds
+    setInterval(updateAllBadges, 3000);
+    
+    // Update when page becomes visible
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            console.log('Page visible, updating badges...');
+            updateAllBadges();
+        }
+    });
+    
+    // Update when window gains focus
+    window.addEventListener('focus', function() {
+        console.log('Window focused, updating badges...');
+        updateAllBadges();
+    });
+}
+
+// Start badge polling when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initializeBadgePolling();
+});
+
+// Global function for external calls
+function forceBadgeUpdates() {
+    console.log('Force updating badges...');
+    updateAllBadges();
+}
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

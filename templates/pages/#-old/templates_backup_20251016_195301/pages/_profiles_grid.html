@@ -1,0 +1,47 @@
+{% load static %}
+
+<section class="grid">
+  {% for p in profiles %}
+    {% with primary=p.primary_image %}
+    <article class="card">
+      <a class="card__imgwrap" href="#">
+        {% if primary %}
+          <img src="{{ primary.image.url }}" alt="{{ p.display_name|default:'profile' }}">
+        {% else %}
+          <img src="{% static 'images/placeholder-3x4.jpg' %}" alt="">
+        {% endif %}
+      </a>
+
+      <div class="card__body">
+        <a class="card__title" href="#">{{ p.display_name|default:'—' }}</a>
+        <div class="card__meta">
+          {% if p.age %}<span>{{ p.age }}</span>{% endif %}
+          {% if p.city %}<span>{{ p.city }}</span>{% endif %}
+        </div>
+        {% if p.tagline %}<p class="card__tagline">{{ p.tagline }}</p>{% endif %}
+      </div>
+
+      <div class="card__actions">
+        <span class="chip"><span class="material-icons">thumb_up</span> Like</span>
+        <span class="chip"><span class="material-icons">bookmark</span> Favorite</span>
+        <span class="chip"><span class="material-icons">chat</span> Message</span>
+      </div>
+
+      {% if preview_mode %}
+        <div class="locked-strip">
+          <a href="{% url 'profile_create' %}">Finish profile to see images</a>
+        </div>
+      {% endif %}
+    </article>
+    {% endwith %}
+  {% empty %}
+    <p>No profiles yet.</p>
+  {% endfor %}
+</section>
+
+<nav class="pager">
+  {% if profiles.has_previous %}<a class="btn" href="?page={{ profiles.previous_page_number }}">« Prev</a>{% endif %}
+  <span class="pager__cur">Page {{ profiles.number }} of {{ profiles.paginator.num_pages }}</span>
+  {% if profiles.has_next %}<a class="btn" href="?page={{ profiles.next_page_number }}">Next »</a>{% endif %}
+</nav>
+

@@ -1,0 +1,78 @@
+<script>
+// Logout Modal Functionality
+console.log("=== PAGE LOADED ===");
+console.log("Hot Dates URL:", "{% url 'hotdate_list' %}");
+
+document.addEventListener('DOMContentLoaded', function() {
+  const logoutBtn = document.getElementById('logout-btn');
+  console.log("Logout JS loaded");
+  const logoutModal = document.getElementById('logoutModal');
+  const logoutCancel = document.getElementById('logoutCancel');
+
+  if (logoutBtn && logoutModal) {
+    logoutBtn.addEventListener('click', function() {
+      console.log("Logout button clicked");
+      logoutModal.classList.add('active');
+    });
+  }
+
+  if (logoutCancel) {
+    logoutCancel.addEventListener('click', function() {
+      console.log("Logout cancelled");
+      logoutModal.classList.remove('active');
+    });
+  }
+
+  if (logoutModal) {
+    logoutModal.addEventListener('click', function(e) {
+      if (e.target === logoutModal) {
+        logoutModal.classList.remove('active');
+      }
+    });
+  }
+});
+</script>
+
+<script>
+// Search Modal Functionality
+console.log("=== PAGE LOADED ===");
+console.log("Hot Dates URL:", "{% url 'hotdate_list' %}");
+
+(function(){
+  console.log("Search JS loaded");
+  const overlay = document.getElementById('search-overlay');
+  if(!overlay) return;
+  
+  const openBtns = document.querySelectorAll('.js-open-search');
+  const closeBtn = overlay.querySelector('.js-close-search');
+  const searchInput = overlay.querySelector('input[type="search"]');
+
+  openBtns.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log("Opening search overlay");
+      overlay.classList.add('active');
+      if(searchInput) searchInput.focus();
+    });
+  });
+
+  if(closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      console.log("Closing search overlay");
+      overlay.classList.remove('active');
+    });
+  }
+
+  overlay.addEventListener('click', function(e) {
+    if(e.target === overlay) {
+      overlay.classList.remove('active');
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if(e.key === 'Escape' && overlay.classList.contains('active')) {
+      overlay.classList.remove('active');
+    }
+  });
+})();
+</script>

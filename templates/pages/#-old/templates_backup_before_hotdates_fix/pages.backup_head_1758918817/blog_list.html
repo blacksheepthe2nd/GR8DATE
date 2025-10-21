@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GR8DATE Blog</title>
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+</head>
+<body>
+  <div class="container">
+    <h1>GR8DATE Blog</h1>
+
+    {% if object_list %}
+      <ul class="list">
+        {% for post in object_list %}
+          <li class="card">
+            <h2><a href="{% url 'blog_detail' slug=post.slug %}">{{ post.title }}</a></h2>
+            {% if post.hero_image %}
+              <img class="post-hero" src="{{ post.hero_image.url }}" alt="{{ post.title }}">
+            {% endif %}
+            {% if post.summary %}
+              <p>{{ post.summary }}</p>
+            {% endif %}
+            <p class="meta">Published: {{ post.published_at|date:"d M Y, H:i" }}</p>
+            <a class="btn" href="{% url 'blog_detail' slug=post.slug %}">Read more</a>
+          </li>
+        {% endfor %}
+      </ul>
+
+      {% if is_paginated %}
+      <p class="meta">
+        {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}">← Newer</a>{% endif %}
+        &nbsp; Page {{ page_obj.number }} of {{ paginator.num_pages }} &nbsp;
+        {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}">Older →</a>{% endif %}
+      </p>
+      {% endif %}
+    {% else %}
+      <p>No posts yet.</p>
+    {% endif %}
+  </div>
+</body>
+</html>
