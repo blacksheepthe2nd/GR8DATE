@@ -1,40 +1,20 @@
 # core/settings.py
 import os
 from pathlib import Path
-from urllib.parse import urlparse
+
+# Import database config FIRST
+from .db import get_database_config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Database Configuration - MUST BE BEFORE ANY OTHER DATABASE RELATED CODE
-if 'DATABASE_URL' in os.environ:
-    # Use PostgreSQL on Railway
-    db_url = urlparse(os.environ['DATABASE_URL'])
-    
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': db_url.path[1:],
-            'USER': db_url.username,
-            'PASSWORD': db_url.password,
-            'HOST': db_url.hostname,
-            'PORT': db_url.port,
-            'CONN_MAX_AGE': 600,
-        }
-    }
-else:
-    # Use SQLite for local development
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+# DATABASE CONFIGURATION - LOADED BEFORE ANYTHING ELSE
+DATABASES = get_database_config()
 
-SECRET_KEY = 'your-secret-key-here'  # Make sure this matches your existing key
+SECRET_KEY = 'your-secret-key-here'
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.railway.app', '.up.railway.app']
+ALLOWED_HOSTS = ['*']  # Allow all for now, we'll restrict later
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -50,7 +30,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "allauth",
     "allauth.account",
-    "allauth.socialaccount",  # fine even if unused
+    "allauth.socialaccount",
 ]
 
 MIDDLEWARE = [
