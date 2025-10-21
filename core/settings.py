@@ -1,6 +1,9 @@
 # DATABASE CONFIGURATION - FORCE POSTGRESQL ON RAILWAY
+import os
+from pathlib import Path
 import dj_database_url
 
+# DATABASE CONFIGURATION - FORCE POSTGRESQL ON RAILWAY
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 # If we're on Railway (DATABASE_URL exists), use PostgreSQL ONLY
@@ -9,10 +12,10 @@ if DATABASE_URL:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('PGDATABASE'),
-            'USER': os.environ.get('PGUSER'),
-            'PASSWORD': os.environ.get('PGPASSWORD'),
-            'HOST': os.environ.get('PGHOST'),
+            'NAME': os.environ.get('PGDATABASE', 'postgres'),
+            'USER': os.environ.get('PGUSER', 'postgres'),
+            'PASSWORD': os.environ.get('PGPASSWORD', ''),
+            'HOST': os.environ.get('PGHOST', 'localhost'),
             'PORT': os.environ.get('PGPORT', 5432),
         }
     }
