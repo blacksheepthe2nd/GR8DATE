@@ -8,12 +8,18 @@ from django.conf.urls.static import static
 from core.views import password_gateway
 
 urlpatterns = [
+    # Password gateway at root
     path("", password_gateway, name="password_gateway"),
+    
+    # Admin
     path("admin/", admin.site.urls),
+
+    # Home page (accessible after password)
     path("home/", TemplateView.as_view(template_name="pages/index.html"), name="home"),
-    path("", include("pages.urls")),  # Keep this for other pages
+
+    # Include other pages
+    path("", include("pages.urls")),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
