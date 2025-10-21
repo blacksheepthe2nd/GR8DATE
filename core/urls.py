@@ -8,20 +8,19 @@ from django.contrib.auth import views as auth_views
 
 from core.views import password_gateway
 from pages.allauth_shim import ShimLoginView, ShimSignupView
-from pages import views as pages
 
 urlpatterns = [
     # Password protection as ROOT - MUST BE FIRST
     path("", password_gateway, name="password_gateway"),
     
-    # Admin
+    # Admin (should work without password for admin access)
     path("admin/", admin.site.urls),
 
-    # Auth entry points (support both /login/ and /auth/login/)
+    # Auth entry points 
     path("login/", ShimLoginView.as_view(), name="login"),
     path("auth/login/", ShimLoginView.as_view(), name="auth_login"),
     path("join/", ShimSignupView.as_view(), name="join"),
-    path("logout/", auth_views.LogoutView.as_view(next_page='home'), name='logout'),
+    path("logout/", auth_views.LogoutView.as_view(next_page='password_gateway'), name='logout'),
 
     # Allauth
     path("accounts/", include("allauth.urls")),
@@ -37,8 +36,8 @@ urlpatterns = [
     # Home page (accessible after password)
     path("home/", TemplateView.as_view(template_name="pages/index.html"), name="home"),
 
-    # Include ALL pages URLs (this should come LAST to avoid conflicts)
-    path("", include("pages.urls")),
+    # Include pages URLs but NOT at root to avoid conflicts
+    path("pages/", include("pages.urls")),
 ]
 
 # Serve static and media files in both development and production
