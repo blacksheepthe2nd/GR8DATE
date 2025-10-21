@@ -1,10 +1,13 @@
-# EMERGENCY FIX FOR RAILWAY SQLITE ISSUE
+# core/settings.py
 import os
+from pathlib import Path
 from urllib.parse import urlparse
 
-# Force PostgreSQL if DATABASE_URL exists (Railway provides this)
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Database Configuration - MUST BE BEFORE ANY OTHER DATABASE RELATED CODE
 if 'DATABASE_URL' in os.environ:
-    # Configure DATABASES first thing to avoid SQLite import
+    # Use PostgreSQL on Railway
     db_url = urlparse(os.environ['DATABASE_URL'])
     
     DATABASES = {
@@ -15,10 +18,11 @@ if 'DATABASE_URL' in os.environ:
             'PASSWORD': db_url.password,
             'HOST': db_url.hostname,
             'PORT': db_url.port,
+            'CONN_MAX_AGE': 600,
         }
     }
 else:
-    # Only use SQLite for local development
+    # Use SQLite for local development
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -26,16 +30,11 @@ else:
         }
     }
 
-# Continue with normal imports and settings
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 SECRET_KEY = 'your-secret-key-here'  # Make sure this matches your existing key
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.railway.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.railway.app', '.up.railway.app']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
