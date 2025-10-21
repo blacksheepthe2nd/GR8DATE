@@ -1,14 +1,41 @@
-# core/settings.py
+# EMERGENCY FIX FOR RAILWAY SQLITE ISSUE
 import os
+from urllib.parse import urlparse
+
+# Force PostgreSQL if DATABASE_URL exists (Railway provides this)
+if 'DATABASE_URL' in os.environ:
+    # Configure DATABASES first thing to avoid SQLite import
+    db_url = urlparse(os.environ['DATABASE_URL'])
+    
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': db_url.path[1:],
+            'USER': db_url.username,
+            'PASSWORD': db_url.password,
+            'HOST': db_url.hostname,
+            'PORT': db_url.port,
+        }
+    }
+else:
+    # Only use SQLite for local development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+# Continue with normal imports and settings
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'your-secret-key-here'  # Make sure this matches your existing key
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # ⬅️ ADD THESE FOR DEVELOPMENT
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.railway.app']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -29,6 +56,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -58,13 +86,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -88,6 +109,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -100,3 +122,11 @@ LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/"
 
 SITE_ID = 1
+
+# Security settings for production
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
