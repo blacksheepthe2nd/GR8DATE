@@ -5,16 +5,14 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 
-from core.views import password_gateway
-
 urlpatterns = [
-    # Password gateway at root
-    path("", password_gateway, name="password_gateway"),
+    # Remove password gateway - direct to home instead
+    path("", TemplateView.as_view(template_name="pages/index.html"), name="home"),
     
     # Admin
     path("admin/", admin.site.urls),
 
-    # Home page (accessible after password)
+    # Home page (keep this for consistency)
     path("home/", TemplateView.as_view(template_name="pages/index.html"), name="home"),
 
     # Include other pages
