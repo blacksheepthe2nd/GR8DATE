@@ -17,8 +17,12 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.onrender.com']
-
+ALLOWED_HOSTS = [
+    'web-production-d951.up.railway.app',
+    '.railway.app',  # This allows all Railway subdomains
+    'localhost',
+    '127.0.0.1',
+]
 
 DATABASES = {
     'default': {
