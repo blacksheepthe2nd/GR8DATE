@@ -1,3 +1,4 @@
+# Force redeploy for superuser creation - $(date)
 # core/settings.py
 import os
 from pathlib import Path
