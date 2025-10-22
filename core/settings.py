@@ -13,28 +13,32 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
 # Debug mode based on environment
 DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
+# CSRF and Allowed Hosts for Render
 CSRF_TRUSTED_ORIGINS = [
-    'https://web-production-d951.up.railway.app',
-    'http://web-production-d951.up.railway.app',
+    'https://*.onrender.com',
+    'http://*.onrender.com',
     'http://127.0.0.1:8000',
     'http://localhost:8000',
 ]
 
 ALLOWED_HOSTS = [
-    'web-production-d951.up.railway.app',
-    '.railway.app',
-    'localhost',
-    '127.0.0.1',
+    'gr8date.onrender.com', 
+    '.onrender.com', 
+    'gr8date.com.au',
+    '.gr8date.com.au',
+    'www.gr8date.com.au',
+    'localhost', 
+    '127.0.0.1'
 ]
 
-# Database configuration - SIMPLE SQLITE FOR LOCAL
+# Database configuration - WORKS BOTH LOCAL AND RENDER
+import dj_database_url
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3',
+        conn_max_age=600
+    )
 }
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
