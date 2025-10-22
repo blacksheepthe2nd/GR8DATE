@@ -13,10 +13,11 @@ SECRET_KEY = 'dev-secret-key-change-in-production'  # Simple local key
 DEBUG = True  # Force debug mode locally
 
 CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-d951.up.railway.app',
+    'http://web-production-d951.up.railway.app',
     'http://127.0.0.1:8000',
     'http://localhost:8000',
 ]
-
 
 ALLOWED_HOSTS = [
     'web-production-d951.up.railway.app',
