@@ -1,23 +1,28 @@
 # core/urls.py
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    # Remove password gateway - direct to home instead
+    # Home
     path("", TemplateView.as_view(template_name="pages/index.html"), name="home"),
     
     # Admin
     path("admin/", admin.site.urls),
-
-    # Home page (keep this for consistency)
-    path("home/", TemplateView.as_view(template_name="pages/index.html"), name="home"),
-
-    # Include other pages
+    
+    # Redirect old /login/ to new /accounts/login/
+    path('login/', RedirectView.as_view(url='/accounts/login/', permanent=False)),
+    
+    # Allauth URLs
+    path("accounts/", include("allauth.urls")),
+    
+    # Your pages
     path("", include("pages.urls")),
 ]
 
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Static files for development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

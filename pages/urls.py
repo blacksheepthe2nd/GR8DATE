@@ -35,9 +35,12 @@ urlpatterns = [
     # Messaging
     path('messages/', views.messages_combined, name='messages_list'),
     path('messages/<int:user_id>/', views.message_thread, name='message_thread'),
+    # ADD THIS LINE ↓
+    path('send-message/<int:user_id>/', views.send_quick_message, name='send_quick_message'),
     path('messages/delete-conversation/<int:thread_id>/', views.delete_conversation, name='delete_conversation'),
-    path('messages/unread-count/', views.messages_unread_count, name='messages_unread_count'),    
-    
+    path('messages/unread-count/', views.messages_unread_count, name='messages_unread_count'),        
+
+
     # Hot Dates - ENHANCED WITH CANCELLATION
     path('hotdates/', views.hotdate_list, name='hotdate_list'),
     path('hotdates/create/', views.hotdate_create, name='hotdate_create'),

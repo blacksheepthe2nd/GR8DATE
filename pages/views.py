@@ -94,6 +94,7 @@ def dashboard(request):
         is_approved_user = user_profile.is_approved
     except Profile.DoesNotExist:
         is_approved_user = False
+        user_profile = None  # Initialize user_profile to avoid UnboundLocalError
     
     # FIX: If user is not approved AND not staff/superuser, redirect to preview gate
     if not is_approved_user and not request.user.is_staff:
@@ -514,7 +515,55 @@ def message_thread(request, user_id):
                 # Fallback for non-AJAX requests
                 return redirect('message_thread', user_id=user_id)
         
-        return JsonResponse({'success': False, 'error': 'Empty message'})
+        # If empty text and AJAX
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'error': 'Empty message'})
+        else:
+            # Fallback for non-AJAX empty message
+            return redirect('message_thread', user_id=user_id)
+    
+    # GET request - show the thread (MAKE SURE THIS RETURNS A RESPONSE)
+    messages = thread.messages.all().order_by('created_at')
+    
+    context = {
+        'thread': thread,
+        'other_user': other_user,
+        'messages': messages,
+    }
+    return render(request, 'pages/message_thread.html', context)  # ← THIS WAS MISSING!
+
+@login_required
+@csrf_exempt
+def send_quick_message(request, user_id):
+    """Quick message sending endpoint"""
+    if request.method == 'POST':
+        other_user = get_object_or_404(User, id=user_id)
+        text = request.POST.get('text', '').strip()
+        
+        if not text:
+            return JsonResponse({'success': False, 'error': 'Empty message'})
+        
+        thread = Thread.get_or_create_for(request.user, other_user)
+        message = Message.objects.create(
+            thread=thread,
+            sender=request.user,
+            recipient=other_user,
+            text=text
+        )
+        
+        # Update thread timestamp
+        thread.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message_id': message.id,
+            'text': message.text,
+            'created_at': message.created_at.strftime('%b %d, %Y %H:%M'),
+            'sender_id': message.sender_id
+        })
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
     
     # GET request - show the thread
     messages = thread.messages.all().order_by('created_at')
@@ -715,31 +764,46 @@ def admin_reject_profile(request, profile_id):
 @login_required
 def block_user(request, user_id):
     if request.method == 'POST':
-        target_user = get_object_or_404(User, id=user_id)
-        
-        Block.objects.get_or_create(
-            blocker=request.user,
-            blocked=target_user
-        )
-        
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'status': 'success'})
-        return redirect('profile_detail', user_id=user_id)
+        try:
+            target_user = get_object_or_404(User, id=user_id)
+            
+            # Don't allow blocking yourself
+            if request.user == target_user:
+                return JsonResponse({'status': 'error', 'message': 'Cannot block yourself'})
     
-    return JsonResponse({'status': 'error'}, status=400)
+            block, created = Block.objects.get_or_create(
+                blocker=request.user,
+                blocked=target_user
+            )
+
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success', 'message': 'User blocked successfully'})
+            return redirect('profile_detail', user_id=user_id)
+            
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 @login_required
 def unblock_user(request, user_id):
-    target_user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        try:
+            target_user = get_object_or_404(User, id=user_id)
+
+            deleted_count, _ = Block.objects.filter(
+                blocker=request.user,
+                blocked=target_user
+            ).delete()
+            
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success', 'message': 'User unblocked successfully'})
+            return redirect('profile_detail', user_id=user_id)
+            
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
     
-    Block.objects.filter(
-        blocker=request.user,
-        blocked=target_user
-    ).delete()
-    
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        return JsonResponse({'status': 'success'})
-    return redirect('profile_detail', user_id=user_id)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 # HotDates - ENHANCED WITH CANCELLATION AND NOTIFICATIONS
 @login_required

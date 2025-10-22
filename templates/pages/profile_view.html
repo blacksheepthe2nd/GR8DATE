@@ -568,7 +568,8 @@
         <a class="icon-btn" href="{% url 'matches_list' %}" title="Matches"><span class="material-icons">groups</span></a>
         <a class="icon-btn" href="#" title="Hot Dates"><span class="material-icons">local_fire_department</span></a>
         <a class="icon-btn" href="{% url 'profile_edit' %}" title="My Profile"><span class="material-icons">person</span></a>
-        <a class="icon-btn" href="{% url 'logout' %}" title="Logout"><span class="material-icons">logout</span></a>
+        <!-- FIXED: Changed to account_logout -->
+        <a class="icon-btn" href="{% url 'account_logout' %}" title="Logout"><span class="material-icons">logout</span></a>
       </div>
     </div>
   </header>
@@ -1072,6 +1073,7 @@
       if (form) form.reset();
     }
 
+    // FIXED: Quick Message Function - Uses the correct URL pattern
     function sendQuickMessage(event, userId) {
       event.preventDefault();
       
@@ -1079,7 +1081,8 @@
       const formData = new FormData(form);
       const messageText = formData.get('text');
       
-      fetch(`/messages/${userId}/`, {
+      // Use the send-message URL that matches your Django URL pattern
+      fetch(`/send-message/${userId}/`, {
         method: 'POST',
         headers: {
           'X-CSRFToken': getCSRFToken(),
@@ -1088,7 +1091,12 @@
           'text': messageText
         })
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
       .then(data => {
         if (data.success || data.status === 'success') {
           showToast('Message sent successfully!');
@@ -1099,7 +1107,7 @@
       })
       .catch(error => {
         console.error('Error:', error);
-        showToast('Error sending message');
+        showToast('Message system unavailable. Please use the messages page.');
       });
     }
 
