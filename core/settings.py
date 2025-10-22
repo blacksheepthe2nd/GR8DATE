@@ -2,6 +2,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()  # Load environment variables
 
@@ -25,14 +26,11 @@ ALLOWED_HOSTS = [
 ]
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'gr8date'),
-        'USER': os.environ.get('DB_USER', 'gr8date_user'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'gr8date123'),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 INSTALLED_APPS = [
