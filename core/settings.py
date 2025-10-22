@@ -124,3 +124,4 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
 # NO production security settings - keep it simple locally
+# Redeploy trigger Wed 22 Oct 2025 13:33:40 AEDT
