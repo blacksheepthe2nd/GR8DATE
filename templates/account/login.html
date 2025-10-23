@@ -53,6 +53,7 @@
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
     /* messages */
     .flash {margin:0 0 12px;padding:10px 12px;border-radius:12px;background:#fff3f6;border:1px solid #ffd4e2;color:#7a102e;font-weight:600}
+    .error {margin:0 0 12px;padding:10px 12px;border-radius:12px;background:#fff3f6;border:1px solid #ffd4e2;color:#7a102e;font-weight:600}
   </style>
   <style id="gd-header-override">
     .gd-header{border-bottom:1px solid #e9edf2;background:#fff}
@@ -69,11 +70,11 @@
 <header class="gd-header">
   <div class="gd-wrap">
     <a class="gd-brand" href="/">
-      <img alt="GR8Date Logo" class="logo-img" src="/static/images/gr8date-logo-desktop.svg"/>
+      <img alt="GR8Date Logo" class="logo-img" src="{% static 'images/gr8date-logo-desktop.svg' %}"/>
     </a>
     <nav class="gd-nav">
-      <a class="gd-login" href="/accounts/login/">Login</a>
-      <a class="gd-cta" href="/accounts/signup/">Join Free Now</a>
+      <a class="gd-login" href="{% url 'account_login' %}">Login</a>
+      <a class="gd-cta" href="{% url 'account_signup' %}">Join Free Now</a>
     </nav>
   </div>
 </header>
@@ -87,12 +88,21 @@
       {% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}
     {% endif %}
 
-    <!-- CHANGED: form action to use Allauth URL -->
+    {% if form.errors %}
+      <div class="error">
+        Your username and password didn't match. Please try again.
+      </div>
+    {% endif %}
+
     <form action="{% url 'account_login' %}" method="post" novalidate>
       {% csrf_token %}
-      <label for="ident">Username or Email address</label>
-      <!-- CHANGED: name="login" for Allauth -->
-      <input id="ident" name="login" type="text" placeholder="username or you@example.com" autocomplete="username" required value="{{ request.POST.login|default:'' }}"/>
+      
+      {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_name }}" />
+      {% endif %}
+
+      <label for="ident">Username</label>
+      <input id="ident" name="login" type="text" placeholder="Enter your username" autocomplete="username" required value="{{ form.login.value|default:'' }}"/>
 
       <label for="pass">Password</label>
       <div class="input-wrap">
@@ -101,7 +111,11 @@
       </div>
 
       <div class="row">
-        <div class="forgot"><a href="/contact/">Forgot password?</a></div>
+        <div class="remember">
+          <input type="checkbox" name="remember" id="remember">
+          <label for="remember" style="display: inline; margin: 0; font-weight: normal;">Remember me</label>
+        </div>
+        <div class="forgot"><a href="{% url 'account_reset_password' %}">Forgot password?</a></div>
       </div>
 
       <div class="cta"><button type="submit">Log in</button></div>
@@ -109,7 +123,7 @@
 
     <div class="divider">or</div>
 
-    <p class="alt">New to GR8DATE? <a href="/accounts/signup/">Create an account</a></p>
+    <p class="alt">New to GR8DATE? <a href="{% url 'account_signup' %}">Create an account</a></p>
     <p class="note">By logging in you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy</a>.</p>
   </div>
 </main>
