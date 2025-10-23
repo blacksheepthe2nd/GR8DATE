@@ -59,12 +59,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',
+    # 'django.contrib.sites',  # COMMENTED OUT - allauth dependency
     
     'pages',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
+    # 'allauth',  # COMMENTED OUT - temporarily disabled
+    # 'allauth.account',  # COMMENTED OUT - temporarily disabled
+    # 'allauth.socialaccount',  # COMMENTED OUT - temporarily disabled
 ]
 
 MIDDLEWARE = [
@@ -76,7 +76,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
+    # 'allauth.account.middleware.AccountMiddleware',  # COMMENTED OUT - allauth dependency
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -125,29 +125,19 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-SITE_ID = 1
+# SITE_ID = 1  # COMMENTED OUT - allauth dependency
 
-# Allauth configuration - UPDATED (non-deprecated)
+# Allauth configuration - TEMPORARILY DISABLED
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+    # 'allauth.account.auth_backends.AuthenticationBackend',  # COMMENTED OUT
 ]
 
-# NEW settings (replace the deprecated ones)
-ACCOUNT_LOGIN_METHODS = {'username'}  # Replaces ACCOUNT_AUTHENTICATION_METHOD
-ACCOUNT_SIGNUP_FIELDS = ['username*', 'password1*', 'password2*']  # Replaces ACCOUNT_EMAIL_REQUIRED and ACCOUNT_USERNAME_REQUIRED
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_LOGOUT_ON_GET = True
-
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = '/'
-
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-#ACCOUNT_AUTHENTICATION_METHOD = 'username'
-#ACCOUNT_EMAIL_REQUIRED = False
-#ACCOUNT_USERNAME_REQUIRED = True  # Fix: Make username required
-ACCOUNT_LOGOUT_ON_GET = True
+# Allauth settings - COMMENTED OUT (temporarily disabled)
+# ACCOUNT_LOGIN_METHODS = {'username'}
+# ACCOUNT_SIGNUP_FIELDS = ['username*', 'password1*', 'password2*']
+# ACCOUNT_EMAIL_VERIFICATION = 'none'
+# ACCOUNT_LOGOUT_ON_GET = True
 
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
