@@ -1,10 +1,10 @@
 # core/settings.py
 import os
 from pathlib import Path
-# REMOVE: from dotenv import load_dotenv
+from dotenv import load_dotenv
 import dj_database_url
 
-# REMOVE: load_dotenv()  # Load environment variables
+load_dotenv()  # Load environment variables
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -55,12 +55,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',  # COMMENTED OUT - allauth dependency
+    'django.contrib.sites',  # ENABLED
     
     'pages',
-    'allauth',  # COMMENTED OUT - temporarily disabled
-    'allauth.account',  # COMMENTED OUT - temporarily disabled
-    'allauth.socialaccount',  # COMMENTED OUT - temporarily disabled
+    'allauth',  # ENABLED
+    'allauth.account',  # ENABLED
+    'allauth.socialaccount',  # ENABLED
 ]
 
 MIDDLEWARE = [
@@ -72,7 +72,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',  # COMMENTED OUT - allauth dependency
+    'allauth.account.middleware.AccountMiddleware',  # ENABLED
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -116,18 +116,25 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# WhiteNoose configuration for static files
+# WhiteNoise configuration for static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
- SITE_ID = 1  # COMMENTED OUT - allauth dependency
+SITE_ID = 1  # ENABLED - REMOVED EXTRA SPACE
 
-# Allauth configuration - TEMPORARILY DISABLED
+# Allauth configuration - ENABLED
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    # 'allauth.account.auth_backends.AuthenticationBackend',  # COMMENTED OUT
+    'allauth.account.auth_backends.AuthenticationBackend',  # ENABLED
 ]
+
+# Allauth settings
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_LOGOUT_ON_GET = True
 
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
