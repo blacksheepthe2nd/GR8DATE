@@ -161,3 +161,11 @@ ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_FORMS = {
     'login': 'pages.forms.CustomLoginForm',  # If you have a custom form
 }
+
+# Serve media files from static during deployment
+import os
+if not DEBUG:
+    # In production, serve media from static
+    MEDIA_URL = '/static/media/'
+else:
+    MEDIA_URL = '/media/'
