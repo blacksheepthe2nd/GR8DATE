@@ -33,6 +33,8 @@ ALLOWED_HOSTS = [
 ]
 
 # Database configuration
+import dj_database_url
+
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///db.sqlite3',
@@ -129,12 +131,16 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',  # ENABLED
 ]
 
-# Allauth settings
+# Allauth settings - UPDATED TO REMOVE DEPRECATIONS
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_AUTHENTICATION_METHOD = 'username'
-ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_LOGIN_METHODS = {'email', 'username'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_LOGOUT_ON_GET = True
+
+# Remove these deprecated lines if they exist:
+# ACCOUNT_AUTHENTICATION_METHOD = "username_email"  # REMOVE
+# ACCOUNT_EMAIL_REQUIRED = True  # REMOVE  
+# ACCOUNT_USERNAME_REQUIRED = True  # REMOVE
 
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'

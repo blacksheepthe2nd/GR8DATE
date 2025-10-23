@@ -294,112 +294,111 @@ body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Seg
           </span>
         </div>
 
-        <!-- Profile Photo Section - FIXED: Uses profile.images -->
+        <!-- Profile Photo Section - FIXED: Proper image display -->
         <div class="field">
           <label>Profile photo</label>
           <div style="display:flex;align-items:center;gap:20px;margin-bottom:10px;">
-            {% with primary_image=me.images.first %}
-            <div class="photo-item" style="border:2px solid #667eea; width:120px; height:120px;">
-              {% if primary_image and primary_image.image %}
-              <img src="{{ primary_image.image.url }}" alt="Current profile photo">
-              {% else %}
-              <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#667eea;">No Photo</div>
-              {% endif %}
-            </div>
+            {% with profile_images=me.images.all %}
+              {% with primary_image=profile_images|first %}
+                <div class="photo-item" style="border:2px solid #667eea; width:120px; height:120px;">
+                  {% if primary_image and primary_image.image %}
+                    <img src="{{ primary_image.image.url }}" alt="Current profile photo">
+                  {% else %}
+                    <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#667eea;flex-direction:column;gap:8px;">
+                      <span class="material-icons" style="font-size:32px">photo_camera</span>
+                      <span style="font-size:12px">No Photo</span>
+                    </div>
+                  {% endif %}
+                </div>
+              {% endwith %}
             {% endwith %}
-            <button type="button" class="btn btn-muted">
-              <span class="material-icons">upload</span> Change Photo
+            <button type="button" class="btn btn-muted" onclick="uploadPrimaryPhoto()">
+              <span class="material-icons">upload</span> 
+              {% with profile_images=me.images.all %}
+                {% if profile_images|first %}Change Photo{% else %}Upload Photo{% endif %}
+              {% endwith %}
             </button>
           </div>
           <small class="badge-note">This will replace your current profile photo after review</small>
         </div>
 
-        <!-- Additional Photos Section - FIXED: Uses public images -->
+        <!-- Additional Photos Section - FIXED: Proper counting and display -->
         <div class="field">
           <label>Additional photos (up to 4)</label>
           <div class="photo-grid">
             {% for image in me.images.all %}
-              {% if not image.is_private %}
-              <div class="photo-item">
-                <img src="{{ image.image.url }}" alt="Additional photo">
-                <button type="button" class="btn-delete" onclick="deleteAdditionalPhoto({{ image.id }})">×</button>
-              </div>
+              {% if not image.is_private and not forloop.first %}
+                <div class="photo-item">
+                  <img src="{{ image.image.url }}" alt="Additional photo">
+                  <button type="button" class="btn-delete" onclick="deletePhoto({{ image.id }})">×</button>
+                </div>
               {% endif %}
             {% endfor %}
             
-            {% with public_images=me.images.all %}
-              {% with public_count=0 %}
-                {% for img in public_images %}
-                  {% if not img.is_private %}
-                    {% with public_count=public_count|add:1 %}{% endwith %}
-                  {% endif %}
-                {% endfor %}
-                {% if public_count < 4 %}
-                <div class="photo-item add-photo-btn" onclick="addAdditionalPhoto()">
+            {% with public_count=0 %}
+              {% for image in me.images.all %}
+                {% if not image.is_private and not forloop.first %}
+                  {% with public_count=public_count|add:1 %}{% endwith %}
+                {% endif %}
+              {% endfor %}
+              {% if public_count < 4 %}
+                <div class="photo-item add-photo-btn" onclick="uploadAdditionalPhoto()">
                   <span>+</span>
                 </div>
-                {% endif %}
-              {% endwith %}
+              {% endif %}
             {% endwith %}
           </div>
           <div class="photo-count">
-            {% with public_images=me.images.all %}
-              {% with public_count=0 %}
-                {% for img in public_images %}
-                  {% if not img.is_private %}
-                    {% with public_count=public_count|add:1 %}{% endwith %}
-                  {% endif %}
-                {% endfor %}
-                {{ public_count }}/4 additional photos
-              {% endwith %}
+            {% with public_count=0 %}
+              {% for image in me.images.all %}
+                {% if not image.is_private and not forloop.first %}
+                  {% with public_count=public_count|add:1 %}{% endwith %}
+                {% endif %}
+              {% endfor %}
+              {{ public_count }}/4 additional photos
             {% endwith %}
           </div>
         </div>
 
-        <!-- Private Photos Section - FIXED: No blur for owner -->
+        <!-- Private Photos Section - FIXED: Proper counting and display -->
         <div class="field">
           <label>Private photos (up to 4, blurred to others)</label>
           <div class="photo-grid">
             {% for image in me.images.all %}
-             {% if image.is_private %}
-             <div class="photo-item">
-               <img src="{{ image.image.url }}" alt="Private photo">
-               <!-- REMOVED: class="private-photo" -->
-               <button type="button" class="btn-delete" onclick="deletePrivatePhoto({{ image.id }})">×</button>
-            </div>
-             {% endif %}
+              {% if image.is_private %}
+                <div class="photo-item">
+                  <img src="{{ image.image.url }}" alt="Private photo">
+                  <button type="button" class="btn-delete" onclick="deletePhoto({{ image.id }})">×</button>
+                </div>
+              {% endif %}
             {% endfor %}
-    
-    {% with private_images=me.images.all %}
-      {% with private_count=0 %}
-        {% for img in private_images %}
-          {% if img.is_private %}
-            {% with private_count=private_count|add:1 %}{% endwith %}
-          {% endif %}
-        {% endfor %}
-        {% if private_count < 4 %}
-        <div class="photo-item add-photo-btn" onclick="addPrivatePhoto()">
-          <span>+</span>
+            
+            {% with private_count=0 %}
+              {% for image in me.images.all %}
+                {% if image.is_private %}
+                  {% with private_count=private_count|add:1 %}{% endwith %}
+                {% endif %}
+              {% endfor %}
+              {% if private_count < 4 %}
+                <div class="photo-item add-photo-btn" onclick="uploadPrivatePhoto()">
+                  <span>+</span>
+                </div>
+              {% endif %}
+            {% endwith %}
+          </div>
+          <div class="photo-count">
+            {% with private_count=0 %}
+              {% for image in me.images.all %}
+                {% if image.is_private %}
+                  {% with private_count=private_count|add:1 %}{% endwith %}
+                {% endif %}
+              {% endfor %}
+              {{ private_count }}/4 private photos
+            {% endwith %}
+          </div>
         </div>
-        {% endif %}
-      {% endwith %}
-    {% endwith %}
-  </div>
-  <div class="photo-count">
-    {% with private_images=me.images.all %}
-      {% with private_count=0 %}
-        {% for img in private_images %}
-          {% if img.is_private %}
-            {% with private_count=private_count|add:1 %}{% endwith %}
-          {% endif %}
-        {% endfor %}
-        {{ private_count }}/4 private photos
-      {% endwith %}
-    {% endwith %}
-  </div>
-</div>        
 
-        <!-- Text Content Fields with current values - FIXED: Uses actual data -->
+        <!-- Text Content Fields with current values -->
         <div class="grid-2" style="margin-top:20px">
           <div class="field">
             <label>Headline</label>
@@ -435,106 +434,38 @@ body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Seg
 </main>
 
 <script>
-// Tab switching
-document.querySelectorAll('.tab-button').forEach(button => {
-  button.addEventListener('click', () => {
-    // Update active tab button
-    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-    button.classList.add('active');
-    
-    // Show corresponding section
-    const tabName = button.getAttribute('data-tab');
-    document.querySelectorAll('.settings-section').forEach(section => {
-      section.classList.remove('active');
-    });
-    document.getElementById(tabName + '-tab').classList.add('active');
-  });
-});
-
-// Photo management functions
-function deleteAdditionalPhoto(imageId) {
-  if (confirm('Are you sure you want to delete this photo?')) {
-    // AJAX call to delete image
-    fetch(`/delete-image/${imageId}/`, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-      },
-    }).then(response => {
-      if (response.ok) {
-        location.reload(); // Refresh to show changes
-      }
-    });
-  }
-}
-
-function deletePrivatePhoto(imageId) {
-  if (confirm('Are you sure you want to delete this private photo?')) {
-    // AJAX call to delete private image
-    fetch(`/delete-image/${imageId}/`, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-      },
-    }).then(response => {
-      if (response.ok) {
-        location.reload(); // Refresh to show changes
-      }
-    });
-  }
-}
-
-function addAdditionalPhoto() {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.onchange = function(e) {
-    if (e.target.files[0]) {
-      uploadPhoto(e.target.files[0], false); // false = not private
-    }
-  };
-  input.click();
-}
-
-function addPrivatePhoto() {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.onchange = function(e) {
-    if (e.target.files[0]) {
-      uploadPhoto(e.target.files[0], true); // true = private
-    }
-  };
-  input.click();
-}
-
-function uploadPhoto(file, isPrivate) {
-  const formData = new FormData();
-  formData.append('image', file);
-  formData.append('is_private', isPrivate);
-  
-  fetch('/upload-profile-image/', {
-    method: 'POST',
-    headers: {
-      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-    },
-    body: formData,
-  }).then(response => {
-    if (response.ok) {
-      location.reload(); // Refresh to show new image
-    } else {
-      alert('Error uploading image');
-    }
-  });
-}
-
-// Age range dropdown population
+// Tab switching - FIXED: Proper event handling
 document.addEventListener('DOMContentLoaded', function() {
+  // Tab switching
+  document.querySelectorAll('.tab-button').forEach(button => {
+    button.addEventListener('click', () => {
+      // Update active tab button
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      
+      // Show corresponding section
+      const tabName = button.getAttribute('data-tab');
+      document.querySelectorAll('.settings-section').forEach(section => {
+        section.classList.remove('active');
+      });
+      document.getElementById(tabName + '-tab').classList.add('active');
+    });
+  });
+
+  // Age range dropdown population - FIXED: Only populate if empty
   const minSelect = document.getElementById('prefAgeMin');
   const maxSelect = document.getElementById('prefAgeMax');
   
-  // Populate age options from 18 to 80 if not already populated
-  if (minSelect && minSelect.options.length === 0) {
+  if (minSelect && minSelect.options.length <= 1) {
+    // Clear existing options except the first one
+    while (minSelect.options.length > 0) {
+      minSelect.remove(0);
+    }
+    while (maxSelect.options.length > 0) {
+      maxSelect.remove(0);
+    }
+    
+    // Populate age options from 18 to 80
     for (let age = 18; age <= 80; age++) {
       const option = document.createElement('option');
       option.value = age;
@@ -542,11 +473,95 @@ document.addEventListener('DOMContentLoaded', function() {
       minSelect.appendChild(option.cloneNode(true));
       maxSelect.appendChild(option);
     }
+    
+    // Set default values if needed
+    if (!minSelect.value) minSelect.value = 18;
+    if (!maxSelect.value) maxSelect.value = 80;
+  }
+});
+
+// Photo management functions - FIXED: Consolidated and improved
+function deletePhoto(imageId) {
+  if (confirm('Are you sure you want to delete this photo?')) {
+    fetch(`/delete-image/${imageId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+      },
+    }).then(response => {
+      if (response.ok) {
+        location.reload();
+      } else {
+        alert('Error deleting photo');
+      }
+    }).catch(error => {
+      console.error('Error:', error);
+      alert('Error deleting photo');
+    });
+  }
+}
+
+function uploadPrimaryPhoto() {
+  uploadPhoto(false, true); // not private, is primary
+}
+
+function uploadAdditionalPhoto() {
+  uploadPhoto(false, false); // not private, not primary
+}
+
+function uploadPrivatePhoto() {
+  uploadPhoto(true, false); // private, not primary
+}
+
+function uploadPhoto(isPrivate, isPrimary) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = function(e) {
+    if (e.target.files[0]) {
+      const formData = new FormData();
+      formData.append('image', e.target.files[0]);
+      formData.append('is_private', isPrivate);
+      formData.append('is_primary', isPrimary);
+      
+      fetch('/upload-profile-image/', {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        body: formData,
+      }).then(response => {
+        if (response.ok) {
+          location.reload();
+        } else {
+          alert('Error uploading image');
+        }
+      }).catch(error => {
+        console.error('Error:', error);
+        alert('Error uploading image');
+      });
+    }
+  };
+  input.click();
+}
+
+// Form submission handling - FIXED: Added basic validation
+document.getElementById('profileForm').addEventListener('submit', function(e) {
+  const minAge = parseInt(document.getElementById('prefAgeMin').value);
+  const maxAge = parseInt(document.getElementById('prefAgeMax').value);
+  
+  if (minAge > maxAge) {
+    e.preventDefault();
+    alert('Minimum age cannot be greater than maximum age');
+    return false;
   }
   
-  // Set default values if not already set
-  if (minSelect && !minSelect.value) minSelect.value = 18;
-  if (maxSelect && !maxSelect.value) maxSelect.value = 80;
+  // Show loading state
+  const submitButtons = this.querySelectorAll('button[type="submit"]');
+  submitButtons.forEach(button => {
+    button.disabled = true;
+    button.innerHTML = '<span class="material-icons">hourglass_empty</span> Saving...';
+  });
 });
 </script>
 {% endblock %}

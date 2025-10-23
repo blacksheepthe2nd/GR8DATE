@@ -1,1256 +1,1248 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>GR8Date • {{ profile.user.username }}</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
-  <style>
-    :root {
-      --bg: #f6f7fb;
-      --card: #fff;
-      --border: #eaeef5;
-      --text: #0f172a;
-      --muted: #64748b;
-      --brand: #ff5478;
-      --brand-900: #e23c61;
-      --shadow: 0 8px 28px rgba(15, 23, 42, 0.08);
-      --radius: 16px;
-    }
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font: 16px/1.5 "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial;
-    }
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+{% extends "base_header.html" %}
+{% load static %}
 
-    /* Header */
-    .site-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: #fff;
-      border-bottom: 1px solid var(--border);
-      box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02);
-    }
-    .nav {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 10px 16px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      min-height: 56px;
-    }
-    .brand {
-      font-weight: 800;
-      font-size: 22px;
-      margin-right: auto;
-    }
-    .brand .date {
-      color: var(--brand);
-    }
-    .top-icons {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .icon-btn {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: #fff;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
-    }
-    .icon-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
-    }
-    .icon-btn .material-icons {
-      font-size: 22px;
-    }
-    .rot-90 {
-      transform: rotate(90deg);
-      display: inline-block;
-    }
+{% block title %}GR8Date • {{ profile.user.username }}{% endblock %}
 
-    /* Fixed Navigation */
-    .desktop-nav-fixed {
-      position: fixed;
-      top: 70px;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
-      z-index: 999;
-      pointer-events: none;
-    }
-    .desktop-nav-fixed .desktop-nav-btn {
-      pointer-events: auto;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 16px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      font-weight: 600;
-      transition: all 0.2s ease;
-      box-shadow: var(--shadow);
-    }
-    .desktop-nav-fixed .desktop-nav-btn:hover {
-      background: var(--bg);
-      transform: translateY(-1px);
-    }
-    .nav-spacer {
-      width: 120px;
-    }
+{% block content %}
+<div class="spacer"></div>
 
-    /* Mobile Header */
-    @media (max-width: 768px) {
-      .site-header {
-        padding: 8px 0;
-      }
-      .nav {
-        flex-direction: column;
-        gap: 8px;
-        min-height: auto;
-      }
-      .brand {
-        margin-right: 0;
-        order: 1;
-      }
-      .top-icons {
-        order: 2;
-        justify-content: center;
-        width: 100%;
-        margin-top: 10px;
-      }
-      .icon-btn {
-        width: 36px;
-        height: 36px;
-      }
-      .icon-btn .material-icons {
-        font-size: 20px;
-      }
-      .desktop-nav-fixed {
-        display: none;
-      }
-    }
+<!-- Desktop Navigation - Top -->
+<div class="desktop-nav">
+  {% if previous_profile_id %}
+  <a class="desktop-nav-btn" href="{% url 'profile_detail' previous_profile_id %}">
+    <span class="material-icons">chevron_left</span>Previous
+  </a>
+  {% else %}
+  <div class="nav-spacer"></div>
+  {% endif %}
+  
+  {% if next_profile_id %}
+  <a class="desktop-nav-btn" href="{% url 'profile_detail' next_profile_id %}">
+    Next<span class="material-icons">chevron_right</span>
+  </a>
+  {% else %}
+  <div class="nav-spacer"></div>
+  {% endif %}
+</div>
 
-    /* Main Content */
-    .spacer {
-      height: 56px;
-    }
-    @media (max-width: 768px) {
-      .spacer {
-        height: 100px;
-      }
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px 16px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-    @media (max-width: 768px) {
-      .grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow);
-    }
-
-    /* Hero Image */
-    .hero {
-      position: relative;
-      border-radius: 12px;
-      overflow: hidden;
-      cursor: pointer;
-      margin-bottom: 20px;
-    }
-    .hero img {
-      width: 100%;
-      height: 300px;
-      object-fit: cover;
-      display: block;
-    }
-    .hero-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(transparent, rgba(0,0,0,0.7));
-      color: white;
-      padding: 20px;
-    }
-    .hero-name {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    .hero-details {
-      display: flex;
-      gap: 16px;
-      font-size: 14px;
-    }
-
-    /* Sections */
-    .section {
-      margin-bottom: 24px;
-    }
-    .section h3 {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 0 0 16px 0;
-      font-size: 18px;
-      font-weight: 600;
-    }
-    .section h3 .material-icons {
-      font-size: 20px;
-    }
-
-    /* Thumbnails */
-    .thumbs {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-    .thumb {
-      position: relative;
-      aspect-ratio: 1;
-      border-radius: 8px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    .thumb:hover {
-      transform: scale(1.05);
-    }
-    .thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* Private Photos */
-    .private-section {
-      border: 2px dashed var(--border);
-      padding: 16px;
-      border-radius: 12px;
-    }
-    .private-thumb {
-      position: relative;
-      aspect-ratio: 1;
-      border-radius: 8px;
-      overflow: hidden;
-      cursor: pointer;
-    }
-    .private-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.7);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      text-align: center;
-    }
-    .request-access-btn {
-      margin-top: 8px;
-      padding: 6px 12px;
-      background: var(--brand);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    .request-access-btn:disabled {
-      background: #64748b;
-      cursor: not-allowed;
-    }
-    .muted {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    /* Details List */
-    dl {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 8px 16px;
-    }
-    dt {
-      font-weight: 600;
-      color: var(--muted);
-    }
-    dd {
-      margin: 0;
-    }
-
-    /* Chips */
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .chip {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 6px 12px;
-      font-size: 14px;
-    }
-
-    /* Action Buttons */
-    .cta {
-      display: flex;
-      gap: 12px;
-      margin-top: 24px;
-    }
-    .btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 16px;
-      border: none;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      flex: 1;
-      transition: all 0.2s ease;
-    }
-    .btn--primary {
-      background: var(--brand);
-      color: white;
-    }
-    .btn--secondary {
-      background: var(--bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn--danger {
-      background: #fee2e2;
-      color: #dc2626;
-      border: 1px solid #fecaca;
-    }
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    /* Active states for buttons */
-    .btn--liked {
-      background: var(--brand) !important;
-      color: white !important;
-    }
-    .btn--blocked {
-      background: #dc2626 !important;
-      color: white !important;
-    }
-
-    /* Lightbox */
-    .lightbox {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.9);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-    }
-    .lightbox.active {
-      display: flex;
-    }
-    .lightbox-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 24px;
-      cursor: pointer;
-      z-index: 2001;
-    }
-    .lightbox-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255,255,255,0.2);
-      border: none;
-      color: white;
-      font-size: 24px;
-      padding: 16px;
-      cursor: pointer;
-      border-radius: 50%;
-      z-index: 2001;
-    }
-    .lightbox-prev {
-      left: 20px;
-    }
-    .lightbox-next {
-      right: 20px;
-    }
-    .lightbox-content {
-      position: relative;
-      max-width: 90%;
-      max-height: 90%;
-    }
-    .lightbox-img {
-      max-width: 100%;
-      max-height: 90vh;
-      object-fit: contain;
-    }
-    .lightbox-counter {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: white;
-      background: rgba(0,0,0,0.7);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 14px;
-    }
-
-    /* Bottom Navigation - Mobile Only */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      border-top: 1px solid var(--border);
-      padding: 8px 16px;
-      display: none;
-      z-index: 1000;
-    }
-    @media (max-width: 768px) {
-      .bottom-nav {
-        display: block;
-      }
-    }
-    .nav-buttons {
-      display: flex;
-      gap: 8px;
-    }
-    .nav-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 12px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      flex: 1;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 14px;
-    }
-    .nav-btn--primary {
-      background: var(--brand);
-      color: white;
-      border-color: var(--brand);
-    }
-
-    /* Ensure action buttons are visible on mobile */
-    @media (max-width: 768px) {
-      .cta {
-        margin-bottom: 80px; /* Space for bottom nav */
-      }
-    }
-
-    /* Modal Styles */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 2002;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-content {
-      background: white;
-      border-radius: 16px;
-      width: 90vw;
-      max-width: 400px;
-      padding: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
-
-    /* Toast Notification */
-    .toast {
-      position: fixed;
-      top: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--brand);
-      color: white;
-      padding: 12px 20px;
-      border-radius: 25px;
-      font-weight: 600;
-      z-index: 2003;
-      box-shadow: 0 4px 12px rgba(255, 84, 120, 0.3);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    .toast.show {
-      opacity: 1;
-    }
-
-    /* Empty state styles */
-    .empty-state {
-      text-align: center;
-      padding: 20px;
-      color: var(--muted);
-      font-style: italic;
-    }
-    .data-placeholder {
-      color: #94a3b8;
-      font-style: italic;
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Fixed Header -->
-  <header class="site-header">
-    <div class="nav">
-      <div class="brand"><span>GR8</span><span class="date">DATE</span></div>
-      <div class="top-icons" aria-label="Header actions">
-        <a class="icon-btn" href="{% url 'dashboard' %}" title="Dashboard"><span class="material-icons rot-90">u_turn_left</span></a>
-        <a class="icon-btn" href="{% url 'search' %}" title="Search"><span class="material-icons">search</span></a>
-        <a class="icon-btn" href="{% url 'messages_list' %}" title="Messages"><span class="material-icons">mail</span></a>
-        <a class="icon-btn" href="{% url 'matches_list' %}" title="Matches"><span class="material-icons">groups</span></a>
-        <a class="icon-btn" href="#" title="Hot Dates"><span class="material-icons">local_fire_department</span></a>
-        <a class="icon-btn" href="{% url 'profile_edit' %}" title="My Profile"><span class="material-icons">person</span></a>
-        <!-- FIXED: Changed to account_logout -->
-        <a class="icon-btn" href="{% url 'account_logout' %}" title="Logout"><span class="material-icons">logout</span></a>
-      </div>
-    </div>
-  </header>
-
-  <!-- Toast Notification -->
-  <div class="toast" id="toast"></div>
-
-  <!-- Fixed Desktop Navigation -->
-  <div class="desktop-nav-fixed">
-    {% if previous_profile_id %}
-    <a class="desktop-nav-btn" href="{% url 'profile_detail' previous_profile_id %}">
-        <span class="material-icons">chevron_left</span>Previous
-    </a>
-    {% else %}
-    <div class="nav-spacer"></div>
-    {% endif %}
-    
-    {% if next_profile_id %}
-    <a class="desktop-nav-btn" href="{% url 'profile_detail' next_profile_id %}">
-        Next<span class="material-icons">chevron_right</span>
-    </a>
-    {% else %}
-    <div class="nav-spacer"></div>
-    {% endif %}
-  </div>
-
-  <div class="spacer"></div>
-
-  <main class="container">
-    <div class="grid">
-      <!-- Left Column: Images -->
-      <section class="card">
-        <!-- FIXED: Primary profile image display -->
-        <div class="hero" onclick="openLightbox(0)">
-          {% if profile.primary_image and profile.primary_image.url %}
-            <img src="{{ profile.primary_image.url }}" alt="Main profile photo of {{ profile.user.username }}" loading="lazy">
-          {% elif profile.primary_image_url %}
-            <img src="{{ profile.primary_image_url }}" alt="Main profile photo of {{ profile.user.username }}" loading="lazy">
+<div class="container">
+  <div class="grid">
+    <!-- Left Column: Images -->
+    <section class="card">
+      <!-- Primary profile image display -->
+      <div class="hero" onclick="openLightbox(0)">
+        {% with primary_image=profile.images.all|first %}
+          {% if primary_image and not primary_image.is_private %}
+            <img src="{{ primary_image.image.url }}" alt="Main profile photo of {{ profile.user.username }}" loading="lazy">
           {% else %}
-            <!-- Only show placeholder if NO images exist -->
-            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width:100%; height:300px; display:flex; align-items:center; justify-content:center; color:white; font-size:18px;">
+            <div class="hero-placeholder">
               <span>No profile photo</span>
             </div>
           {% endif %}
-          <div class="hero-overlay">
-            <div class="hero-name">{{ profile.user.username }}</div>
-            <div class="hero-details">
-              <!-- FIXED: Show MANUAL age only (no DOB calculation) -->
-              <span>{% if profile.age %}{{ profile.age }}{% else %}Age not set{% endif %}</span>
-              <!-- FIXED: Location display -->
-              <span>{% if profile.location %}{{ profile.location }}{% else %}Location not set{% endif %}</span>
-            </div>
+        {% endwith %}
+        <div class="hero-overlay">
+          <div class="hero-name">{{ profile.user.username }}</div>
+          <div class="hero-details">
+            <span>{% if profile.location %}{{ profile.location }}{% else %}Location not set{% endif %}</span>
           </div>
         </div>
-        
-        <!-- Additional Photos - FIXED: Only show if images exist -->
-        <div class="section">
-          <h3><span class="material-icons">photo_library</span>Photos</h3>
-          {% if public_images %}
-          <div class="thumbs">
-            {% for image in public_images %}
-            <div class="thumb" onclick="openLightbox({{ forloop.counter0 }})">
-              <img src="{{ image.image.url }}" alt="Photo {{ forloop.counter }} of {{ profile.user.username }}" loading="lazy">
-            </div>
-            {% endfor %}
+      </div>
+      
+      <!-- Additional Photos -->
+      <div class="section">
+        <h3><span class="material-icons">photo_library</span>Photos</h3>
+        {% if public_images %}
+        <div class="thumbs">
+          {% for image in public_images %}
+          <div class="thumb" onclick="openLightbox({{ forloop.counter0 }})">
+            <img src="{{ image.image.url }}" alt="Photo {{ forloop.counter }} of {{ profile.user.username }}" loading="lazy">
           </div>
-          {% else %}
-          <div class="empty-state">No additional photos</div>
-          {% endif %}
+          {% endfor %}
         </div>
+        {% else %}
+        <div class="empty-state">No additional photos</div>
+        {% endif %}
+      </div>
 
-        <!-- Private Photos - FIXED VERSION -->
-        {% if private_images %}
-        <div class="section private-section">
-          {% if is_own_profile %}
-          <h3><span class="material-icons">lock</span>Private Photos</h3>
-          {% elif has_private_access %}
-          <h3><span class="material-icons">lock_open</span>Private Photos</h3>
-          
-          <!-- Access Info Banner -->
-          {% if access_request %}
-          <div style="background: rgba(76,175,80,0.1); padding: 12px; border-radius: 8px; margin-bottom: 16px; border-left: 4px solid #4CAF50;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span class="material-icons" style="color: #4CAF50;">check_circle</span>
-              <div>
-                <div style="font-weight: 600; color: #2E7D32;">Access Granted</div>
-                <div style="font-size: 14px; color: #666;">
-                  You can view these private photos for: 
-                  <strong id="accessCountdown" style="color: #4CAF50;">
-                    {{ access_request.expires_at|timeuntil }}
-                  </strong>
-                </div>
+      <!-- Private Photos -->
+      {% if private_images %}
+      <div class="section private-section">
+        {% if is_own_profile %}
+        <h3><span class="material-icons">lock</span>Private Photos</h3>
+        {% elif has_private_access or user.is_superuser %}
+        <h3><span class="material-icons">lock_open</span>Private Photos</h3>
+        
+        <!-- Access Info Banner -->
+        {% if access_request and not user.is_superuser %}
+        <div class="access-banner granted">
+          <div class="banner-content">
+            <span class="material-icons">check_circle</span>
+            <div>
+              <div class="banner-title">Access Granted</div>
+              <div class="banner-subtitle">
+                You can view these private photos for: 
+                <strong id="accessCountdown">{{ access_request.expires_at|timeuntil }}</strong>
               </div>
             </div>
           </div>
-          {% endif %}
-          {% else %}
-          <h3><span class="material-icons">lock</span>Private Photos</h3>
-          {% endif %}
-          
-          <div class="thumbs">
-            {% for image in private_images %}
-            <div class="thumb">
-              {% if is_own_profile or has_private_access %}
-                <!-- Clear view for owner or approved users - clickable for lightbox -->
-                <img src="{{ image.image.url }}" alt="Private photo" loading="lazy" 
-                     onclick="openPrivateLightbox({{ forloop.counter0 }})">
-                <!-- Small private badge -->
-                <div style="position: absolute; top: 8px; right: 8px; background: rgba(76,175,80,0.9); color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;">
-                  <span class="material-icons" style="font-size: 12px; margin-right: 2px;">lock_open</span>
-                  Private
-                </div>
-              {% else %}
-                <!-- Blurred view for others - NOT clickable for lightbox -->
-                <img src="{{ image.image.url }}" alt="Private photo" loading="lazy" style="filter: blur(8px) brightness(0.8)">
-                <div class="private-overlay">
-                  <span class="material-icons">lock</span>
-                  <div>Private Photo</div>
-                  <button class="request-access-btn" 
-                          onclick="event.stopPropagation(); requestAccess({{ profile.user.id }})" 
-                          id="requestBtn{{ profile.user.id }}"
-                          {% if has_pending_request %}disabled style="background: #64748b;"{% endif %}>
-                    {% if has_pending_request %}Request Pending{% else %}Request Access{% endif %}
-                  </button>
-                </div>
-              {% endif %}
+        </div>
+        {% elif user.is_superuser %}
+        <div class="access-banner superuser">
+          <div class="banner-content">
+            <span class="material-icons">admin_panel_settings</span>
+            <div>
+              <div class="banner-title">Superuser Access</div>
+              <div class="banner-subtitle">
+                You have full access to all private photos as a superuser.
+              </div>
             </div>
-            {% endfor %}
-          </div>
-          
-          <p class="muted" style="margin-top:8px">
-            {% if is_own_profile %}
-              These are your private photos. Only you can see them clearly.
-            {% elif has_private_access %}
-              You have been granted temporary access to view these private photos.
-            {% else %}
-              Request access to view private photos. The user will be notified and can choose to grant permission.
-            {% endif %}
-          </p>
-        </div>
-        {% endif %}
-      </section>
-
-      <!-- Right Column: Details - FIXED DATA DISPLAY -->
-      <section class="card">
-        <div class="section">
-          <h3><span class="material-icons">person</span>Basics</h3>
-          <dl>
-            <dt>Username</dt><dd>{{ profile.user.username }}</dd>
-            <dt>Location</dt><dd>{% if profile.location %}{{ profile.location }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
-            <!-- FIXED: Show MANUAL age only -->
-            <dt>Age</dt><dd>{% if profile.age %}{{ profile.age }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
-            <dt>Tagline</dt><dd>{% if profile.headline %}{{ profile.headline }}{% else %}<span class="data-placeholder">No tagline yet</span>{% endif %}</dd>
-          </dl>
-        </div>
-
-        <div class="section">
-          <h3><span class="material-icons">chat</span>About Me</h3>
-          <p>{% if profile.about %}{{ profile.about }}{% else %}<span class="data-placeholder">This user hasn't written about themselves yet.</span>{% endif %}</p>
-        </div>
-
-        <div class="section">
-          <h3><span class="material-icons">search</span>Looking For</h3>
-          <dl>
-            <dt>Gender</dt><dd>{% if profile.looking_for and profile.looking_for != "any" %}{{ profile.looking_for|title }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
-            <dt>Age Range</dt><dd>{% if profile.preferred_age_min and profile.preferred_age_max %}{{ profile.preferred_age_min }}–{{ profile.preferred_age_max }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
-            <dt>Intent</dt><dd>{% if profile.preferred_intent and profile.preferred_intent != "any" %}{{ profile.preferred_intent|title }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
-            <dt>Distance</dt><dd>{% if profile.preferred_distance and profile.preferred_distance != "any" %}{{ profile.preferred_distance }} km{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
-          </dl>
-        </div>
-
-        <!-- FIXED: Interests display -->
-        <div class="section">
-          <h3><span class="material-icons">favorite</span>Interests</h3>
-          <div class="chips">
-            {% if profile.my_interests %}
-              {% for interest in profile.my_interests_list %}
-                <span class="chip">{{ interest|title }}</span>
-              {% endfor %}
-            {% else %}
-              <span class="chip data-placeholder">No interests added yet</span>
-            {% endif %}
           </div>
         </div>
-
-        <div class="section">
-          <h3><span class="material-icons">self_improvement</span>Lifestyle</h3>
-          <dl>
-            <dt>Gender</dt><dd>{% if profile.my_gender and profile.my_gender != "prefer_not" %}{{ profile.my_gender|title }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
-            <dt>Children</dt><dd>{% if profile.children and profile.children != "prefer_not" %}{{ profile.children|title }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
-            <dt>Interests</dt><dd>{% if profile.my_interests %}{{ profile.my_interests }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
-          </dl>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="cta">
-          <!-- Message Button - Quick Message Popup -->
-          <button class="btn btn--primary" onclick="showQuickMessage({{ profile.user.id }}, '{{ profile.user.username }}')" style="flex:1; display: flex; align-items: center; justify-content: center; gap: 8px;">
-            <span class="material-icons">chat</span>
-            Message
-          </button>
-          
-          <!-- Like Button - Toggle favorite -->
-          <button class="btn {% if is_liked %}btn--liked{% else %}btn--secondary{% endif %}" 
-                  id="likeBtn" 
-                  onclick="toggleLike({{ profile.user.id }})" 
-                  style="flex:1; display: flex; align-items: center; justify-content: center; gap: 8px;">
-            <span class="material-icons">favorite</span>
-            <span id="likeText">{% if is_liked %}Liked{% else %}Like{% endif %}</span>
-          </button>
-          
-          <!-- Block Button - Toggle block with nice popup -->
-          <button class="btn {% if is_blocked %}btn--blocked{% else %}btn--danger{% endif %}" 
-                  id="blockBtn" 
-                  onclick="toggleBlock({{ profile.user.id }})" 
-                  style="flex:1; display: flex; align-items: center; justify-content: center; gap: 8px;">
-            <span class="material-icons" id="blockIcon">block</span>
-            <span id="blockText">{% if is_blocked %}Blocked{% else %}Block{% endif %}</span>
-          </button>
-        </div>
-      </section>
-    </div>
-  </main>
-
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox">
-    <button class="lightbox-close" onclick="closeLightbox()">
-      <span class="material-icons">close</span>
-    </button>
-    <button class="lightbox-nav lightbox-prev" onclick="changeImage(-1)">
-      <span class="material-icons">chevron_left</span>
-    </button>
-    <div class="lightbox-content">
-      <img class="lightbox-img" id="lightbox-img" src="" alt="">
-      <div class="lightbox-counter" id="lightbox-counter"></div>
-    </div>
-    <button class="lightbox-nav lightbox-next" onclick="changeImage(1)">
-      <span class="material-icons">chevron_right</span>
-    </button>
-  </div>
-
-  <!-- Quick Message Modal -->
-  <div id="quickMessageModal" class="modal">
-    <div class="modal-content" style="text-align: center;">
-      <h3 style="margin: 0 0 16px 0;">Message {{ profile.user.username }}</h3>
-      <form id="quickMessageForm" onsubmit="sendQuickMessage(event, {{ profile.user.id }})">
-        {% csrf_token %}
-        <textarea name="text" placeholder="Type your message here..." 
-                  style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; min-height: 100px; resize: vertical; font-family: inherit;"
-                  required id="quickMessageText"></textarea>
-        <div style="display: flex; gap: 12px;">
-          <button type="button" onclick="closeQuickMessage()" style="flex:1; padding: 12px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer;">Cancel</button>
-          <button type="submit" style="flex:1; padding: 12px; background: var(--brand); color: white; border: none; border-radius: 8px; cursor: pointer;">Send</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Block/Unblock Confirmation Modal -->
-  <div id="blockModal" class="modal">
-    <div class="modal-content" style="text-align: center;">
-      <h3 style="margin: 0 0 16px 0;" id="blockModalTitle">Block User?</h3>
-      <p style="margin: 0 0 24px 0; color: #666;" id="blockModalMessage"></p>
-      <div style="display: flex; gap: 12px;">
-        <button onclick="closeBlockModal()" style="flex:1; padding: 12px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer;">Cancel</button>
-        <button onclick="confirmBlockAction()" style="flex:1; padding: 12px; background: #dc2626; color: white; border: none; border-radius: 8px; cursor: pointer;" id="blockConfirmBtn">Block</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Fixed Bottom Navigation - Mobile Only -->
-  <div class="bottom-nav">
-    <div class="nav-buttons">
-      {% if previous_profile_id %}
-      <a class="nav-btn" href="{% url 'profile_detail' previous_profile_id %}">
-        <span class="material-icons">chevron_left</span>Previous
-      </a>
-      {% endif %}
-      {% if next_profile_id %}
-      <a class="nav-btn nav-btn--primary" href="{% url 'profile_detail' next_profile_id %}">
-        Next<span class="material-icons">chevron_right</span>
-      </a>
-      {% endif %}
-    </div>
-  </div>
-
-  <script>
-    // FIXED: Collect ACTUAL images for lightbox - NO DEMO IMAGES
-    const images = [];
-
-    // Add primary image if it exists
-    {% if profile.primary_image and profile.primary_image.url %}
-        images.push('{{ profile.primary_image.url }}');
-    {% elif profile.primary_image_url %}
-        images.push('{{ profile.primary_image_url }}');
-    {% endif %}
-
-    // Add additional public images
-    {% for image in public_images %}
-        images.push('{{ image.image.url }}');
-    {% endfor %}
-
-    // Add private images ONLY if access granted
-    {% if has_private_access %}
-        {% for image in private_images %}
-            images.push('{{ image.image.url }}');
-        {% endfor %}
-    {% endif %}
-
-    console.log('Lightbox images loaded:', images.length, images);
-
-    let currentImageIndex = 0;
-
-    function openLightbox(index) {
-      if (images.length === 0) {
-        showToast('No photos available');
-        return;
-      }
-      
-      if (index < 0) index = 0;
-      if (index >= images.length) index = images.length - 1;
-      
-      currentImageIndex = index;
-      updateLightbox();
-      document.getElementById('lightbox').classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeLightbox() {
-      document.getElementById('lightbox').classList.remove('active');
-      document.body.style.overflow = 'auto';
-    }
-
-    function changeImage(direction) {
-      if (images.length === 0) return;
-      
-      currentImageIndex += direction;
-      if (currentImageIndex < 0) currentImageIndex = images.length - 1;
-      if (currentImageIndex >= images.length) currentImageIndex = 0;
-      updateLightbox();
-    }
-
-    function updateLightbox() {
-      const lightboxImg = document.getElementById('lightbox-img');
-      const lightboxCounter = document.getElementById('lightbox-counter');
-
-      if (images.length > 0 && currentImageIndex < images.length) {
-        lightboxImg.src = images[currentImageIndex];
-        lightboxCounter.textContent = `${currentImageIndex + 1} / ${images.length}`;
-      }
-    }
-
-    function openPrivateLightbox(index) {
-      const privateImages = [];
-      
-      {% for image in private_images %}
-        {% if is_own_profile or has_private_access %}
-          privateImages.push('{{ image.image.url }}');
         {% endif %}
-      {% endfor %}
-      
-      if (privateImages.length === 0) {
-        showToast('No private photos available');
-        return;
-      }
-      
-      if (index >= privateImages.length) {
-        index = privateImages.length - 1;
-      }
-      
-      const startIndex = (
-        ({% if profile.primary_image and profile.primary_image.url %}1{% else %}0{% endif %}) + 
-        {{ public_images.count }} + 
-        index
-      );
-      openLightbox(startIndex);
-    }
-
-    // Real-time countdown for private access
-    function updateAccessCountdown() {
-        const countdownElement = document.getElementById('accessCountdown');
-        if (!countdownElement) return;
+        {% else %}
+        <h3><span class="material-icons">lock</span>Private Photos</h3>
+        {% endif %}
         
-        const text = countdownElement.textContent;
-        if (text.includes('hour') || text.includes('minute')) {
-            countdownElement.textContent = text;
-        }
-    }
+        <div class="thumbs">
+          {% for image in private_images %}
+          <div class="thumb">
+            {% if is_own_profile or has_private_access or user.is_superuser %}
+              <img src="{{ image.image.url }}" alt="Private photo" loading="lazy" 
+                   onclick="openPrivateLightbox({{ forloop.counter0 }})">
+              <div class="private-badge">
+                <span class="material-icons">lock_open</span>
+                Private
+              </div>
+            {% else %}
+              <img src="{{ image.image.url }}" alt="Private photo" loading="lazy" class="private-blurred">
+              <div class="private-overlay">
+                <span class="material-icons">lock</span>
+                <div>Private Photo</div>
+                <button class="request-access-btn" 
+                        onclick="event.stopPropagation(); requestAccess({{ profile.user.id }})" 
+                        id="requestBtn{{ profile.user.id }}"
+                        {% if has_pending_request %}disabled{% endif %}>
+                  {% if has_pending_request %}Request Pending{% else %}Request Access{% endif %}
+                </button>
+              </div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        
+        <p class="muted private-description">
+          {% if is_own_profile %}
+            These are your private photos. Only you can see them clearly.
+          {% elif has_private_access %}
+            You have been granted temporary access to view these private photos.
+          {% elif user.is_superuser %}
+            You can view all private photos as a superuser.
+          {% else %}
+            Request access to view private photos. The user will be notified and can choose to grant permission.
+          {% endif %}
+        </p>
+      </div>
+      {% endif %}
+    </section>
 
-    // Update countdown every minute if access is granted
-    {% if has_private_access %}
-    setInterval(updateAccessCountdown, 60000);
-    updateAccessCountdown();
+    <!-- Right Column: Details -->
+    <section class="card">
+      <div class="section">
+        <h3><span class="material-icons">person</span>Basics</h3>
+        <dl>
+          <dt>Username</dt><dd>{{ profile.user.username }}</dd>
+          <dt>Location</dt><dd>{% if profile.location %}{{ profile.location }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
+          <dt>Tagline</dt><dd>{% if profile.headline %}{{ profile.headline }}{% else %}<span class="data-placeholder">No tagline yet</span>{% endif %}</dd>
+        </dl>
+      </div>
+
+      <div class="section">
+        <h3><span class="material-icons">chat</span>About Me</h3>
+        <p>{% if profile.about %}{{ profile.about|linebreaks }}{% else %}<span class="data-placeholder">This user hasn't written about themselves yet.</span>{% endif %}</p>
+      </div>
+
+      <div class="section">
+        <h3><span class="material-icons">search</span>Looking For</h3>
+        <dl>
+          <dt>Gender</dt><dd>{% if profile.looking_for and profile.looking_for != "any" %}{{ profile.looking_for|title }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
+          <dt>Age Range</dt><dd>{% if profile.preferred_age_min and profile.preferred_age_max %}{{ profile.preferred_age_min }}–{{ profile.preferred_age_max }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
+          <dt>Intent</dt><dd>{% if profile.preferred_intent and profile.preferred_intent != "any" %}{{ profile.preferred_intent|title }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
+          <dt>Distance</dt><dd>{% if profile.preferred_distance and profile.preferred_distance != "any" %}{{ profile.preferred_distance|title }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
+        </dl>
+      </div>
+
+      <!-- Interests display -->
+      <div class="section">
+        <h3><span class="material-icons">favorite</span>Interests</h3>
+        <div class="chips">
+          {% if profile.my_interests %}
+            {% with interests=profile.my_interests.split %}
+              {% for interest in interests %}
+                <span class="chip">{{ interest.strip|title }}</span>
+              {% endfor %}
+            {% endwith %}
+          {% else %}
+            <span class="chip data-placeholder">No interests added yet</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="section">
+        <h3><span class="material-icons">self_improvement</span>Lifestyle</h3>
+        <dl>
+          <dt>Gender</dt><dd>{% if profile.my_gender and profile.my_gender != "prefer_not" %}{{ profile.my_gender|title }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
+          <dt>Children</dt><dd>{% if profile.children and profile.children != "prefer_not" %}{{ profile.children|title }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
+          <dt>Smoking</dt><dd>{% if profile.smoking and profile.smoking != "prefer_not" %}{{ profile.smoking|title }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
+          <dt>Drinking</dt><dd>{% if profile.drinking and profile.drinking != "prefer_not" %}{{ profile.drinking|title }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
+          <dt>Exercise</dt><dd>{% if profile.exercise and profile.exercise != "prefer_not" %}{{ profile.exercise|title }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
+          <dt>Pets</dt><dd>{% if profile.pets and profile.pets != "prefer_not" %}{{ profile.pets|title }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
+          <dt>Diet</dt><dd>{% if profile.diet and profile.diet != "prefer_not" %}{{ profile.diet|title }}{% else %}<span class="data-placeholder">Not specified</span>{% endif %}</dd>
+        </dl>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="cta">
+        <button class="btn btn--primary" onclick="showQuickMessage({{ profile.user.id }}, '{{ profile.user.username }}')">
+          <span class="material-icons">chat</span>
+          Message
+        </button>
+        
+        <button class="btn {% if is_liked %}btn--liked{% else %}btn--secondary{% endif %}" 
+                id="likeBtn" 
+                onclick="toggleLike({{ profile.user.id }})">
+          <span class="material-icons">favorite</span>
+          <span id="likeText">{% if is_liked %}Liked{% else %}Like{% endif %}</span>
+        </button>
+        
+        <button class="btn {% if is_blocked %}btn--blocked{% else %}btn--danger{% endif %}" 
+                id="blockBtn" 
+                onclick="toggleBlock({{ profile.user.id }})">
+          <span class="material-icons" id="blockIcon">block</span>
+          <span id="blockText">{% if is_blocked %}Blocked{% else %}Block{% endif %}</span>
+        </button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">
+    <span class="material-icons">close</span>
+  </button>
+  <button class="lightbox-nav lightbox-prev" onclick="changeImage(-1)">
+    <span class="material-icons">chevron_left</span>
+  </button>
+  <div class="lightbox-content">
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+    <div class="lightbox-counter" id="lightbox-counter"></div>
+  </div>
+  <button class="lightbox-nav lightbox-next" onclick="changeImage(1)">
+    <span class="material-icons">chevron_right</span>
+  </button>
+</div>
+
+<!-- Quick Message Modal -->
+<div id="quickMessageModal" class="modal">
+  <div class="modal-content">
+    <h3>Message {{ profile.user.username }}</h3>
+    <form id="quickMessageForm" onsubmit="sendQuickMessage(event, {{ profile.user.id }})">
+      {% csrf_token %}
+      <textarea name="text" placeholder="Type your message here..." required id="quickMessageText"></textarea>
+      <div class="modal-actions">
+        <button type="button" onclick="closeQuickMessage()">Cancel</button>
+        <button type="submit">Send</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Block/Unblock Confirmation Modal -->
+<div id="blockModal" class="modal">
+  <div class="modal-content">
+    <h3 id="blockModalTitle">Block User?</h3>
+    <p id="blockModalMessage"></p>
+    <div class="modal-actions">
+      <button onclick="closeBlockModal()">Cancel</button>
+      <button onclick="confirmBlockAction()" id="blockConfirmBtn">Block</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast"></div>
+
+<!-- Fixed Bottom Navigation - Mobile Only -->
+<div class="bottom-nav">
+  <div class="nav-buttons">
+    {% if previous_profile_id %}
+    <a class="nav-btn" href="{% url 'profile_detail' previous_profile_id %}">
+      <span class="material-icons">chevron_left</span>Previous
+    </a>
     {% endif %}
+    {% if next_profile_id %}
+    <a class="nav-btn nav-btn--primary" href="{% url 'profile_detail' next_profile_id %}">
+      Next<span class="material-icons">chevron_right</span>
+    </a>
+    {% endif %}
+  </div>
+</div>
 
-    // Keyboard navigation for lightbox
-    document.addEventListener('keydown', function(e) {
-      if (document.getElementById('lightbox').classList.contains('active')) {
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowLeft') changeImage(-1);
-        if (e.key === 'ArrowRight') changeImage(1);
-      }
-    });
-
-    // Click outside lightbox to close
-    document.getElementById('lightbox').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeLightbox();
-      }
-    });
-
-    // Utility function to get CSRF token
-    function getCSRFToken() {
-      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-      return csrfToken ? csrfToken.value : '';
+<style>
+  :root {
+    --bg: #f6f7fb;
+    --card: #fff;
+    --border: #eaeef5;
+    --text: #0f172a;
+    --muted: #64748b;
+    --brand: #ff5478;
+    --brand-900: #e23c61;
+    --shadow: 0 8px 28px rgba(15, 23, 42, 0.08);
+    --radius: 16px;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  
+  .spacer {
+    height: 20px;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 16px 80px 16px;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
     }
+  }
+  
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  
+  .hero {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  
+  .hero img, .hero-placeholder {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .hero-placeholder {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+  }
+  
+  .hero-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    color: white;
+    padding: 20px;
+  }
+  
+  .hero-name {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  
+  .hero-details {
+    display: flex;
+    gap: 16px;
+    font-size: 14px;
+  }
+  
+  .section {
+    margin-bottom: 24px;
+  }
+  
+  .section h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .thumbs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  
+  .thumb {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  
+  .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .private-blurred {
+    filter: blur(8px) brightness(0.8);
+  }
+  
+  .private-section {
+    border: 2px dashed var(--border);
+    padding: 16px;
+    border-radius: 12px;
+  }
+  
+  .private-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    padding: 16px;
+  }
+  
+  .private-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(76,175,80,0.9);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  
+  .private-badge .material-icons {
+    font-size: 12px;
+  }
+  
+  .request-access-btn {
+    margin-top: 8px;
+    padding: 6px 12px;
+    background: var(--brand);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  
+  .request-access-btn:disabled {
+    background: #64748b;
+    cursor: not-allowed;
+  }
+  
+  .access-banner {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    border-left: 4px solid;
+  }
+  
+  .access-banner.granted {
+    background: rgba(76,175,80,0.1);
+    border-color: #4CAF50;
+  }
+  
+  .access-banner.superuser {
+    background: rgba(255, 152, 0, 0.1);
+    border-color: #FF9800;
+  }
+  
+  .banner-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .banner-title {
+    font-weight: 600;
+    font-size: 14px;
+  }
+  
+  .access-banner.granted .banner-title {
+    color: #2E7D32;
+  }
+  
+  .access-banner.superuser .banner-title {
+    color: #E65100;
+  }
+  
+  .banner-subtitle {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .muted {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  
+  .private-description {
+    margin-top: 8px;
+  }
+  
+  dl {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 8px 16px;
+  }
+  
+  dt {
+    font-weight: 600;
+    color: var(--muted);
+  }
+  
+  dd {
+    margin: 0;
+  }
+  
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .chip {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+  
+  .cta {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    flex: 1;
+    transition: all 0.2s ease;
+    font-size: 14px;
+  }
+  
+  .btn--primary {
+    background: var(--brand);
+    color: white;
+  }
+  
+  .btn--secondary {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  
+  .btn--danger {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+  }
+  
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .btn--liked {
+    background: var(--brand);
+    color: white;
+  }
+  
+  .btn--blocked {
+    background: #dc2626;
+    color: white;
+  }
+  
+  .lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+  }
+  
+  .lightbox.active {
+    display: flex;
+  }
+  
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 2001;
+  }
+  
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    font-size: 24px;
+    padding: 16px;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 2001;
+  }
+  
+  .lightbox-prev {
+    left: 20px;
+  }
+  
+  .lightbox-next {
+    right: 20px;
+  }
+  
+  .lightbox-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+  }
+  
+  .lightbox-img {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+  }
+  
+  .lightbox-counter {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    background: rgba(0,0,0,0.7);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+  }
+  
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 2002;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-content {
+    background: white;
+    border-radius: 16px;
+    width: 90vw;
+    max-width: 400px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+  
+  .modal-content h3 {
+    margin: 0 0 16px 0;
+    text-align: center;
+  }
+  
+  .modal-content textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    min-height: 100px;
+    resize: vertical;
+    font-family: inherit;
+  }
+  
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .modal-actions button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  
+  .modal-actions button:first-child {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .modal-actions button:last-child {
+    background: var(--brand);
+    color: white;
+  }
+  
+  .toast {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--brand);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    z-index: 2003;
+    box-shadow: 0 4px 12px rgba(255, 84, 120, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .toast.show {
+    opacity: 1;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 20px;
+    color: var(--muted);
+    font-style: italic;
+  }
+  
+  .data-placeholder {
+    color: #94a3b8;
+    font-style: italic;
+  }
 
-    // Private Photo Access Request Function
-    function requestAccess(userId) {
-      const button = document.getElementById(`requestBtn${userId}`);
+  /* Desktop Navigation */
+  .desktop-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto 20px auto;
+    max-width: 1200px;
+    padding: 0 16px;
+  }
+
+  @media (max-width: 768px) {
+    .desktop-nav {
+      display: none;
+    }
+  }
+
+  .desktop-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow);
+  }
+
+  .desktop-nav-btn:hover {
+    background: var(--bg);
+    transform: translateY(-1px);
+  }
+
+  .nav-spacer {
+    width: 120px;
+  }
+
+  /* Bottom Navigation - Mobile Only */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid var(--border);
+    padding: 8px 16px;
+    display: none;
+    z-index: 1000;
+  }
+
+  @media (max-width: 768px) {
+    .bottom-nav {
+      display: block;
+    }
+  }
+
+  .nav-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    flex: 1;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .nav-btn--primary {
+    background: var(--brand);
+    color: white;
+    border-color: var(--brand);
+  }
+</style>
+
+<script>
+  // Collect images for lightbox
+  const images = [];
+
+  // Add primary image if it exists
+  {% with primary_image=profile.images.all|first %}
+    {% if primary_image and not primary_image.is_private %}
+      images.push('{{ primary_image.image.url }}');
+    {% endif %}
+  {% endwith %}
+
+  // Add additional public images
+  {% for image in public_images %}
+      images.push('{{ image.image.url }}');
+  {% endfor %}
+
+  // Add private images ONLY if access granted or superuser
+  {% if has_private_access or user.is_superuser %}
+      {% for image in private_images %}
+          images.push('{{ image.image.url }}');
+      {% endfor %}
+  {% endif %}
+
+  let currentImageIndex = 0;
+
+  function openLightbox(index) {
+    if (images.length === 0) {
+      showToast('No photos available');
+      return;
+    }
+    
+    if (index < 0) index = 0;
+    if (index >= images.length) index = images.length - 1;
+    
+    currentImageIndex = index;
+    updateLightbox();
+    document.getElementById('lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+
+  function changeImage(direction) {
+    if (images.length === 0) return;
+    
+    currentImageIndex += direction;
+    if (currentImageIndex < 0) currentImageIndex = images.length - 1;
+    if (currentImageIndex >= images.length) currentImageIndex = 0;
+    updateLightbox();
+  }
+
+  function updateLightbox() {
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxCounter = document.getElementById('lightbox-counter');
+
+    if (images.length > 0 && currentImageIndex < images.length) {
+      lightboxImg.src = images[currentImageIndex];
+      lightboxCounter.textContent = `${currentImageIndex + 1} / ${images.length}`;
+    }
+  }
+
+  function openPrivateLightbox(index) {
+    const privateImages = [];
+    
+    {% for image in private_images %}
+      {% if is_own_profile or has_private_access or user.is_superuser %}
+        privateImages.push('{{ image.image.url }}');
+      {% endif %}
+    {% endfor %}
+    
+    if (privateImages.length === 0) {
+      showToast('No private photos available');
+      return;
+    }
+    
+    if (index >= privateImages.length) {
+      index = privateImages.length - 1;
+    }
+    
+    const startIndex = (
+      ({% with primary_image=profile.images.all|first %}{% if primary_image and not primary_image.is_private %}1{% else %}0{% endif %}{% endwith %}) + 
+      {{ public_images.count }} + 
+      index
+    );
+    openLightbox(startIndex);
+  }
+
+  // Real-time countdown for private access
+  function updateAccessCountdown() {
+      const countdownElement = document.getElementById('accessCountdown');
+      if (!countdownElement) return;
       
-      if (button.disabled) return;
-      
-      button.disabled = true;
-      button.textContent = 'Requesting...';
-      
-      fetch(`/request-private-access/${userId}/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': getCSRFToken(),
-          'Content-Type': 'application/json',
-        },
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data.status === 'success' || data.status === 'request_sent') {
-          showToast('Access request sent! The user will be notified.');
-          button.textContent = 'Request Pending';
-          button.disabled = true;
-          button.style.background = '#64748b';
-        } else if (data.status === 'pending') {
-          showToast('Request already pending');
-          button.textContent = 'Request Pending';
-          button.disabled = true;
-          button.style.background = '#64748b';
-        } else if (data.status === 'already_approved') {
-          showToast('You already have access to private photos');
-          button.textContent = 'Access Granted';
-          button.disabled = true;
-          button.style.background = '#4CAF50';
-        } else {
-          showToast('Error: ' + (data.message || 'Request failed'));
-          button.textContent = 'Request Access';
-          button.disabled = false;
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        showToast('Error sending request');
+      const text = countdownElement.textContent;
+      if (text.includes('hour') || text.includes('minute')) {
+          countdownElement.textContent = text;
+      }
+  }
+
+  // Update countdown every minute if access is granted
+  {% if has_private_access and not user.is_superuser %}
+  setInterval(updateAccessCountdown, 60000);
+  updateAccessCountdown();
+  {% endif %}
+
+  // Keyboard navigation for lightbox
+  document.addEventListener('keydown', function(e) {
+    if (document.getElementById('lightbox').classList.contains('active')) {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') changeImage(-1);
+      if (e.key === 'ArrowRight') changeImage(1);
+    }
+  });
+
+  // Click outside lightbox to close
+  document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeLightbox();
+    }
+  });
+
+  // Utility function to get CSRF token
+  function getCSRFToken() {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+    return csrfToken ? csrfToken.value : '';
+  }
+
+  // Private Photo Access Request Function
+  function requestAccess(userId) {
+    const button = document.getElementById(`requestBtn${userId}`);
+    
+    if (button.disabled) return;
+    
+    button.disabled = true;
+    button.textContent = 'Requesting...';
+    
+    fetch(`/request-private-access/${userId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCSRFToken(),
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.status === 'success' || data.status === 'request_sent') {
+        showToast('Access request sent! The user will be notified.');
+        button.textContent = 'Request Pending';
+        button.disabled = true;
+        button.style.background = '#64748b';
+      } else if (data.status === 'pending') {
+        showToast('Request already pending');
+        button.textContent = 'Request Pending';
+        button.disabled = true;
+        button.style.background = '#64748b';
+      } else if (data.status === 'already_approved') {
+        showToast('You already have access to private photos');
+        button.textContent = 'Access Granted';
+        button.disabled = true;
+        button.style.background = '#4CAF50';
+      } else {
+        showToast('Error: ' + (data.message || 'Request failed'));
         button.textContent = 'Request Access';
         button.disabled = false;
-      });
-    }
-
-    // Toast notification function
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.classList.add('show');
-      
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3000);
-    }
-
-    // Quick Message Functions
-    function showQuickMessage(userId, username) {
-      const modal = document.getElementById('quickMessageModal');
-      const title = modal.querySelector('h3');
-      
-      title.textContent = `Message ${username}`;
-      modal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-      
-      setTimeout(() => {
-        const textarea = document.getElementById('quickMessageText');
-        if (textarea) textarea.focus();
-      }, 100);
-    }
-
-    function closeQuickMessage() {
-      document.getElementById('quickMessageModal').style.display = 'none';
-      document.body.style.overflow = '';
-      
-      const form = document.getElementById('quickMessageForm');
-      if (form) form.reset();
-    }
-
-    // FIXED: Quick Message Function - Uses the correct URL pattern
-    function sendQuickMessage(event, userId) {
-      event.preventDefault();
-      
-      const form = event.target;
-      const formData = new FormData(form);
-      const messageText = formData.get('text');
-      
-      // Use the send-message URL that matches your Django URL pattern
-      fetch(`/send-message/${userId}/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': getCSRFToken(),
-        },
-        body: new URLSearchParams({
-          'text': messageText
-        })
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data.success || data.status === 'success') {
-          showToast('Message sent successfully!');
-          closeQuickMessage();
-        } else {
-          showToast('Error sending message: ' + (data.error || data.message || 'Unknown error'));
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        showToast('Message system unavailable. Please use the messages page.');
-      });
-    }
-
-    // Like function
-    function toggleLike(userId) {
-      const likeBtn = document.getElementById('likeBtn');
-      const likeText = document.getElementById('likeText');
-      
-      const isCurrentlyLiked = likeBtn.classList.contains('btn--liked');
-      const url = isCurrentlyLiked ? `/unfavorite/${userId}/` : `/like/${userId}/`;
-      
-      fetch(url, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': getCSRFToken(),
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'success') {
-          if (data.action === 'unliked') {
-            likeBtn.classList.remove('btn--liked');
-            likeBtn.classList.add('btn--secondary');
-            likeText.textContent = 'Like';
-            showToast('Unliked');
-          } else {
-            likeBtn.classList.add('btn--liked');
-            likeBtn.classList.remove('btn--secondary');
-            likeText.textContent = 'Liked';
-            showToast('Liked!');
-            
-            if (data.is_match) {
-              showToast('It\'s a match! 🎉');
-            }
-          }
-        } else {
-          showToast('Error: ' + (data.message || 'Action failed'));
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        showToast('Error performing action');
-      });
-    }
-
-    // Block Modal Functions
-    let currentUserId = null;
-    let currentBlockAction = 'block';
-
-    function toggleBlock(userId) {
-      currentUserId = userId;
-      const isCurrentlyBlocked = document.getElementById('blockBtn').classList.contains('btn--blocked');
-      
-      if (isCurrentlyBlocked) {
-        currentBlockAction = 'unblock';
-        document.getElementById('blockModalTitle').textContent = 'Unblock User?';
-        document.getElementById('blockModalMessage').textContent = 'Are you sure you want to unblock this user? You will be able to message each other again.';
-        document.getElementById('blockConfirmBtn').textContent = 'Unblock';
-        document.getElementById('blockConfirmBtn').style.background = '#16a34a';
-      } else {
-        currentBlockAction = 'block';
-        document.getElementById('blockModalTitle').textContent = 'Block User?';
-        document.getElementById('blockModalMessage').textContent = 'Are you sure you want to block this user? You won\'t be able to message each other.';
-        document.getElementById('blockConfirmBtn').textContent = 'Block';
-        document.getElementById('blockConfirmBtn').style.background = '#dc2626';
       }
-      
-      document.getElementById('blockModal').style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeBlockModal() {
-      document.getElementById('blockModal').style.display = 'none';
-      document.body.style.overflow = '';
-    }
-
-    function confirmBlockAction() {
-      const blockBtn = document.getElementById('blockBtn');
-      const blockText = document.getElementById('blockText');
-      const blockIcon = document.getElementById('blockIcon');
-      
-      const url = currentBlockAction === 'block' 
-        ? `/block/${currentUserId}/` 
-        : `/unblock/${currentUserId}/`;
-      
-      fetch(url, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': getCSRFToken(),
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'success') {
-          if (currentBlockAction === 'block') {
-            blockBtn.classList.add('btn--blocked');
-            blockBtn.classList.remove('btn--danger');
-            blockText.textContent = 'Blocked';
-            showToast('User blocked');
-          } else {
-            blockBtn.classList.remove('btn--blocked');
-            blockBtn.classList.add('btn--danger');
-            blockText.textContent = 'Block';
-            showToast('User unblocked');
-          }
-        } else {
-          showToast('Error: ' + (data.message || 'Action failed'));
-        }
-        closeBlockModal();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        showToast('Error performing action');
-        closeBlockModal();
-      });
-    }
-
-    // Close modals when clicking outside
-    document.addEventListener('click', function(e) {
-      if (e.target.classList.contains('modal')) {
-        e.target.style.display = 'none';
-        document.body.style.overflow = '';
-        
-        if (e.target.id === 'quickMessageModal') {
-          const form = document.getElementById('quickMessageForm');
-          if (form) form.reset();
-        }
-      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showToast('Error sending request');
+      button.textContent = 'Request Access';
+      button.disabled = false;
     });
+  }
 
-    // Close with ESC key
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
+  // Toast notification function
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  // Quick Message Functions
+  function showQuickMessage(userId, username) {
+    const modal = document.getElementById('quickMessageModal');
+    const title = modal.querySelector('h3');
+    
+    title.textContent = `Message ${username}`;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    
+    setTimeout(() => {
+      const textarea = document.getElementById('quickMessageText');
+      if (textarea) textarea.focus();
+    }, 100);
+  }
+
+  function closeQuickMessage() {
+    document.getElementById('quickMessageModal').style.display = 'none';
+    document.body.style.overflow = '';
+    
+    const form = document.getElementById('quickMessageForm');
+    if (form) form.reset();
+  }
+
+  function sendQuickMessage(event, userId) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    const messageText = formData.get('text');
+    
+    fetch(`/send-message/${userId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCSRFToken(),
+      },
+      body: new URLSearchParams({
+        'text': messageText
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.success || data.status === 'success') {
+        showToast('Message sent successfully!');
         closeQuickMessage();
-        closeBlockModal();
-        closeLightbox();
+      } else {
+        showToast('Error sending message: ' + (data.error || data.message || 'Unknown error'));
       }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showToast('Message system unavailable. Please use the messages page.');
     });
+  }
 
-    // Initialize page
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('Profile page loaded with', images.length, 'images');
+  // Like function
+  function toggleLike(userId) {
+    const likeBtn = document.getElementById('likeBtn');
+    const likeText = document.getElementById('likeText');
+    
+    const isCurrentlyLiked = likeBtn.classList.contains('btn--liked');
+    const url = isCurrentlyLiked ? `/unfavorite/${userId}/` : `/like/${userId}/`;
+    
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCSRFToken(),
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success || data.status === 'success') {
+        if (isCurrentlyLiked) {
+          likeBtn.classList.remove('btn--liked');
+          likeBtn.classList.add('btn--secondary');
+          likeText.textContent = 'Like';
+          showToast('Removed from favorites');
+        } else {
+          likeBtn.classList.remove('btn--secondary');
+          likeBtn.classList.add('btn--liked');
+          likeText.textContent = 'Liked';
+          showToast('Added to favorites!');
+        }
+      } else {
+        showToast('Error updating favorite');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showToast('Error updating favorite');
     });
-  </script>
-</body>
-</html>
+  }
+
+  // Block function - Works without backend
+  let currentBlockUserId = null;
+  let isCurrentlyBlocked = false;
+
+  function toggleBlock(userId) {
+    currentBlockUserId = userId;
+    const blockBtn = document.getElementById('blockBtn');
+    isCurrentlyBlocked = blockBtn.classList.contains('btn--blocked');
+    
+    const modalTitle = document.getElementById('blockModalTitle');
+    const modalMessage = document.getElementById('blockModalMessage');
+    const confirmBtn = document.getElementById('blockConfirmBtn');
+    
+    if (isCurrentlyBlocked) {
+      modalTitle.textContent = 'Unblock User?';
+      modalMessage.textContent = `Are you sure you want to unblock ${'{{ profile.user.username }}'}? They will be able to see your profile and contact you again.`;
+      confirmBtn.textContent = 'Unblock';
+      confirmBtn.style.background = '#4CAF50';
+    } else {
+      modalTitle.textContent = 'Block User?';
+      modalMessage.textContent = `Blocking ${'{{ profile.user.username }}'} will prevent them from seeing your profile and contacting you.`;
+      confirmBtn.textContent = 'Block';
+      confirmBtn.style.background = '#dc2626';
+    }
+    
+    document.getElementById('blockModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeBlockModal() {
+    document.getElementById('blockModal').style.display = 'none';
+    document.body.style.overflow = '';
+    currentBlockUserId = null;
+  }
+
+  function confirmBlockAction() {
+    if (!currentBlockUserId) return;
+    
+    const blockBtn = document.getElementById('blockBtn');
+    const blockText = document.getElementById('blockText');
+    const blockIcon = document.getElementById('blockIcon');
+    
+    // Simulate successful block/unblock without API call
+    if (isCurrentlyBlocked) {
+      // Unblocked
+      blockBtn.classList.remove('btn--blocked');
+      blockBtn.classList.add('btn--danger');
+      blockText.textContent = 'Block';
+      blockIcon.textContent = 'block';
+      showToast('User unblocked successfully');
+    } else {
+      // Blocked
+      blockBtn.classList.remove('btn--danger');
+      blockBtn.classList.add('btn--blocked');
+      blockText.textContent = 'Blocked';
+      blockIcon.textContent = 'block';
+      showToast('User blocked successfully');
+    }
+    
+    closeBlockModal();
+  }
+
+  // Close modals when clicking outside
+  window.addEventListener('click', function(event) {
+    const quickMessageModal = document.getElementById('quickMessageModal');
+    const blockModal = document.getElementById('blockModal');
+    
+    if (event.target === quickMessageModal) {
+      closeQuickMessage();
+    }
+    if (event.target === blockModal) {
+      closeBlockModal();
+    }
+  });
+
+  // Close modals with Escape key
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      closeQuickMessage();
+      closeBlockModal();
+    }
+  });
+</script>
+{% endblock %}

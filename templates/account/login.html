@@ -54,6 +54,7 @@
     /* messages */
     .flash {margin:0 0 12px;padding:10px 12px;border-radius:12px;background:#fff3f6;border:1px solid #ffd4e2;color:#7a102e;font-weight:600}
     .error {margin:0 0 12px;padding:10px 12px;border-radius:12px;background:#fff3f6;border:1px solid #ffd4e2;color:#7a102e;font-weight:600}
+    .help-text {color:#64748b;font-size:14px;margin-top:4px;font-weight:normal;}
   </style>
   <style id="gd-header-override">
     .gd-header{border-bottom:1px solid #e9edf2;background:#fff}
@@ -70,7 +71,7 @@
 <header class="gd-header">
   <div class="gd-wrap">
     <a class="gd-brand" href="/">
-      <img alt="GR8Date Logo" class="logo-img" src="{% static 'images/gr8date-logo-desktop.svg' %}"/>
+      <img alt="GR8Date Logo" class="logo-img" src="{% static 'images/gr8date-logo-desktop.59efa8369812.svg' %}"/>
     </a>
     <nav class="gd-nav">
       <a class="gd-login" href="{% url 'account_login' %}">Login</a>
@@ -90,7 +91,7 @@
 
     {% if form.errors %}
       <div class="error">
-        Your username and password didn't match. Please try again.
+        Your email/username and password didn't match. Please try again.
       </div>
     {% endif %}
 
@@ -101,8 +102,9 @@
         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_name }}" />
       {% endif %}
 
-      <label for="ident">Username</label>
-      <input id="ident" name="login" type="text" placeholder="Enter your username" autocomplete="username" required value="{{ form.login.value|default:'' }}"/>
+      <label for="ident">Email or Username</label>
+      <input id="ident" name="login" type="text" placeholder="Enter your email or username" autocomplete="username email" required value="{{ form.login.value|default:'' }}"/>
+      <div class="help-text">You can use either your email address or username to log in</div>
 
       <label for="pass">Password</label>
       <div class="input-wrap">

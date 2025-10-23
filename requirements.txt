@@ -1,10 +1,8 @@
-
-
-Django>=4.2
-psycopg2-binary
-whitenoise
+Django>=4.2,<5.0
 gunicorn
+whitenoise
+psycopg2-binary
 dj-database-url
-django-allauth
 python-dotenv
-
+Pillow
+django-allauth

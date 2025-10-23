@@ -1,4 +1,4 @@
-{% extends "base_header.html" %}
+{% extends "base_header_preview.html" %}
 
 {% block title %}GR8DATE • Create Your Profile{% endblock %}
 
@@ -178,6 +178,46 @@ body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Seg
     line-height: 1.6;
     margin-bottom: 24px;
 }
+
+/* FIXED LOGOUT MODAL STYLES */
+.logout-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+.logout-modal-content {
+    background: white;
+    padding: 32px;
+    border-radius: 16px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    border: 1px solid var(--border);
+}
+.logout-modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    color: var(--ink);
+}
+.logout-modal-message {
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+.logout-modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
 </style>
 
 <!-- Add Cropper.js CSS -->
@@ -237,6 +277,30 @@ body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Seg
     </div>
   </div>
 
+  <!-- FIXED LOGOUT MODAL -->
+  <div id="logoutModal" class="logout-modal">
+    <div class="logout-modal-content">
+      <h3 class="logout-modal-title">Ready to Leave?</h3>
+      <p class="logout-modal-message">
+        Are you sure you want to log out?<br>
+        You'll need to sign in again to access your profile.
+      </p>
+      <div class="logout-modal-actions">
+        <button type="button" class="btn btn-muted" onclick="closeLogoutModal()">
+          <span class="material-icons">close</span>
+          Cancel
+        </button>
+        <form method="post" action="{% url 'account_logout' %}" style="margin:0;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary">
+            <span class="material-icons">logout</span>
+            Yes, Log Out
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- PROGRESS INDICATOR -->
   <div class="tab-progress">
     <div class="progress-dot active" id="progress-basic"></div>
@@ -290,12 +354,12 @@ body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Seg
             <small class="badge-note">This will be your public profile name</small>
           </div>
 
-          <!-- Age - MANUAL ENTRY ONLY -->
+          <!-- Age - COMPLETELY INDEPENDENT MANUAL ENTRY -->
           <div class="field field-required">
-            <label for="age">Age</label>
-            <input type="number" id="age" name="age" min="18" max="80" placeholder="Your age" required
+            <label for="age">Display Age</label>
+            <input type="number" id="age" name="age" min="18" max="80" placeholder="Your preferred age" required
                    oninput="validateBasicInfo()">
-            <small class="badge-note">Must be 18 or older - enter your preferred age</small>
+            <small class="badge-note">This is the age that will be displayed on your profile</small>
           </div>
 
           <!-- My Gender -->
@@ -305,8 +369,6 @@ body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Seg
               <option value="">Select your gender</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
-              <option value="other">Other</option>
-              <option value="prefer_not">Prefer not to say</option>
             </select>
           </div>
 
@@ -317,8 +379,6 @@ body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Seg
               <option value="">Select who you'd like to meet</option>
               <option value="men">Men</option>
               <option value="women">Women</option>
-              <option value="both">Both</option>
-              <option value="any">Any</option>
             </select>
             <small class="badge-note">This determines which profiles you can view</small>
           </div>
@@ -330,12 +390,11 @@ body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Seg
             <small class="badge-note">Your account email</small>
           </div>
 
-          <!-- Date of Birth - FOR DEMOGRAPHICS ONLY -->
+          <!-- Date of Birth - FOR DEMOGRAPHICS ONLY, COMPLETELY INDEPENDENT -->
           <div class="field field-required">
             <label for="date_of_birth">Date of Birth</label>
             <input type="date" id="date_of_birth" name="date_of_birth" required
                    onchange="validateBasicInfo()">
-            <small class="badge-note">For demographics & birthday wishes only - won't affect displayed age</small>
           </div>
         </div>
 
@@ -695,7 +754,7 @@ function updateProgressDots(currentTab) {
     });
 }
 
-// STRICT Basic Info Validation
+// STRICT Basic Info Validation - FIXED
 function validateBasicInfo(showErrors = false) {
     const errors = [];
     const fields = ['username', 'age', 'my_gender', 'looking_for', 'date_of_birth'];
@@ -725,14 +784,20 @@ function validateBasicInfo(showErrors = false) {
         }
     }
     
-    // Username availability check
+    // Username availability check - FIXED: Only block if username is taken
     const usernameStatus = document.getElementById('username-status');
     if (usernameStatus && usernameStatus.classList.contains('username-taken')) {
         allValid = false;
-        errors.push('Username is already taken');
+        if (showErrors) {
+            errors.push('Username is already taken');
+        }
     }
     
-    document.getElementById('continue-to-preferences').disabled = !allValid;
+    // FIXED: Enable button when all fields are valid
+    const continueBtn = document.getElementById('continue-to-preferences');
+    if (continueBtn) {
+        continueBtn.disabled = !allValid;
+    }
     
     if (showErrors && errors.length > 0) {
         document.getElementById('basic-info-errors').textContent = errors.join(', ');
@@ -787,7 +852,11 @@ function validatePreferences(showErrors = false) {
         document.getElementById('must-have-container').style.borderColor = '';
     }
     
-    document.getElementById('continue-to-profile').disabled = !allValid;
+    // FIXED: Enable button when all fields are valid
+    const continueBtn = document.getElementById('continue-to-profile');
+    if (continueBtn) {
+        continueBtn.disabled = !allValid;
+    }
     
     if (showErrors && errors.length > 0) {
         document.getElementById('preferences-errors').textContent = errors.join(', ');
@@ -829,7 +898,11 @@ function validateProfileContent(showErrors = false) {
         document.getElementById('profile-photo-container').style.borderColor = '';
     }
     
-    document.getElementById('submit-profile').disabled = !allValid;
+    // FIXED: Enable button when all fields are valid
+    const submitBtn = document.getElementById('submit-profile');
+    if (submitBtn) {
+        submitBtn.disabled = !allValid;
+    }
     
     if (showErrors && errors.length > 0) {
         document.getElementById('profile-errors').textContent = errors.join(', ');
@@ -840,7 +913,7 @@ function validateProfileContent(showErrors = false) {
     return allValid;
 }
 
-// Username availability check
+// FIXED: Username availability check with better error handling
 function checkUsernameAvailability(username) {
     const statusElement = document.getElementById('username-status');
     
@@ -851,27 +924,270 @@ function checkUsernameAvailability(username) {
         return;
     }
     
+    // Clear previous status
     statusElement.textContent = 'Checking availability...';
     statusElement.className = 'username-status username-checking';
     
-    fetch(`/check-username/?username=${encodeURIComponent(username)}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.available) {
-                statusElement.textContent = '✓ Username available';
-                statusElement.className = 'username-status username-available';
-            } else {
-                statusElement.textContent = '✗ Username already taken';
-                statusElement.className = 'username-status username-taken';
-            }
-            validateBasicInfo();
-        })
-        .catch(error => {
-            statusElement.textContent = 'Error checking username';
+    // REAL API call to Django backend with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    
+    fetch(`/check-username/?username=${encodeURIComponent(username)}`, {
+        signal: controller.signal
+    })
+    .then(response => {
+        clearTimeout(timeoutId);
+        if (!response.ok) {
+            throw new Error(`Server returned ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Username check response:', data); // Debug log
+        
+        if (data.available) {
+            statusElement.textContent = '✓ Username available';
+            statusElement.className = 'username-status username-available';
+        } else {
+            statusElement.textContent = '✗ Username already taken';
             statusElement.className = 'username-status username-taken';
-            validateBasicInfo();
-        });
+        }
+        validateBasicInfo();
+    })
+    .catch(error => {
+        clearTimeout(timeoutId);
+        console.error('Error checking username:', error);
+        
+        if (error.name === 'AbortError') {
+            statusElement.textContent = '✗ Request timeout - try again';
+        } else {
+            statusElement.textContent = '✗ Error checking username';
+        }
+        statusElement.className = 'username-status username-taken';
+        validateBasicInfo();
+    });
 }
+
+// REAL photo upload function
+function uploadCroppedPhoto(blob, photoType) {
+    const statusElement = document.getElementById('profile-photo-error');
+    statusElement.textContent = 'Uploading photo...';
+    
+    // Show loading state
+    const container = photoType === 'profile' ? 
+        document.getElementById('profile-photo-container') : null;
+    const originalContent = container ? container.innerHTML : '';
+    
+    if (container) {
+        container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;"><span class="material-icons" style="font-size:24px;color:#667eea;">hourglass_empty</span></div>';
+    }
+    
+    const formData = new FormData();
+    formData.append('image', blob, `profile-photo-${Date.now()}.jpg`);
+    formData.append('photo_type', photoType);
+
+    // REAL API call to Django backend
+    fetch('/api/upload-profile-image/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCSRFToken(),
+        },
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.error || `Upload failed with status: ${response.status}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success && data.image_id && data.image_url) {
+            // Store photo data
+            const photoData = {
+                id: data.image_id,
+                url: data.image_url
+            };
+            
+            if (photoType === 'profile') {
+                profilePhotoUploaded = true;
+                uploadedPhotos.profile = photoData;
+                document.getElementById('profile-photo-container').innerHTML = 
+                    `<img src="${data.image_url}" alt="Profile photo" style="width:100%;height:100%;object-fit:cover">
+                     <button type="button" class="btn-delete" onclick="deletePhoto('${data.image_id}', 'profile')">×</button>`;
+                document.getElementById('profile_photo_id').value = data.image_id;
+                statusElement.textContent = '';
+                showTempMessage('Profile photo uploaded successfully!', 'success');
+            } else if (photoType === 'private') {
+                uploadedPhotos.private.push(photoData);
+                updatePhotoGrid('private');
+                showTempMessage('Private photo uploaded successfully!', 'success');
+            } else {
+                uploadedPhotos.additional.push(photoData);
+                updatePhotoGrid('additional');
+                showTempMessage('Additional photo uploaded successfully!', 'success');
+            }
+            validateProfileContent();
+        } else {
+            throw new Error(data.error || 'Invalid response from server');
+        }
+    })
+    .catch(error => {
+        console.error('Upload error:', error);
+        // Restore original content
+        if (container) {
+            container.innerHTML = originalContent;
+        }
+        statusElement.textContent = `Upload failed: ${error.message}`;
+        showTempMessage(`Upload failed: ${error.message}`, 'error');
+    });
+}
+
+// REAL photo deletion function
+function deletePhoto(imageId, photoType) {
+    if (!confirm('Are you sure you want to delete this photo? This action cannot be undone.')) {
+        return;
+    }
+
+    // Show loading state
+    const deleteBtn = event.target;
+    deleteBtn.disabled = true;
+    deleteBtn.innerHTML = '...';
+    
+    // REAL API call to delete from backend
+    fetch(`/api/delete-image/${imageId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCSRFToken(),
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.error || `Delete failed with status: ${response.status}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // Remove from local state
+            if (photoType === 'profile') {
+                profilePhotoUploaded = false;
+                uploadedPhotos.profile = null;
+                document.getElementById('profile-photo-container').innerHTML = '<span>+</span>';
+                document.getElementById('profile_photo_id').value = '';
+                showTempMessage('Profile photo deleted successfully!', 'success');
+            } else {
+                uploadedPhotos[photoType] = uploadedPhotos[photoType].filter(photo => photo.id !== imageId);
+                updatePhotoGrid(photoType);
+                showTempMessage('Photo deleted successfully!', 'success');
+            }
+            validateProfileContent();
+        } else {
+            throw new Error(data.error || 'Delete failed on server');
+        }
+    })
+    .catch(error => {
+        console.error('Delete error:', error);
+        // Re-enable the delete button
+        deleteBtn.disabled = false;
+        deleteBtn.innerHTML = '×';
+        showTempMessage(`Delete failed: ${error.message}`, 'error');
+    });
+}
+
+// Helper function to get CSRF token
+function getCSRFToken() {
+    const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+    return csrfInput ? csrfInput.value : '';
+}
+
+// Helper function to show temporary messages
+function showTempMessage(message, type = 'info') {
+    const messageDiv = document.createElement('div');
+    messageDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        z-index: 10001;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        max-width: 300px;
+    `;
+    
+    if (type === 'success') {
+        messageDiv.style.background = '#10b981';
+    } else if (type === 'error') {
+        messageDiv.style.background = '#dc2626';
+    } else {
+        messageDiv.style.background = '#3b82f6';
+    }
+    
+    messageDiv.textContent = message;
+    document.body.appendChild(messageDiv);
+    
+    // Remove after 4 seconds
+    setTimeout(() => {
+        if (messageDiv.parentNode) {
+            messageDiv.parentNode.removeChild(messageDiv);
+        }
+    }, 4000);
+}
+
+// REAL form submission
+document.getElementById('profileForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    if (!validateBasicInfo(true) || !validatePreferences(true) || !validateProfileContent(true)) {
+        alert('Please complete all required fields before submitting');
+        return false;
+    }
+    
+    // Show loading state
+    const submitBtn = document.getElementById('submit-profile');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="material-icons">hourglass_empty</span> Submitting...';
+    submitBtn.disabled = true;
+    
+    // REAL form submission via API
+    const formData = new FormData(this);
+    
+    fetch('/api/create-profile/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': getCSRFToken(),
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.error || `Submission failed with status: ${response.status}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            showSuccessModal();
+        } else {
+            throw new Error(data.error || 'Profile creation failed');
+        }
+    })
+    .catch(error => {
+        console.error('Submission error:', error);
+        alert('Error submitting profile: ' + error.message);
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+});
 
 // FIXED IMAGE CROPPER FUNCTIONS
 function addProfilePhoto() {
@@ -973,50 +1289,6 @@ function applyCrop() {
     cancelCrop();
 }
 
-function uploadCroppedPhoto(blob, photoType) {
-    const formData = new FormData();
-    formData.append('image', blob, 'cropped-photo.jpg');
-    formData.append('photo_type', photoType);
-    
-    fetch('/upload-profile-image/', {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-        },
-        body: formData,
-    }).then(response => response.json())
-      .then(data => {
-        if (data.success) {
-            // Store photo data with both id and url
-            const photoData = {
-                id: data.image_id,
-                url: data.image_url
-            };
-            
-            if (photoType === 'profile') {
-                profilePhotoUploaded = true;
-                uploadedPhotos.profile = photoData;
-                document.getElementById('profile-photo-container').innerHTML = 
-                    `<img src="${data.image_url}" alt="Profile photo" style="width:100%;height:100%;object-fit:cover">
-                     <button type="button" class="btn-delete" onclick="deletePhoto('${data.image_id}', 'profile')">×</button>`;
-                document.getElementById('profile_photo_id').value = data.image_id;
-            } else if (photoType === 'private') {
-                uploadedPhotos.private.push(photoData);
-                updatePhotoGrid('private');
-            } else {
-                uploadedPhotos.additional.push(photoData);
-                updatePhotoGrid('additional');
-            }
-            validateProfileContent();
-        } else {
-            alert('Error uploading image: ' + (data.error || 'Unknown error'));
-        }
-    }).catch(error => {
-        alert('Error uploading image');
-        console.error('Upload error:', error);
-    });
-}
-
 // FIXED: Photo grid management with individual image tracking
 function updatePhotoGrid(photoType) {
     const container = document.getElementById(photoType + '-photos-container');
@@ -1059,33 +1331,6 @@ function updatePhotoGrid(photoType) {
     }
 }
 
-function deletePhoto(imageId, photoType) {
-    if (confirm('Are you sure you want to delete this photo?')) {
-        fetch(`/delete-image/${imageId}/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-            },
-        }).then(response => {
-            if (response.ok) {
-                if (photoType === 'profile') {
-                    profilePhotoUploaded = false;
-                    uploadedPhotos.profile = null;
-                    document.getElementById('profile-photo-container').innerHTML = '<span>+</span>';
-                    document.getElementById('profile_photo_id').value = '';
-                } else {
-                    uploadedPhotos[photoType] = uploadedPhotos[photoType].filter(photo => photo.id !== imageId);
-                    updatePhotoGrid(photoType);
-                }
-                validateProfileContent();
-            }
-        }).catch(error => {
-            alert('Error deleting photo');
-            console.error('Delete error:', error);
-        });
-    }
-}
-
 // Success modal functions
 function showSuccessModal() {
     document.getElementById('successModal').style.display = 'flex';
@@ -1096,23 +1341,25 @@ function closeSuccessModal() {
     document.getElementById('successModal').style.display = 'none';
     document.body.style.overflow = '';
     // Redirect to dashboard or home page after success
-    window.location.href = "{% url 'dashboard' %}";
+    window.location.href = "{% url 'preview_gate' %}";
 }
 
-// Form submission with success modal
-document.getElementById('profileForm').addEventListener('submit', function(e) {
-    if (!validateBasicInfo(true) || !validatePreferences(true) || !validateProfileContent(true)) {
-        e.preventDefault();
-        alert('Please complete all required fields before submitting');
-        return false;
+// FIXED LOGOUT MODAL FUNCTIONS
+function openLogoutModal() {
+    document.getElementById('logoutModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLogoutModal() {
+    document.getElementById('logoutModal').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+// Close logout modal when clicking outside
+document.getElementById('logoutModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeLogoutModal();
     }
-    
-    // If form is valid, show success modal instead of normal submission
-    e.preventDefault();
-    showSuccessModal();
-    
-    // In a real implementation, you would submit the form via AJAX here
-    // and only show success modal on successful submission
 });
 
 // Age range dropdown population
@@ -1131,8 +1378,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Initialize validation
+    // Initialize validation - run validation on page load
     validateBasicInfo();
+    
+    // Add event listeners to all required fields to trigger validation on change
+    const requiredFields = document.querySelectorAll('#basic-info-tab input[required], #basic-info-tab select[required]');
+    requiredFields.forEach(field => {
+        field.addEventListener('input', validateBasicInfo);
+        field.addEventListener('change', validateBasicInfo);
+    });
 });
 </script>
 {% endblock %}

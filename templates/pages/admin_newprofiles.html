@@ -1,0 +1,279 @@
+<!-- templates/pages/admin_newprofile.html -->
+{% extends "base_header_preview.html" %}
+
+{% block title %}GR8DATE • New Profiles Waiting Approval{% endblock %}
+
+{% block content %}
+<style>
+.admin-nav {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #eaeef5;
+}
+.nav-item {
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #64748b;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+.nav-item:hover {
+    background: white;
+    color: #333;
+    border-color: #eaeef5;
+}
+.nav-item.active {
+    background: white;
+    color: #ff2b6a;
+    font-weight: 600;
+    border-color: #ff2b6a;
+    box-shadow: 0 2px 8px rgba(255, 43, 106, 0.1);
+}
+.admin-stats { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    gap: 16px; 
+    margin-bottom: 24px; 
+}
+.stat-card { 
+    background: white; 
+    padding: 20px; 
+    border-radius: 12px; 
+    border: 1px solid #eaeef5; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+    text-align: center; 
+}
+.stat-number { 
+    font-size: 2rem; 
+    font-weight: bold; 
+    color: #ff2b6a; 
+    margin-bottom: 8px; 
+}
+.stat-label { 
+    color: #64748b; 
+    font-size: 0.9rem; 
+}
+.profile-card { 
+    background: white; 
+    border: 1px solid #eaeef5; 
+    border-radius: 12px; 
+    padding: 20px; 
+    margin-bottom: 16px; 
+}
+.profile-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+    margin-bottom: 16px; 
+}
+.profile-actions { 
+    display: flex; 
+    gap: 8px; 
+}
+.btn-sm { 
+    padding: 8px 16px; 
+    font-size: 0.875rem; 
+}
+.quick-actions { 
+    display: flex; 
+    gap: 8px; 
+    margin-top: 12px; 
+}
+.profile-details { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 16px; 
+}
+.detail-group label { 
+    font-weight: 600; 
+    color: #64748b; 
+    font-size: 0.875rem; 
+}
+.detail-group div { 
+    margin-top: 4px; 
+}
+.empty-state { 
+    text-align: center; 
+    padding: 40px; 
+    color: #64748b; 
+}
+.empty-state .material-icons { 
+    font-size: 48px; 
+    margin-bottom: 16px; 
+    opacity: 0.5; 
+}
+</style>
+
+<div class="container">
+    <!-- Admin Navigation -->
+    <div class="admin-nav">
+        <a href="{% url 'admin_new_profiles' %}" class="nav-item active">
+            📋 New Profiles
+            {% if stats.total_pending %}
+            <span style="background: #ff2b6a; color: white; border-radius: 12px; padding: 2px 8px; font-size: 0.75rem; margin-left: 8px;">
+                {{ stats.total_pending }}
+            </span>
+            {% endif %}
+        </a>
+        <a href="{% url 'admin_profile_approvals' %}" class="nav-item">
+            📝 All Pending
+        </a>
+        <a href="/admin/" class="nav-item" target="_blank">
+            ⚙️ Django Admin
+        </a>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h1 style="margin: 0;">New Profiles Waiting Approval</h1>
+        <div style="color: #64748b; font-size: 0.875rem;">
+            Last updated: {% now "M j, Y g:i A" %}
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="admin-stats">
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.total_pending }}</div>
+            <div class="stat-label">Total Waiting</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.pending_today }}</div>
+            <div class="stat-label">Submitted Today</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.pending_week }}</div>
+            <div class="stat-label">This Week</div>
+        </div>
+    </div>
+
+    <!-- Profiles List -->
+    {% if new_profiles %}
+        {% for profile in new_profiles %}
+        <div class="profile-card">
+            <div class="profile-header">
+                <div>
+                    <h3 style="margin: 0 0 4px 0;">
+                        @{{ profile.user.username }}
+                        {% if profile.user.get_full_name %}
+                            <span style="color: #64748b; font-weight: normal;">({{ profile.user.get_full_name }})</span>
+                        {% endif %}
+                    </h3>
+                    <div style="color: #64748b; font-size: 0.875rem;">
+                        Joined: {{ profile.user.date_joined|date:"M j, Y" }} • 
+                        Submitted: {{ profile.last_submitted_for_approval|date:"M j, Y g:i A" }}
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <a href="{% url 'preview_profile_detail' profile.user.id %}" class="btn btn-muted btn-sm" target="_blank">
+                        <span class="material-icons">visibility</span>
+                        Preview
+                    </a>
+                </div>
+            </div>
+
+            <div class="profile-details">
+                <div class="detail-group">
+                    <label>Display Age</label>
+                    <div>{{ profile.age|default:"Not set" }}</div>
+                </div>
+                <div class="detail-group">
+                    <label>Gender</label>
+                    <div>{{ profile.get_my_gender_display }}</div>
+                </div>
+                <div class="detail-group">
+                    <label>Looking For</label>
+                    <div>{{ profile.get_looking_for_display }}</div>
+                </div>
+                <div class="detail-group">
+                    <label>Location</label>
+                    <div>{{ profile.location|default:"Not set" }}</div>
+                </div>
+                <div class="detail-group" style="grid-column: 1 / -1;">
+                    <label>Headline</label>
+                    <div>{{ profile.headline|default:"No headline" }}</div>
+                </div>
+                <div class="detail-group" style="grid-column: 1 / -1;">
+                    <label>About Me</label>
+                    <div>{{ profile.about|truncatewords:30|default:"No bio yet" }}</div>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <button onclick="quickApprove({{ profile.id }})" class="btn btn-primary btn-sm">
+                    <span class="material-icons">check</span>
+                    Approve
+                </button>
+                <button onclick="quickReject({{ profile.id }})" class="btn btn-muted btn-sm">
+                    <span class="material-icons">close</span>
+                    Reject
+                </button>
+                <a href="{% url 'admin_approve_profile' profile.id %}" class="btn btn-muted btn-sm">
+                    <span class="material-icons">open_in_new</span>
+                    Full Review
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <span class="material-icons">celebration</span>
+            <h3>No profiles waiting for approval!</h3>
+            <p>All new users have been processed. Check back later for new submissions.</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function quickApprove(profileId) {
+    if (!confirm('Approve this profile? The user will get full access immediately.')) return;
+    
+    fetch(`/admin/quick-approve-profile/${profileId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Error approving profile: ' + error);
+    });
+}
+
+function quickReject(profileId) {
+    if (!confirm('Reject this profile? This will delete their profile and they will need to start over.')) return;
+    
+    fetch(`/admin/quick-reject-profile/${profileId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Error rejecting profile: ' + error);
+    });
+}
+</script>
+{% endblock %}

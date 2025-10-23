@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
+# Exit on error
 set -o errexit
 
-# Use less memory during install
-pip install --no-cache-dir -r requirements.txt
-
-# Run migrations efficiently
-python manage.py migrate --no-input
+# Install dependencies
+pip install -r requirements.txt
 
 # Collect static files
-python manage.py collectstatic --noinput --clear
+python manage.py collectstatic --no-input
 
-echo "Build completed successfully!"
+# Apply database migrations
+python manage.py migrate'
