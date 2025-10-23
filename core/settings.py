@@ -146,3 +146,12 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+# Add this to your core/settings.py
+LOGIN_REDIRECT_URL = '/dashboard/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
+# Use your custom template instead of allauth's default
+ACCOUNT_FORMS = {
+    'login': 'pages.forms.CustomLoginForm',  # If you have a custom form
+}
