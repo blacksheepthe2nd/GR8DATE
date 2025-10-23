@@ -2,6 +2,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()  # Load environment variables
 
@@ -31,14 +32,25 @@ ALLOWED_HOSTS = [
     '127.0.0.1'
 ]
 
-# Database configuration - WORKS BOTH LOCAL AND RENDER
+import os
 import dj_database_url
+
+# Database configuration
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///db.sqlite3',
-        conn_max_age=600
+        conn_max_age=600,
+        # Force PostgreSQL on Render
+        conn_health_checks=True,
     )
 }
+
+# If on Render, ensure we use PostgreSQL
+if 'RENDER' in os.environ:
+    DATABASES['default'] = dj_database_url.config(
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 
 INSTALLED_APPS = [
     'django.contrib.admin',
