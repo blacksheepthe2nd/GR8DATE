@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 set -o errexit
 
-echo "Starting build process..."
-pip install -r requirements.txt
+# Use less memory during install
+pip install --no-cache-dir -r requirements.txt
 
-echo "Running migrations..."
-python manage.py migrate --run-syncdb
-python manage.py migrate sites
-python manage.py migrate allauth
-python manage.py migrate
+# Run migrations efficiently
+python manage.py migrate --no-input
 
-echo "Collecting static files..."
-python manage.py collectstatic --noinput
+# Collect static files
+python manage.py collectstatic --noinput --clear
 
 echo "Build completed successfully!"

@@ -1,7 +1,5 @@
-Django>=4.2,<5.0
+Django>=4.2
 psycopg2-binary
-python-dotenv
 whitenoise
-django-allauth
 gunicorn
 dj-database-url
