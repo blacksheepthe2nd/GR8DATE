@@ -16,7 +16,7 @@ urlpatterns = [
     path('login/', RedirectView.as_view(url='/accounts/login/', permanent=False)),
     
     # Allauth URLs
-    # path("accounts/", include("allauth.urls")),
+     path("accounts/", include("allauth.urls")),
     
     # Your pages
     path("", include("pages.urls")),

@@ -55,12 +55,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'django.contrib.sites',  # COMMENTED OUT - allauth dependency
+    'django.contrib.sites',  # COMMENTED OUT - allauth dependency
     
     'pages',
-    # 'allauth',  # COMMENTED OUT - temporarily disabled
-    # 'allauth.account',  # COMMENTED OUT - temporarily disabled
-    # 'allauth.socialaccount',  # COMMENTED OUT - temporarily disabled
+    'allauth',  # COMMENTED OUT - temporarily disabled
+    'allauth.account',  # COMMENTED OUT - temporarily disabled
+    'allauth.socialaccount',  # COMMENTED OUT - temporarily disabled
 ]
 
 MIDDLEWARE = [
@@ -72,7 +72,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'allauth.account.middleware.AccountMiddleware',  # COMMENTED OUT - allauth dependency
+    'allauth.account.middleware.AccountMiddleware',  # COMMENTED OUT - allauth dependency
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -121,7 +121,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# SITE_ID = 1  # COMMENTED OUT - allauth dependency
+ SITE_ID = 1  # COMMENTED OUT - allauth dependency
 
 # Allauth configuration - TEMPORARILY DISABLED
 AUTHENTICATION_BACKENDS = [
