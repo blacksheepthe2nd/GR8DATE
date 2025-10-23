@@ -1,6 +1,10 @@
+
+
 Django>=4.2
 psycopg2-binary
 whitenoise
 gunicorn
 dj-database-url
 django-allauth
+python-dotenv
+
